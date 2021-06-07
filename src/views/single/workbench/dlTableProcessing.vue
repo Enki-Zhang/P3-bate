@@ -1,21 +1,21 @@
 <template>
 
-    <el-dialog top="20vh" width="588px" :title="`待我审批`" :visible.sync="dialogVisible"
+    <el-dialog top="20vh" width="588px" :title="`办理中`" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
             <el-table :data="tbData.list" size="small">
                 <el-table-column label="事项">
                     <template slot-scope="scope">
-                        {{ `${scope.row.sponsorName} ${scope.row.matter}` }}
+                        {{ `${scope.row.matter}` }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="createTime" label="时间" sortable>
+                <el-table-column prop="createTime" label="申请/更新时间" sortable>
                     <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                 </el-table-column>
                 <el-table-column label="操作" width="80">
                     <template slot-scope="scope">
-                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">详情</el-link>
+                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">查看进度</el-link>
                     </template>
                 </el-table-column>
             </el-table>

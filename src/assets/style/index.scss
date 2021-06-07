@@ -12,7 +12,7 @@
 
 /* 内容页默认内边距 */
 //@mixin page-default-pd {padding: 18px 20px 20px 20px;}
-@mixin page-default-pd {padding: 10px 20px;}
+@mixin page-default-pd {padding: 10px 20px 20px 20px;}
 @mixin page-default-pd-edit {padding: 25px 20px;}
 .page-default-pd {@include page-default-pd;}
 .page-default-pd-bgc-white {@include bgc-white-light; @include page-default-pd;}

@@ -51,7 +51,7 @@
                 <el-col :span="6">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
-                            <span>申请历史记录</span>
+                            <span>审批历史记录</span>
                             <img src="../../../assets/image/workbench/splsjl.png" class="icon">
                         </el-row>
                         <el-row type="flex" justify="center" align="middle" class="bg-count-up">
@@ -95,7 +95,7 @@
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
                             <span>更新信息 (<span class="purple">{{ tbDataUpdating.list.length }}</span>)</span>
-                            <span @click="showDLTableUpdating" class="more">更多</span>
+                            <span class="more">更多</span>
                         </el-row>
                         <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                         <el-row class="pd-lr-5">
@@ -121,15 +121,15 @@
             </el-row>
             <el-row class="table-has-title mg-t-20">
                 <el-row type="flex" justify="space-between" class="title">
-                    <span>办理中 (<span class="green">{{ tbDataProcessing.list.length }}</span>)</span>
-                    <span @click="showDLTableProcessing" class="more">更多</span>
+                    <span>办理中 (<span class="green">5</span>)</span>
+                    <span class="more">更多</span>
                 </el-row>
                 <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                 <el-row class="pd-lr-5">
-                    <el-table :data="tbDataProcessing.list" size="small">
+                    <el-table :data="tbDataPending.list" size="small">
                         <el-table-column label="事项">
                             <template slot-scope="scope">
-                                {{ `${scope.row.matter}` }}
+                                {{ `${scope.row.sponsorName} ${scope.row.matter}` }}
                             </template>
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
@@ -146,12 +146,12 @@
             <el-row class="table-has-title mg-t-20">
                 <el-row type="flex" justify="space-between" class="title">
                     <span>申请历史记录 (<span class="bule">5</span>)</span>
-                    <span @click="showDLTableApply" class="more">更多</span>
+                    <span class="more">更多</span>
                 </el-row>
                 <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                 <el-row class="pd-lr-5">
                     <el-table :data="tbDataApply.list" size="small">
-                        <el-table-column prop="sponsorName" label="发起人" width="100"></el-table-column>
+                        <el-table-column prop="sponsorName" label="发起人"></el-table-column>
                         <el-table-column prop="matter" label="事项"></el-table-column>
                         <el-table-column prop="createTime" label="申请时间" sortable>
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
@@ -178,14 +178,8 @@
             </el-row>
         </el-row>
 
-        <!-- 组件：待我审批 -->
+        <!-- 组件：待我审批列表 -->
         <dl-table-pending v-model="dlVisibleTablePending" :params="dlParams"></dl-table-pending>
-        <!-- 组件：更新信息 -->
-        <dl-table-updating v-model="dlVisibleTableUpdating" :params="dlParams"></dl-table-updating>
-        <!-- 组件：办理中 -->
-        <dl-table-processing v-model="dlVisibleTableProcessing" :params="dlParams"></dl-table-processing>
-        <!-- 组件：申请历史记录 -->
-        <dl-table-apply v-model="dlVisibleTableApply" :params="dlParams"></dl-table-apply>
     </el-row>
 
 </template>
@@ -195,24 +189,14 @@
     import dayjs from 'dayjs';
     import ICountUp from 'vue-countup-v2';
 
-    import jsonTbDataPending from '@mock/tbDataPending.json';
-    import jsonTbDataUpdating from '@mock/tbDataUpdating.json';
-    import jsonTbDataProcessing from '@mock/tbDataProcessing.json';
-    import jsonTbDataApply from '@mock/tbDataApply.json';
-
+    import jsonApprove from '@mock/approve.json';
     import dlTablePending from "@views/single/workbench/dlTablePending";
-    import dlTableUpdating from "@views/single/workbench/dlTableUpdating";
-    import dlTableProcessing from "@views/single/workbench/dlTableProcessing";
-    import dlTableApply from "@views/single/workbench/dlTableApply";
 
     export default {
         name: "index",
         components: {
             ICountUp,
             dlTablePending,
-            dlTableUpdating,
-            dlTableProcessing,
-            dlTableApply,
         },
         data() {
             return {
@@ -220,9 +204,6 @@
 
                 dlParams: {},
                 dlVisibleTablePending: false,
-                dlVisibleTableUpdating: false,
-                dlVisibleTableProcessing: false,
-                dlVisibleTableApply: false,
 
                 countUpOpt: {
                     delay: 500,
@@ -236,6 +217,10 @@
                     prefix: '',
                     suffix: ''
                 },
+                cuoTotalPending: 8,
+                cuoTotalApproval: 999,
+                cuoTotalUpdate: 22,
+                cuoTotalProcessing: 5,
 
                 tbDataPending: {list: []},
                 tbDataUpdating: {list: []},
@@ -248,7 +233,6 @@
 
             this.getTableDataPending();
             this.getTableDataUpdating();
-            this.getTableDataProcessing();
             this.getTableDataApply();
         },
         methods: {
@@ -256,7 +240,7 @@
                 let that = this;
                 that.tbDataPending.list = [];
 
-                jsonTbDataPending.filter(v => {
+                jsonApprove.filter(v => {
                     return v.sponsor !== 1;
                 }).sort((a, b) => {
                     return a.createTime - b.createTime;
@@ -269,8 +253,8 @@
             getTableDataUpdating: function(pageSize = 5) {
                 let that = this;
 
-                jsonTbDataUpdating.filter(v => {
-                    return v.updateTime > 0;
+                jsonApprove.filter(v => {
+                    return v.process === 1 && v.updateTime > 0;
                 }).sort((a, b) => {
                     return b.updateTime - a.updateTime;
                 }).map(v => {
@@ -279,24 +263,11 @@
                     }
                 });
             },
-            getTableDataProcessing: function(pageSize = 5) {
-                let that = this;
-
-                jsonTbDataProcessing.filter(v => {
-                    return v.sponsor === 1;
-                }).sort((a, b) => {
-                    return a.createTime - b.createTime;
-                }).map(v => {
-                    if(that.tbDataProcessing.list.length <= pageSize) {
-                        that.tbDataProcessing.list.push(v);
-                    }
-                });
-            },
             getTableDataApply: function(pageSize = 5) {
                 let that = this;
 
-                jsonTbDataApply.filter(v => {
-                    return v.process === 1;
+                jsonApprove.filter(v => {
+                    return v.sponsor === 1;
                 }).sort((a, b) => {
                     return a.createTime - b.createTime;
                 }).map(v => {
@@ -310,35 +281,10 @@
                 let that = this;
 
                 that.dlParams = {
-                    list: [...jsonTbDataPending],
+                    list: [...jsonApprove],
                 };
                 that.dlVisibleTablePending = true;
             },
-            showDLTableUpdating: function() {
-                let that = this;
-
-                that.dlParams = {
-                    list: [...jsonTbDataUpdating],
-                };
-                that.dlVisibleTableUpdating = true;
-            },
-            showDLTableProcessing: function() {
-                let that = this;
-
-                that.dlParams = {
-                    list: [...jsonTbDataProcessing],
-                };
-                that.dlVisibleTableProcessing = true;
-            },
-            showDLTableApply: function() {
-                let that = this;
-
-                that.dlParams = {
-                    list: [...jsonTbDataApply],
-                };
-                that.dlVisibleTableApply = true;
-            },
-
             removeRow: function(index, row) {
                 console.log(row);
             },
@@ -428,7 +374,7 @@
                 }
                 .el-table::before {height: 0;}
                 .el-table__empty-block {min-height: 41px;}
-                .el-table__empty-text {line-height: 41px; margin-bottom: -10px;}
+                .el-table__empty-text {line-height: 41px;}
             }
         }
 

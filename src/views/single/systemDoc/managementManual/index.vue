@@ -76,28 +76,28 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
+                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip width="280">
+                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
                             <template slot-scope="scope">{{ scope.row.id }}</template>
                         </el-table-column>
-                        <el-table-column label="文件名称" show-overflow-tooltip min-width="160">
+                        <el-table-column label="文件名称" show-overflow-tooltip min-width="220">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
                         </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="160">
+                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
                             <template slot-scope="scope">{{ scope.row.version }}</template>
                         </el-table-column>
                         <el-table-column label="发布状态" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-green">待发布</span>
-                                <span v-else-if="scope.row.status === 1" class="status-red">已发布</span>
+                                <span v-if="scope.row.status === 0" class="status-red">待发布</span>
+                                <span v-else-if="scope.row.status === 1" class="status-green">已发布</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="更新时间" show-overflow-tooltip min-width="90">
+                        <el-table-column label="更新时间" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <el-table-column label="操作人" show-overflow-tooltip min-width="160">
+                        <el-table-column label="操作人" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.operator }}</template>
                         </el-table-column>
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="280">
@@ -119,8 +119,8 @@
                 </el-row>
 
                 <!-- 分页 -->
-                <el-row v-if="tbData.content.length" class="mg-t-20 mg-b-10 txt-c">
-                    <el-pagination :total="tbData.totalElements" :current-page="tbData.number + 1" :page-size="10"
+                <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
+                    <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="10"
                                    layout="total, prev, pager, next, jumper"
                                    @current-change="handlePaginationChange"
                                    background>
@@ -134,17 +134,21 @@
 
 <script>
 
+    import dayjs from 'dayjs';
+    import jsonTableData from '@mock/systemDocManagementManual.json';
+
     export default {
         name: "index",
         data() {
             return {
+                dayjs,
 
                 tbSelectedArr: [],
                 tbFilter: {
                     name: '',
                     createTime: [],
                 },
-                tbData: {content: []},
+                tbData: {list: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
 
@@ -164,34 +168,17 @@
         methods: {
             getTableData: function(page = 1, pageSize = 10) {
                 let that = this;
-                that.btnLoadingFilter = true;
+                that.tbData.total = jsonTableData.length;
+                that.tbData.list = [];
 
-                let params = {
-                    ...that.tbDataFilter,
-                    pageCurrent: page,
-                    pageSize,
-                };
-
-                /*api.sysLogList(params).then((res) => {
-                    // console.log(res);
-                    if(res.data.status === 200) {
-                        that.tbData = {...res.data.data};
+                let limit = page > 1
+                    ? [(page - 1) * pageSize, page * pageSize]
+                    : [0, pageSize];
+                jsonTableData.map((v, k) => {
+                    if(k > limit[0] && k < limit[1]) {
+                        that.tbData.list.push(v);
                     }
-                    that.btnLoadingFilter = false;
-                });*/
-
-                that.tbData = {
-                    content: [
-                        {
-                            id: 1,
-                            name: '张三',
-                            version: '1.0',
-                            status: 1,
-                            createTime: '',
-                            operator: '管理员',
-                        }
-                    ],
-                };
+                });
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);

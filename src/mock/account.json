@@ -1,14 +1,14 @@
 [
   {
     "userId": 1,
-    "nickname": "超级管理员",
+    "nickname": "张书逸",
     "username": "admin",
     "password": "123123",
     "role": "admin"
   },
   {
     "userId": 10,
-    "nickname": "张三",
+    "nickname": "李卡奇",
     "username": "test",
     "password": "123123",
     "role": "user"

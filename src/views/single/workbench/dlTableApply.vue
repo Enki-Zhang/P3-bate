@@ -1,22 +1,31 @@
 <template>
 
-    <el-dialog top="20vh" width="588px" :title="`待我审批`" :visible.sync="dialogVisible"
+    <el-dialog top="20vh" width="888px" :title="`申请历史记录`" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
             <el-table :data="tbData.list" size="small">
-                <el-table-column label="事项">
-                    <template slot-scope="scope">
-                        {{ `${scope.row.sponsorName} ${scope.row.matter}` }}
-                    </template>
-                </el-table-column>
-                <el-table-column prop="createTime" label="时间" sortable>
+                <el-table-column prop="sponsorName" label="发起人" width="100"></el-table-column>
+                <el-table-column prop="matter" label="事项"></el-table-column>
+                <el-table-column prop="createTime" label="申请时间" sortable>
                     <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                 </el-table-column>
-                <el-table-column label="操作" width="80">
+                <el-table-column prop="status" label="审批结果">
                     <template slot-scope="scope">
-                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">详情</el-link>
+                        <span v-if="scope.row.status === 0" class="status-blue">待审批</span>
+                        <span v-else-if="scope.row.status === 1" class="status-green">已通过</span>
+                        <span v-else-if="scope.row.status === -1" class="status-red">未通过</span>
                     </template>
+                </el-table-column>
+                <el-table-column prop="approve" label="审批人">
+                    <template slot-scope="scope">
+                                <span v-for="(v, k) in scope.row.approve" :key="k">
+                                    {{ v }}
+                                </span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="approveTime" label="审批时间">
+                    <template slot-scope="scope">{{ scope.row.approveTime ? dayjs(scope.row.approveTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                 </el-table-column>
             </el-table>
         </el-row>
