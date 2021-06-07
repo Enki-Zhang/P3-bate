@@ -1,0 +1,24 @@
+$pxArr: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50);
+
+@for $pxArrIndex from 1 through 10 {
+  .pd-t-#{nth($pxArr, $pxArrIndex)} {
+    padding-top: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .pd-r-#{nth($pxArr, $pxArrIndex)} {
+    padding-right: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .pd-b-#{nth($pxArr, $pxArrIndex)} {
+    padding-bottom: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .pd-l-#{nth($pxArr, $pxArrIndex)} {
+    padding-left: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .pd-tb-#{nth($pxArr, $pxArrIndex)} {
+    padding-top: #{nth($pxArr, $pxArrIndex)}px;
+    padding-bottom: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .pd-lr-#{nth($pxArr, $pxArrIndex)} {
+    padding-left: #{nth($pxArr, $pxArrIndex)}px;
+    padding-right: #{nth($pxArr, $pxArrIndex)}px;
+  }
+}

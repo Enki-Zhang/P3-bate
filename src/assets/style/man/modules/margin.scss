@@ -1,0 +1,24 @@
+$pxArr: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50);
+
+@for $pxArrIndex from 1 through 10 {
+  .mg-t-#{nth($pxArr, $pxArrIndex)} {
+    margin-top: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .mg-r-#{nth($pxArr, $pxArrIndex)} {
+    margin-right: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .mg-b-#{nth($pxArr, $pxArrIndex)} {
+    margin-bottom: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .mg-l-#{nth($pxArr, $pxArrIndex)} {
+    margin-left: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .mg-tb-#{nth($pxArr, $pxArrIndex)} {
+    margin-top: #{nth($pxArr, $pxArrIndex)}px;
+    margin-bottom: #{nth($pxArr, $pxArrIndex)}px;
+  }
+  .mg-lr-#{nth($pxArr, $pxArrIndex)} {
+    margin-left: #{nth($pxArr, $pxArrIndex)}px;
+    margin-right: #{nth($pxArr, $pxArrIndex)}px;
+  }
+}

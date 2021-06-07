@@ -1,0 +1,46 @@
+// 宽高视窗 100
+@mixin wh-v-100 {
+  width: 100vw;
+  height: 100vh;
+}
+
+// 宽高 100%
+@mixin wh-bf-100 {
+  width: 100%;
+  height: 100%;
+}
+.wh-bf-100 {@include wh-bf-100;}
+.w-bf-100 {width: 100%;}
+.h-bf-100 {height: 100%;}
+
+// 文本溢出隐藏并显示省略号
+@mixin txt-ycyc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@mixin txt-ycyc-x {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+/* 圆边框 */
+@mixin border-round {border-radius: inherit;}
+
+// 禁止选中
+@mixin unable-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.unable-select {@include unable-select;}
+
+// 鼠标变为手形
+@mixin cursor-pointer {
+  cursor: pointer;
+}
+.cursor-pointer {@include cursor-pointer;}

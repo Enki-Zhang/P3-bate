@@ -1,0 +1,11 @@
+/* 动画 */
+
+@mixin trs-8 {transition: .8s;}
+.trs-8 {@include trs-8;}
+
+
+
+/* gf-fade */
+.fade-enter-active {transition: opacity 1.8s;}
+.fade-leave-active {transition: opacity .6s;}
+.fade-enter, .fade-leave-to {opacity: 0;}

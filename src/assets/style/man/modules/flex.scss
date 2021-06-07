@@ -1,0 +1,23 @@
+%fx {
+  display: flex;
+}
+
+@mixin fx-row {
+  @extend %fx;
+  flex-direction: row;
+}
+
+@mixin fx-col {
+  @extend %fx;
+  flex-direction: column;
+}
+
+@mixin fx-c {
+  justify-content: center;
+  align-items: center;
+}
+
+.fx-row {@include fx-row;}
+.fc-col {@include fx-col;}
+.fc-c {@include fx-c;}
+

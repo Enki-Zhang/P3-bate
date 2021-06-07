@@ -1,0 +1,38 @@
+/* man */
+@import "~@assets/style/man/modules/color.scss";
+@import "~@assets/style/man/modules/fonts.scss";
+@import "~@assets/style/man/modules/flex.scss";
+@import "~@assets/style/man/modules/margin.scss";
+@import "~@assets/style/man/modules/padding.scss";
+@import "~@assets/style/man/modules/animation.scss";
+@import "~@assets/style/man/modules/other.scss";
+
+/* 深度覆写 */
+body {margin: 0; overflow: hidden;}
+a {text-decoration: none;}
+img {@include wh-bf-100;}
+
+/* 层叠 */
+.zi-max {z-index: 777;}
+.zi-default {z-index: 1;}
+.zi-none {z-index: -777;}
+
+/* nprogress */
+#nprogress .bar {background: $color-main-active !important;}
+#nprogress .peg {box-shadow: 0 0 10px #e8b57b, 0 0 5px #e8b57b !important;}
+#nprogress .spinner-icon {
+  border-top-color: $color-main-active !important;
+  border-left-color: $color-main-active !important;
+}
+
+/* 状态字段颜色 */
+.status-blue {color: #46a6ff;}
+.status-green {color: #1DC084;}
+.status-red {color: #F56C6C;}
+.status-yellow {color: #E6A23C;}
+.status-gray {color: #BBBBBB;}
+
+/* 版权 */
+.copyright {height: 60px; @include fs-12;}
+.copyright a {@include fc-main-active;}
+

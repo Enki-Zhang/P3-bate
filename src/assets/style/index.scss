@@ -1,0 +1,110 @@
+@import "~@assets/style/man";
+@import '~@assets/style/element-ui';
+
+/* lucky-main 内容页默认宽高 */
+@mixin page-default-w {width: 100%;}
+//@mixin page-default-w {width: calc(100vw - 260px);}
+@mixin page-default-h {height: calc(100vh - 120px);}
+.page-default-wh {@include page-default-w; @include page-default-h;}
+.page-default-w {@include page-default-w;}
+.page-default-h {@include page-default-h;}
+.page-default-h-has-breadcrumb {min-height: calc(100vh - 180px);}
+
+/* 内容页默认内边距 */
+//@mixin page-default-pd {padding: 18px 20px 20px 20px;}
+@mixin page-default-pd {padding: 10px 20px;}
+@mixin page-default-pd-edit {padding: 25px 20px;}
+.page-default-pd {@include page-default-pd;}
+.page-default-pd-bgc-white {@include bgc-white-light; @include page-default-pd;}
+.page-default-pd-bgc-white-default-h {@include bgc-white-light; @include page-default-pd; min-height: calc(100vh - 285px);}
+.page-default-pd-bgc-white-default-h-edit {@include bgc-white-light; @include page-default-pd-edit; min-height: calc(100vh - 285px);}
+
+/* 面包屑 */
+.breadcrumb {
+  @include bgc-white-light;
+  width: 100%;
+  height: 35px;
+  margin-top: 5px;
+  padding: 0 20px;
+  @include fx-col;
+  justify-content: center;
+
+  .el-breadcrumb .el-breadcrumb__inner {
+    color: #545861;
+  }
+}
+.breadcrumb-title {
+  @include bgc-white-light;
+  color: #545861;
+  @include fs-18;
+  @include fw-600;
+  padding: 0 20px 15px;
+}
+.breadcrumb-single {
+  @include bgc-white-light;
+  height: 79px;
+  padding: 20px 15px;
+  display: flex;
+  align-items: center;
+  color: #545861;
+  @include fs-18;
+  @include fw-600;
+}
+
+/* 列表筛选项 */
+.filters {
+  @include fx-row;
+  flex-wrap: wrap;
+}
+.filters .item {
+  @include fx-row;
+  margin-top: 5px;
+  line-height: 32px;
+}
+.filters .item .lb {@include fs-13; margin-left: 10px; margin-right: 5px;}
+.filters .item .lb-unmgl {margin-left: unset;}
+.filters .item .inp {width: 120px;}
+.filters .item .inp-small {width: 140px;}
+.filters .item .btn {width: min-content;}
+.fn-btns {margin-bottom: 15px; display: flex; flex-direction: row;}
+.fn-btn {min-width: min-content; max-width: max-content;}
+
+/* 列表行尾操作 */
+.tb-operating {
+  @include fx-row;
+  align-items: center;
+}
+.tb-operating .a {color: #1890FF; @include cursor-pointer;}
+.tb-operating .a-disabled {color: $color-gray;}
+.tb-operating .fg {color: $color-gray-light;}
+.fg {color: #dddbdb;}
+
+/* 基础按钮大小 */
+.btn {width: 120px; margin: 0 5px;}
+
+/* 录入页表单默认最大宽度 */
+.fm-max-w {max-width: calc(100vw - 400px);}
+
+/* 录入页底部操作按钮层 */
+.edit-page-options-btn {
+  height: 80px;
+  border-top: 1px solid #ebeef5;
+}
+.edit-page-options-btn .btn {margin: 0 10px;}
+
+/* 文字链接样式上传文件 */
+.img-link {color: $color-main; @include fw-600; @include fs-13; @include cursor-pointer;}
+.img-link-uploaded {@include fx-row; justify-content: center; align-items: center; color: #E6A23C; @include fw-600; @include fs-13; @include cursor-pointer;}
+.img-link-uploaded-ncp {@include fx-row; justify-content: center; align-items: center; color: #E6A23C; @include fw-600; @include fs-13;}
+.danger {@include fc-main-active;}
+
+/* ueditor 富文本部分高度 */
+.ueditor .edui-default .edui-toolbar .edui-combox .edui-combox-body,
+.ueditor .edui-default .edui-button-body,
+.ueditor .edui-splitbutton-body,
+.ueditor .edui-menubutton-body,
+.ueditor .edui-combox-body {line-height: 20px !important;}
+.ueditor .el-form-item__content {line-height: unset !important;}
+
+/* 列表操作文字按钮样式 */
+.fs-12 {font-size: 12px !important;}

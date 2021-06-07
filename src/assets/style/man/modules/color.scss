@@ -1,0 +1,38 @@
+// 主色
+$color-main: #004fa5;
+$color-main-active: #dbb325;
+$color-white: #EEEEEE;
+$color-white-light: #FFFFFF;
+$color-main-light: #F0F2F5;
+$color-gray: #CCCCCC;
+$color-gray-light: #F0F2F5;
+$color-gray-dark: #A1A1A1;
+
+// 背景色
+@mixin bgc-main {
+  background-color: $color-main;
+}
+@mixin bgc-main-light {
+  background-color: $color-main-light;
+}
+@mixin bgc-main-active {
+  background-color: $color-main-active;
+}
+@mixin bgc-white {
+  background-color: $color-white;
+}
+@mixin bgc-white-light {
+  background-color: $color-white-light;
+}
+@mixin bgc-gray-light {
+  background-color: $color-gray-light;
+}
+
+.bgc-main {@include bgc-main;}
+.bgc-main-light {@include bgc-main-light;}
+.bgc-main-active {@include bgc-main-active;}
+.bgc-white {@include bgc-white;}
+.bgc-white-light {@include bgc-white-light;}
+.bgc-gray-light {@include bgc-gray-light;}
+
+.bgc-plain {background-color: #F8F8F8;}

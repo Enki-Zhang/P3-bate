@@ -1,0 +1,46 @@
+@mixin fonts-main {
+  @include fs;
+  font-family: "PingFang SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "微软雅黑", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 文本大小 */
+@mixin fs {font-size: 14px;}
+@mixin fs-12 {font-size: 12px;}
+@mixin fs-13 {font-size: 13px;}
+@mixin fs-15 {font-size: 15px;}
+@mixin fs-16 {font-size: 16px;}
+@mixin fs-17 {font-size: 17px;}
+@mixin fs-18 {font-size: 18px;}
+@mixin fs-19 {font-size: 19px;}
+@mixin fs-20 {font-size: 20px;}
+@mixin fs-22 {font-size: 22px;}
+@mixin fs-24 {font-size: 24px;}
+@mixin fs-26 {font-size: 26px;}
+@mixin fs-28 {font-size: 28px;}
+@mixin fs-35 {font-size: 35px;}
+
+/* 文本颜色 */
+@mixin fc {color: $color-main;}
+@mixin fc-main-active {color: $color-main-active;}
+@mixin fc-main-light {color: $color-main-light;}
+@mixin fc-white {color: $color-white;}
+@mixin fc-white-light {color: $color-white-light;}
+@mixin fc-gray-light {color: $color-gray-light;}
+
+/* 文本粗细 */
+@mixin fw {font-weight: 400;}
+@mixin fw-600 {font-weight: 600;}
+.fw-600 {font-weight: 600;}
+
+/* 文本位置 */
+.txt-c {text-align: center;}
+.txt-l {text-align: left;}
+.txt-r {text-align: right;}
+.txt-ls {letter-spacing: 0.5px;}
+.txt-ls-1 {letter-spacing: 1px;}
+.txt-ls-2 {letter-spacing: 2px;}
+.txt-i {font-style: italic;}
+
+
