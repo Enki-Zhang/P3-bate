@@ -3,7 +3,7 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row :gutter="20" class="statistics">
-                <el-col :span="6">
+                <el-col :span="8" :xs="24">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>待我审批</span>
@@ -18,7 +18,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8" :xs="24">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>更新信息</span>
@@ -33,7 +33,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8" :xs="24">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>办理中</span>
@@ -48,7 +48,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <!--<el-col :span="6">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>申请历史记录</span>
@@ -62,10 +62,10 @@
                             </i-count-up>
                         </el-row>
                     </el-row>
-                </el-col>
+                </el-col>-->
             </el-row>
             <el-row :gutter="20">
-                <el-col :span="12">
+                <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
                             <span>待我审批 (<span class="yellow">{{ tbDataPending.list.length }}</span>)</span>
@@ -91,7 +91,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
                             <span>更新信息 (<span class="purple">{{ tbDataUpdating.list.length }}</span>)</span>
@@ -434,6 +434,69 @@
 
         .hr {border-bottom: 1px solid #EBEEF5;}
         .mg-lr--10 {margin-left: -10px; margin-right: -10px;}
+    }
+
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        ._root_page {
+            .statistics {
+                .el-col-8:not(:first-child) {
+                    margin-top: 15px;
+                }
+
+                .block {
+                    height: 220px;
+                    padding: 20px;
+                    border-radius: 20px;
+
+                    .title {
+                        font-size: 28px;
+                        font-weight: 600;
+
+                        .more {
+                            font-size: 26px;
+                        }
+                    }
+
+                    .icon {width: 60px; margin-top: -5px; margin-right: 10px;}
+
+                    .bg-count-up {
+                        height: 100px;
+                        .count-up {font-size: 80px;}
+                    }
+                }
+            }
+
+            .table-has-title {
+                padding: 18px;
+                border-radius: 20px;
+
+                .title {
+                    font-size: 28px;
+                    line-height: 60px;
+
+                    .more {
+                        font-size: 24px;
+                    }
+                }
+
+                ::v-deep {
+                    .el-table {
+                        tr {
+                            th {font-size: 26px; line-height: 60px;}
+                            td .cell {
+                                line-height: 40px;
+
+                                .el-link--inner {font-size: 22px;}
+                            }
+                        }
+                        .el-table__body-wrapper {font-size: 22px;}
+                    }
+                }
+            }
+        }
+
     }
 
 </style>

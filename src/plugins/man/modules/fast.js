@@ -1,6 +1,19 @@
 const fast = {};
 
 /**
+ * 浏览器操作系统是否是 PC 端
+ *
+ * @returns {boolean}
+ */
+fast.browserSystemIsPC = function() {
+    let browserSystem = window.navigator.userAgent
+        .toLowerCase()
+        .split('(')[1]
+        .split(';')[0];
+    return browserSystem.search(/windows/) === 0 || browserSystem.search(/macintosh/) === 0;
+};
+
+/**
  * 获取资源地址
  *
  * @param relPath 资源相对路径

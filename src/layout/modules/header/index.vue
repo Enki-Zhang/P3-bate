@@ -18,7 +18,7 @@
                 <el-col :span="12">
                     <el-row type="flex">
                         <el-row type="flex">
-                            <img src="../../../assets/image/layout/bg.png">
+                            <img src="../../../assets/image/layout/bg.png" class="zs-img">
                         </el-row>
                         <!--<el-row>
                             <div :class="{
@@ -69,6 +69,12 @@
                     </el-row>
                 </el-col>
             </el-row>
+            <el-row class="m-fast">
+                <el-row type="flex">
+                    <img src="../../../assets/image/layout/bg.png" class="zs-img unable-select">
+                </el-row>
+                <el-row @click.native="collapseMenu('100vw')" class="menu"><span class="el-icon-menu"></span></el-row>
+            </el-row>
         </el-row>
 
         <!-- 组件 -->
@@ -99,6 +105,7 @@
         },
         created() {
             this.isCollapseMenu = !!this.man.db.load('sys.collapseMenu');
+            this.isCollapseMenu = !this.man.fast.browserSystemIsPC();
             this.initBtnChangeWebSite();
         },
         computed: {
@@ -109,10 +116,13 @@
             },
         },
         methods: {
-            collapseMenu: function() {
+            collapseMenu: function(elMenuWidth = '256px') {
                 this.isCollapseMenu = !this.isCollapseMenu;
                 this.man.db.save('sys.collapseMenu', this.isCollapseMenu);
-                this.man.bus.$emit('collapseMenu', this.isCollapseMenu);
+                this.man.bus.$emit('collapseMenu', {
+                    isCollapse: this.isCollapseMenu,
+                    elMenuWidth
+                });
             },
             handelDropdownUser: function(cmd) {
                 switch (cmd) {
@@ -299,6 +309,101 @@
                     height: 20px;
                     border: 1px solid #FFFFFF;
                     opacity: 0.3;
+                }
+            }
+        }
+        .m-fast {display: none;}
+    }
+
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        .layout-header {
+            height: 160px !important;
+
+            .logo {
+                width: 630px;
+                height: 160px;
+            }
+            .logo-img {width: 600px; height: 70px;}
+
+            .fast {display: none;}
+            .m-fast {
+                width: 100vw;
+                height: 160px;
+                display: unset;
+                position: absolute;
+
+                .zs-img {
+                    width: 400px;
+                    height: 160px;
+                    margin-left: 400px;
+                }
+
+                .menu {
+                    position: absolute;
+                    top: 60px;
+                    right: 25px;
+
+                    span {
+                        color: rgba(255,255,255, .8);
+                        font-size: 50px;
+                    }
+                }
+
+                .block {
+                    @include bgc-main-light;
+                    width: 136px;
+                    height: 59px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    color: #393d49d9;
+                    @include fs-15;
+                    @include fw-600;
+                    letter-spacing: 1.2px;
+                    @include cursor-pointer;
+                    @include unable-select;
+                }
+                .block-not-active {
+                    background-color: white !important;
+                }
+
+                .user {
+                    //@include bgc-main;
+                    min-width: 108px;
+                    height: 52px;
+                    display: block;
+                }
+                .user .name {
+                    //@include fc-main-active;
+                    @include cursor-pointer;
+                    padding-left: 10px;
+                }
+
+                .logged-info {
+                    width: max-content;
+                    height: 80px;
+                    /*justify-content: space-evenly;*/
+                    @include fc-white-light;
+
+                    .avatar {width: 20px; padding-top: 3px;}
+                    .user-name,
+                    .logout {
+                        transition: .8s;
+
+                        &:hover {
+                            transition: .6s;
+                            color: #e8b57b;
+                        }
+                    }
+                    .jg {
+                        width: 0;
+                        height: 20px;
+                        border: 1px solid #FFFFFF;
+                        opacity: 0.3;
+                    }
                 }
             }
         }

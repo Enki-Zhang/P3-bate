@@ -2,11 +2,24 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui">
+    <script>
+        /* 移动端禁止缩放 */
+        (function(window) {
+            const phoneScale = parseInt(window.screen.width) / 750;
+            // android 2.3
+            if (/Android (\d+\.\d+)/.test(navigator.userAgent)) {
+                if (parseFloat(RegExp.$1) <= 2.3) {
+                    document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">');
+                }
+            } else {
+                document.write('<meta name="viewport" content="width=device-width, initial-scale='+phoneScale+', minimum-scale='+phoneScale+', maximum-scale='+phoneScale+',user-scalable=no, minimal-ui">');
+            }
+        })(window);
+    </script>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <meta name="keywords" content="营商环境管理系统">
-    <meta name="description" content="营商环境管理系统">
+    <meta name="keywords" content="汕头大学生物安全三级实验室管理系统">
+    <meta name="description" content="汕头大学生物安全三级实验室管理系统">
 
     <script>
         /* 低级浏览器提示 */

@@ -108,3 +108,25 @@
 
 /* 列表操作文字按钮样式 */
 .fs-12 {font-size: 12px !important;}
+
+
+/* 移动端适配 */
+@media screen and (max-width: 750px) {
+  /* 列表筛选项 */
+  .filters {
+    .item {
+      @include fx-row;
+      margin-top: 5px;
+      line-height: 60px;
+      .lb {font-size: 22px; margin-left: 10px; margin-right: 5px;}
+      .lb-unmgl {margin-left: unset;}
+      .inp {width: 300px;}
+      .inp-small {width: 300px;}
+      .btn {width: min-content;}
+      .el-input--small {font-size: 22px;}
+      .el-input--small .el-input__inner {width: 300px; height: 60px;}
+    }
+  }
+  .fn-btns {margin-bottom: 15px; display: flex; flex-direction: row;}
+  .fn-btn {min-width: min-content; max-width: max-content;}
+}

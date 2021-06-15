@@ -269,4 +269,18 @@
         }
     }
 
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        .login {
+            margin-top: 30px;
+            margin-bottom: 30px;
+
+            .fm {
+                width: 500px;
+                height: 330px;
+            }
+        }
+    }
+
 </style>

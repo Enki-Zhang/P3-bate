@@ -1,6 +1,6 @@
 <template>
 
-    <el-aside :width="isCollapse ? '64px' : '256px'" class="layout-aside">
+    <el-aside :width="isCollapse ? '0px' : elMenuWidth" class="layout-aside">
         <!--<el-row type="flex" justify="center" align="middle" class="logo txt-ls-1 pd-r-5">
             <transition name="fade">
                 <a v-if="!isCollapse" href="/" target="_blank">
@@ -18,27 +18,41 @@
                  text-color="#EEEEEE"
                  active-text-color="#FFF"
                  class=""><!-- unique-opened -->
-            <el-submenu v-for="(v, k) in menus" :key="k"
-                        v-if="!v.hidden && v.meta && !v.meta.isSinglePage && v.children && v.children.length"
-                        :index="v.name">
-                <template slot="title">
+                <el-submenu v-for="(v, k) in menus" :key="k"
+                            v-if="!v.hidden && v.meta && !v.meta.isSinglePage && v.children && v.children.length"
+                            :index="v.name">
+                    <template v-if="v.meta.isLoggedInfo">
+                        <template slot="title">
+                            <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
+                            <span>{{ userInfo.nickname }}</span>
+                        </template>
+                        <div v-for="(vv, kk) in v.children" :key="kk"
+                             v-if="!vv.hidden">
+                            <el-menu-item :index="vv.name" @click="nav(vv.name)">
+                                <span slot="title">{{ vv.meta.title }}</span>
+                            </el-menu-item>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <template slot="title">
+                            <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
+                            <span>{{ v.meta.title }}</span>
+                        </template>
+                        <div v-for="(vv, kk) in v.children" :key="kk"
+                             v-if="!vv.hidden">
+                            <el-menu-item :index="vv.name" @click="nav(vv.name)">
+                                <span slot="title">{{ vv.meta.title }}</span>
+                            </el-menu-item>
+                        </div>
+                    </template>
+                </el-submenu>
+                <el-menu-item v-else-if="!v.hidden"
+                              :index="v.name"
+                              @click="nav(v.name)">
                     <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
-                    <span>{{ v.meta.title }}</span>
-                </template>
-                <div v-for="(vv, kk) in v.children" :key="kk"
-                     v-if="!vv.hidden">
-                    <el-menu-item :index="vv.name" @click="nav(vv.name)">
-                        <span slot="title">{{ vv.meta.title }}</span>
-                    </el-menu-item>
-                </div>
-            </el-submenu>
-            <el-menu-item v-else-if="!v.hidden"
-                          :index="v.name"
-                          @click="nav(v.name)">
-                <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
-                <span slot="title">{{ v.meta.title }}</span>
-            </el-menu-item>
-        </el-menu>
+                    <span slot="title">{{ v.meta.title }}</span>
+                </el-menu-item>
+            </el-menu>
         </el-scrollbar>
     </el-aside>
 
@@ -48,6 +62,7 @@
 
     import {mapState} from 'vuex';
     import routes from "@router/routes";
+    import api from "@api";
 
     export default {
         name: "layout_aside",
@@ -55,13 +70,16 @@
         data() {
             return {
                 isCollapse: false,
+                elMenuWidth: '256px',
                 webSite: Number(this.man.db.load('sys.webSite')),
             }
         },
         created() {
             this.isCollapse = !!this.man.db.load('sys.collapseMenu');
+            this.isCollapse = !this.man.fast.browserSystemIsPC();
             this.man.bus.$on('collapseMenu', (res) => {
-                this.isCollapse = res;
+                this.isCollapse = res.isCollapse;
+                this.elMenuWidth = res.elMenuWidth;
             });
         },
         computed: {
@@ -91,9 +109,38 @@
             nav: function(routeName) {
                 let that = this;
 
+                // 移动端自动折回
+                if(!that.man.fast.browserSystemIsPC()) {
+                    that.isCollapse = true;
+                    // 退出登录
+                    if(routeName === 'logged-info|logout') {
+                        that.logout();
+                        return;
+                    }
+                }
                 if(that.$route.name !== routeName) {
                     that.$router.push({name: routeName});
                 }
+            },
+
+            logout: function() {
+                let that = this;
+
+                that.$confirm('是否退出登录', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '退出登录',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    that.man.loading.openFullScreen();
+
+                    // 调用退出登录接口
+                    api.securityClear().then();
+                    that.$store.dispatch('logout');
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 888);
+                }).catch();
             },
         },
     }
@@ -105,16 +152,21 @@
     .layout-aside {
         background-color: #000C17;
         min-height: 100vh;
-        transition: 1.2s;
+        transition: .6s;
     }
 
-    .el-menu--collapse {width: 64px !important;}
+    .el-menu--collapse {display: none;}
     .el-menu {
+        /*width: 256px;*/
         border-right: unset;
 
         ::v-deep {
-            .el-menu-item {background-color: #00192f !important; padding: 0 8px !important; font-size: 13px;}
-            .el-menu-item i {color: unset;}
+            .el-menu-item {
+                background-color: #00192f !important;
+                padding: 0 8px !important;
+                font-size: 13px;
+                i {color: unset;}
+            }
             .el-menu-item.is-active {background-color: #0a78de !important;}
             .el-menu-item:hover {background-color: rgba(10,120,222, .5) !important;}
             .el-menu-item.is-active:hover {background-color: #0A78DE !important;}
@@ -142,5 +194,53 @@
         }
     }
     .aside-icon {width: 18px; height: 18px; margin: 0 6px 3px 6px;}
+
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        .layout-aside {
+            .logged-info {
+                background-color: #009688;
+                width: 100%;
+                height: 200px;
+            }
+
+            .el-menu {
+                ::v-deep {
+                    .el-menu-item {
+                        height: 100px;
+                        font-size: 28px;
+                        line-height: 100px;
+                    }
+                    .el-submenu {
+                        .el-menu-item {
+                            height: 90px;
+                            line-height: 90px;
+                            padding-left: 40px !important;
+                        }
+                        .el-submenu__title {
+                            font-size: 28px;
+                            i {
+                                margin-top: -10px;
+                                font-size: 28px;
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                    .el-submenu__title {
+                        height: 100px;
+                        font-size: 28px;
+                        line-height: 100px;
+                    }
+                }
+            }
+            .aside-icon {
+                width: 40px;
+                height: 40px;
+                margin: 0 16px 3px 16px;
+            }
+        }
+
+    }
 
 </style>

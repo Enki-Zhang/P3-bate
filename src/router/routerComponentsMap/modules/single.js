@@ -11,6 +11,9 @@ export default {
     'system-doc': _import('single/systemDoc'),
     'system-doc|folder': _import('single/systemDoc/folder'), // 文件夹管理
     'system-doc|management-manual': _import('single/systemDoc/managementManual'), // 安全管理手册
+    'system-doc|management-manual|release': _import('single/systemDoc/managementManual/release'), // 安全管理手册 - 发布
+    'system-doc|management-manual|detail': _import('single/systemDoc/managementManual/detail'), // 安全管理手册 - 详情
+    // 'system-doc|program-files': _import('single/systemDoc/programFiles'), // 程序文件
 
 
     // 表格管理

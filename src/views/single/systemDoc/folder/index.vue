@@ -123,7 +123,33 @@
                 .desc {color: rgba(0, 0, 0, 0.45); font-size: 14px; line-height: 22px;}
             }
         }
+    }
 
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        ._root_page {
+            .file-manage {
+                width: 290px;
+                height: 80px;
+                font-size: 26px;
+                line-height: 80px;
+
+                img {width: 28px; height: 28px; margin: 5px 10px 0;}
+            }
+
+            .block-list {
+                .block {
+                    width: 330px;
+                    height: 330px;
+                    margin: 12px;
+                    border-radius: 15px;
+                    img {width: 200px; height: 200px;}
+                    .title {font-size: 28px; line-height: 50px;}
+                    .desc {font-size: 22px; line-height: 30px;}
+                }
+            }
+        }
     }
 
 </style>

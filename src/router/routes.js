@@ -19,6 +19,23 @@ const inLayout = [
             },
 
 
+
+            {
+                /* 移动端菜单登录信息 */
+                path: 'logged-info',
+                name: 'logged-info',
+                icon: 'avatar',
+                meta: {isLoggedInfo: 1,},
+                hidden: 0,
+                children: [
+                    {
+                        path: 'logout',
+                        name: 'logged-info|logout',
+                        meta: {title: '退出登录', },
+                        hidden: 0,
+                    },
+                ]
+            },
             {
                 path: 'workbench',
                 name: 'workbench',
@@ -34,7 +51,7 @@ const inLayout = [
                 hidden: 0,
             },
             {
-                path: 'system/doc',
+                path: 'system-doc',
                 name: 'system-doc',
                 icon: 'system-doc',
                 redirect: {name: 'system-doc|folder'},
@@ -48,13 +65,13 @@ const inLayout = [
                         hidden: 1,
                     },
                     {
-                        path: 'management/manual',
+                        path: 'management-manual',
                         name: 'system-doc|management-manual',
                         meta: {title: '安全管理手册', isShowBreadcrumb: 1,},
                         hidden: 1,
                     },
                     {
-                        path: 'management/manual/add/:_lpq?',
+                        path: 'management-manual/add/:_lpq?',
                         name: 'system-doc|management-manual|add',
                         meta: {
                             title: '新增安全管理手册',
@@ -62,20 +79,52 @@ const inLayout = [
                             isSinglePage: 0,
                             isNeedVirtualParent: 1,
                             virtualParent: {
-                                path: 'management/manual',
+                                path: 'management-manual',
                                 name: 'system-doc|management-manual',
-                                meta: {title: '安全管理手册', virtualParent: null},
+                                meta: {title: '安全管理手册', virtualParent: null, isSinglePage: 1},
                             }
                         },
                         hidden: 1,
                     },
-                    /*{
-                        path: 'program/files',
-                        name: 'system_doc_program_files',
+                    {
+                        path: 'management-manual/release/:_lpq?',
+                        name: 'system-doc|management-manual|release',
+                        meta: {
+                            title: '程序文件',
+                            isShowBreadcrumb: 1,
+                            isSinglePage: 0,
+                            isNeedVirtualParent: 1,
+                            virtualParent: {
+                                path: 'management-manual',
+                                name: 'system-doc|management-manual',
+                                meta: {title: '安全管理手册', virtualParent: null, isSinglePage: 1},
+                            }
+                        },
+                        hidden: 1,
+                    },
+                    {
+                        path: 'management-manual/detail/:_lpq?',
+                        name: 'system-doc|management-manual|detail',
+                        meta: {
+                            title: '程序文件',
+                            isShowBreadcrumb: 1,
+                            isSinglePage: 0,
+                            isNeedVirtualParent: 1,
+                            virtualParent: {
+                                path: 'management-manual',
+                                name: 'system-doc|management-manual',
+                                meta: {title: '安全管理手册', virtualParent: null, isSinglePage: 1},
+                            }
+                        },
+                        hidden: 1,
+                    },
+                    {
+                        path: 'program-files',
+                        name: 'system-doc|program-files',
                         meta: {title: '程序文件', isShowBreadcrumb: 1,},
                         hidden: 0,
                     },
-                    {
+                    /*{
                         path: 'program/files/edit',
                         name: 'system_doc_program_files_edit',
                         meta: {
@@ -90,26 +139,26 @@ const inLayout = [
                             }
                         },
                         hidden: 1,
-                    },
-                    {
+                    },*/
+                    /*{
                         path: 'operating/procedures',
                         name: 'system_doc_operating_procedures',
                         meta: {title: '标准操作流程', isShowBreadcrumb: 1,},
                         hidden: 0,
-                    },
-                    {
+                    },*/
+                    /*{
                         path: 'manual',
                         name: 'system_doc_manual',
                         meta: {title: '安全手册', isShowBreadcrumb: 1,},
                         hidden: 0,
-                    },
-                    {
+                    },*/
+                    /*{
                         path: 'msds',
                         name: 'system_doc_msds',
                         meta: {title: 'MSDS表单', isShowBreadcrumb: 1,},
                         hidden: 0,
-                    },
-                    {
+                    },*/
+                    /*{
                         path: 'report',
                         name: 'system_doc_report',
                         meta: {title: '风险评估报告', isShowBreadcrumb: 1,},

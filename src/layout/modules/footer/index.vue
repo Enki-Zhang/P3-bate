@@ -38,4 +38,13 @@
 
     .copyright {height: 30px;}
 
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        .layout-footer {
+            width: 100vw;
+            min-width: unset;
+        }
+    }
+
 </style>

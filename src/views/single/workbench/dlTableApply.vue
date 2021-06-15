@@ -94,7 +94,7 @@
                     ? [(page - 1) * pageSize, page * pageSize]
                     : [0, pageSize];
                 that.params.list.map((v, k) => {
-                    if(k > limit[0] && k < limit[1]) {
+                    if(k >= limit[0] && k < limit[1]) {
                         that.tbData.list.push(v);
                     }
                 });

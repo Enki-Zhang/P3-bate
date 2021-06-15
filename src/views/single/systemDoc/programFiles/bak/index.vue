@@ -76,44 +76,42 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
+                    <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
-                              highlight-current-row>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
+                              highlight-current-row border>
+                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip width="280">
                             <template slot-scope="scope">{{ scope.row.id }}</template>
                         </el-table-column>
-                        <el-table-column label="文件名称" show-overflow-tooltip min-width="220">
+                        <el-table-column label="文件名称" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
                         </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
+                        <el-table-column label="版本" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.version }}</template>
                         </el-table-column>
                         <el-table-column label="发布状态" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-red">待发布</span>
-                                <span v-else-if="scope.row.status === 1" class="status-green">已发布</span>
+                                <span v-if="scope.row.status === 0" class="status-green">待发布</span>
+                                <span v-else-if="scope.row.status === 1" class="status-red">已发布</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="更新时间" show-overflow-tooltip min-width="80">
+                        <el-table-column label="更新时间" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <el-table-column label="操作人" show-overflow-tooltip min-width="80">
+                        <el-table-column label="操作人" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.operator }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="260">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="280">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
-                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本</el-link>
+                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="release(scope.row)" class="fs-12">发布</el-link>
+                                    <el-link type="success" :underline="false" @click="edit(scope.row)" class="fs-12" style="color: #009688;">发布</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>
+                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">撤下</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">撤下</el-link>
+                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -121,8 +119,8 @@
                 </el-row>
 
                 <!-- 分页 -->
-                <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
-                    <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="10"
+                <el-row v-if="tbData.content.length" class="mg-t-20 mg-b-10 txt-c">
+                    <el-pagination :total="tbData.totalElements" :current-page="tbData.number + 1" :page-size="10"
                                    layout="total, prev, pager, next, jumper"
                                    @current-change="handlePaginationChange"
                                    background>
@@ -136,21 +134,17 @@
 
 <script>
 
-    import dayjs from 'dayjs';
-    import jsonTableData from '@mock/systemDocManagementManual.json';
-
     export default {
         name: "index",
         data() {
             return {
-                dayjs,
 
                 tbSelectedArr: [],
                 tbFilter: {
                     name: '',
                     createTime: [],
                 },
-                tbData: {list: []},
+                tbData: {content: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
 
@@ -170,17 +164,34 @@
         methods: {
             getTableData: function(page = 1, pageSize = 10) {
                 let that = this;
-                that.tbData.total = jsonTableData.length;
-                that.tbData.list = [];
+                that.btnLoadingFilter = true;
 
-                let limit = page > 1
-                    ? [(page - 1) * pageSize, page * pageSize]
-                    : [0, pageSize];
-                jsonTableData.map((v, k) => {
-                    if(k >= limit[0] && k < limit[1]) {
-                        that.tbData.list.push(v);
+                let params = {
+                    ...that.tbDataFilter,
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                /*api.sysLogList(params).then((res) => {
+                    // console.log(res);
+                    if(res.data.status === 200) {
+                        that.tbData = {...res.data.data};
                     }
-                });
+                    that.btnLoadingFilter = false;
+                });*/
+
+                that.tbData = {
+                    content: [
+                        {
+                            id: 1,
+                            name: '张三',
+                            version: '1.0',
+                            status: 1,
+                            createTime: '',
+                            operator: '管理员',
+                        }
+                    ],
+                };
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
@@ -218,7 +229,7 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system/doc/management/manual/edit/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `/system/doc/program/files/edit/${JSON.stringify(that.tbDataFilter)}`});
             },
             remove: function(row) {
                 let that = this;
@@ -251,16 +262,6 @@
                 // console.log(`${JSON.stringify(that.tbDataFilter)}`);
                 that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
             },
-            release: function() {
-                let that = this;
-
-                that.$router.push({path: `management-manual/release/${JSON.stringify(that.tbDataFilter)}`});
-            },
-            detail: function() {
-                let that = this;
-
-                that.$router.push({path: `management-manual/detail/${JSON.stringify(that.tbDataFilter)}`});
-            },
             processDesign: function(row) {
                 let that = this;
 
@@ -273,14 +274,6 @@
 
 <style lang="scss" scoped>
 
-    ._root_page {
-        ::v-deep {
-            .el-table tr th {
-                background: #FAFAFA;
-                padding: 15px 0;
-                font-size: 14px;
-            }
-        }
-    }
+
 
 </style>

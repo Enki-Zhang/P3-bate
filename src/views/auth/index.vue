@@ -66,4 +66,16 @@
         .con {}
     }
 
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        .auth {
+            .logo {
+                .logo-img {width: 620px; height: 76px; margin-top: -20px;}
+            }
+
+            .copyright {font-size: 20px;}
+        }
+    }
+
 </style>

@@ -14,7 +14,10 @@
                         <template v-if="!$route.meta.isSinglePage">
                             <el-row class="breadcrumb">
                                 <el-breadcrumb v-if="breadcrumbParents.length > 0">
-                                    <el-breadcrumb-item v-for="(v, k) in breadcrumbParents" :key="k" v-if="k === 0">{{ v.meta.title }}</el-breadcrumb-item>
+                                    <el-breadcrumb-item v-for="(v, k) in breadcrumbParents" :key="k"
+                                                        v-if="v.meta && !v.meta.isSinglePage">
+                                        {{ v.meta.title }}
+                                    </el-breadcrumb-item>
                                     <el-breadcrumb-item v-else :to="{name: v.name}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
                                     <el-breadcrumb-item class="breadcrumb-current">{{ $route.meta.title }}</el-breadcrumb-item>
                                 </el-breadcrumb>
@@ -81,48 +84,94 @@
 
     .layout {
         @include bgc-main-light;
-    }
 
-    .layout-main {
-        min-width: 560px;
-        min-height: 365px;
-        //padding: 12px 20px 8px 20px;
-        padding: unset;
-    }
-
-    .main-scrollbar {
-        //width: calc(100vw - 240px);
-        width: 100%;
-        height: calc(100vh - 80px);
-        //height: calc(100vh - 68px);
-        //margin-top: 8px;
-    }
-
-    .my-breadcrumb {
-        height: 50px;
-
-        .breadcrumb {
-            background-color: unset;
-            margin: unset;
-            padding: 22px 20px;
-        }
-        .breadcrumb-current {@include fs-16; @include fw-600;}
-
-        .breadcrumb-single {
-            background-color: unset;
-            height: unset;
-            padding: 10px 20px;
+        .layout-main {
+            min-width: 560px;
+            min-height: 365px;
+            //padding: 12px 20px 8px 20px;
+            padding: unset;
         }
 
-        .breadcrumb-hr {border: 1px solid #CBDDF0; margin: 0 20px;}
+        .main-scrollbar {
+            //width: calc(100vw - 240px);
+            width: 100%;
+            height: calc(100vh - 80px);
+            //height: calc(100vh - 68px);
+            //margin-top: 8px;
 
-        ::v-deep {
-            .el-breadcrumb {
-                @include fs-18;
-                @include fw-600;
-                line-height: 22px;
+            .my-breadcrumb {
+                height: 50px;
 
-                .el-breadcrumb__inner {@include fs-16;}
+                .breadcrumb {
+                    background-color: unset;
+                    margin: unset;
+                    padding: 22px 20px;
+                }
+                .breadcrumb-current {@include fs-16; @include fw-600;}
+
+                .breadcrumb-single {
+                    background-color: unset;
+                    height: unset;
+                    padding: 10px 20px;
+                }
+
+                .breadcrumb-hr {border: 1px solid #CBDDF0; margin: 0 20px;}
+
+                ::v-deep {
+                    .el-breadcrumb {
+                        @include fs-18;
+                        @include fw-600;
+                        line-height: 22px;
+
+                        .el-breadcrumb__inner {@include fs-16;}
+                    }
+                }
+            }
+        }
+    }
+
+
+    /* 移动端适配 */
+    @media screen and (max-width: 750px) {
+        .layout {
+            .m-layout-aside {display: unset;}
+
+            .layout-main {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .main-scrollbar {
+                width: 100vw;
+                height: calc(100vh - 180px);
+
+                .my-breadcrumb {
+                    height: 100px;
+
+                    .breadcrumb {
+                        padding: 39px 20px;
+                    }
+                    .breadcrumb-current {
+                        font-size: 28px;
+                        @include fw-600;
+                    }
+
+                    .breadcrumb-single {
+                        padding: 20px;
+                        font-size: 28px;
+                    }
+
+                    .breadcrumb-hr {border: 1px solid #CBDDF0; margin: 0 20px;}
+
+                    ::v-deep {
+                        .el-breadcrumb {
+                            font-size: 28px;
+                            @include fw-600;
+
+                            .el-breadcrumb__inner {font-size: 28px;}
+                        }
+                    }
+                }
             }
         }
     }
