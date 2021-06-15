@@ -146,14 +146,15 @@
                 height: calc(100vh - 180px);
 
                 .my-breadcrumb {
-                    height: 100px;
+                    height: 120px;
 
                     .breadcrumb {
-                        padding: 39px 20px;
+                        padding: 49px 20px;
                     }
                     .breadcrumb-current {
                         font-size: 28px;
                         @include fw-600;
+                        line-height: 44px;
                     }
 
                     .breadcrumb-single {
@@ -168,7 +169,7 @@
                             font-size: 28px;
                             @include fw-600;
 
-                            .el-breadcrumb__inner {font-size: 28px;}
+                            .el-breadcrumb__inner {font-size: 28px; line-height: 44px;}
                         }
                     }
                 }

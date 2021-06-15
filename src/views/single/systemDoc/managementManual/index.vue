@@ -67,7 +67,8 @@
                 <!-- 功能 -->
                 <el-row class="fn-btns">
                     <el-button type="primary" size="small" icon="el-icon-plus"
-                               :disabled="tbDataFilter.type === 1" @click="create"
+                               :disabled="tbDataFilter.type === 1"
+                               @click="create"
                                class="fn-btn">新增</el-button>
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
@@ -209,7 +210,7 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system/doc/management/manual/add/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `management-manual/add/${JSON.stringify(that.tbDataFilter)}`});
             },
             edit: function(row) {
                 let that = this;

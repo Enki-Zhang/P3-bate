@@ -163,6 +163,15 @@
                 font-size: 28px;
                 letter-spacing: 3px;
             }
+            .el-form-item__label {font-size: 22px; line-height: 80px;}
+            .el-switch {
+                line-height: 75px;
+                .el-switch__label * {font-size: 28px;}
+                .el-switch__core {
+                    width: 80px !important; height: 40px; margin-top: 45px; border-radius: 40px;
+                    &:after {width: 30px; height: 30px; top: 4px;}
+                }
+            }
         }
     }
     // 确认框
@@ -244,6 +253,7 @@
                 font-size: 20px;
                 line-height: 60px;
             }
+            .el-pagination__editor.el-input .el-input__inner {height: 50px; font-size: 20px;}
         }
     }
 }

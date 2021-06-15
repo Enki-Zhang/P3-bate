@@ -132,7 +132,7 @@
             }
         },
         created() {
-            this.convertWordToText('/test.docx');
+            this.convertWordToText('/BPD01-01 生物安全管理活动程序.docx');
         },
         mounted() {
             this.tbFilter = this.$route.params._lpq !== undefined ? {
@@ -267,46 +267,23 @@
             .block {
                 .title {
                     font-size: 28px;
-                    font-weight: 600;
-                    line-height: 60px;
-                    margin-top: -10px;
+                    line-height: 100px;
 
-                    .btn {width: max-content; height: 29px; }
+                    .btn {
+                        width: 120px;
+                        height: 60px;
+                        font-size: 22px;
+                        border-radius: 8px;
+                    }
                 }
-                .title.lh-30 {line-height: 40px; margin-top: unset;}
             }
 
-            .hr {
-                margin: 0 -20px;
-                border: 1px solid $color-main-light;
-            }
+            .btn {width: max-content; height: 60px;}
 
             .preview-info {
                 font-size: 22px;
                 flex-direction: column;
                 flex-wrap: wrap;
-            }
-            .elsb-preview {
-                background-color: #FCFBFC;
-                height: 500px;
-                margin-top: 10px;
-                .preview {
-                    background-color: #FFFFFF;
-                    width: 96%;
-                    /*height: 500px;*/
-                    margin: 20px auto;
-                    padding: 20px;
-                    border: 1px solid #FFFFFF;
-                    box-shadow: 0px 10px 20px rgba(216, 230, 240, 0.8);
-                }
-            }
-
-            ::v-deep {
-                .el-table tr th {
-                    background: #FAFAFA;
-                    padding: 15px 0;
-                    font-size: 14px;
-                }
             }
         }
     }
