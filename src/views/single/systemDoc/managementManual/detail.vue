@@ -11,11 +11,19 @@
                         <el-row>文件编号：<span class="status-blue">BPD01-01</span></el-row>
                         <el-row>第 <span class="status-blue">1</span> 版 <span class="status-blue">0</span> 次修订</el-row>
                     </el-row>
-                    <el-scrollbar class="elsb-preview">
+                    <!-- mammoth 插件方式 -->
+                    <!--<el-scrollbar class="elsb-preview">
                         <el-row class="preview">
                             <div id="wordView" v-html="wordText" />
                         </el-row>
-                    </el-scrollbar>
+                    </el-scrollbar>-->
+                    <!-- 微软方式 -->
+                    <iframe id="iframename" name="iframename"
+                            :src="`https://view.officeapps.live.com/op/embed.aspx?src=${previewSrc}`"
+                            width="100%" height="500"
+                            frameborder="0" scrolling="auto"
+                            class="mg-tb-10">
+                    </iframe>
                 </el-row>
                 <el-row class="hr"></el-row>
                 <!-- 相关文件列表 -->
@@ -117,6 +125,7 @@
                 dayjs,
 
                 wordText: '',
+                previewSrc: 'public.ohyesido.cn/test.docx',
 
                 tbSelectedArr: [],
                 tbFilter: {
@@ -132,7 +141,7 @@
             }
         },
         created() {
-            this.convertWordToText('/BPD01-01 生物安全管理活动程序.docx');
+            // this.convertWordToText('/BPD01-01 生物安全管理活动程序.docx');
         },
         mounted() {
             this.tbFilter = this.$route.params._lpq !== undefined ? {

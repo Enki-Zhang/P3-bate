@@ -80,7 +80,7 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="时间" sortable>
-                                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
@@ -107,11 +107,11 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="更新时间" sortable>
-                                    <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                                    <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD') : '' }}</template>
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
-                                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">审批</el-link>
+                                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">详情</el-link>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -133,7 +133,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
                         <el-table-column label="操作" width="80">
                             <template slot-scope="scope">
@@ -154,7 +154,7 @@
                         <el-table-column prop="sponsorName" label="发起人" width="100"></el-table-column>
                         <el-table-column prop="matter" label="事项"></el-table-column>
                         <el-table-column prop="createTime" label="申请时间" sortable>
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
                         <el-table-column prop="status" label="审批结果">
                             <template slot-scope="scope">

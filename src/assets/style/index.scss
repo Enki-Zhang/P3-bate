@@ -111,7 +111,11 @@
 
 
 /* 移动端适配 */
+.dp-pc {display: block;}
+.dp-m {display: none;}
 @media screen and (max-width: 750px) {
+  .dp-pc {display: none;}
+  .dp-m {display: block;}
   /* 列表筛选项 */
   .filters {
     .item {
@@ -129,4 +133,6 @@
   }
   .fn-btns {margin-bottom: 15px; display: flex; flex-direction: row;}
   .fn-btn {min-width: min-content; max-width: max-content;}
+  // 列表缩略 tips
+  .el-tooltip__popper {font-size: 26px !important;}
 }

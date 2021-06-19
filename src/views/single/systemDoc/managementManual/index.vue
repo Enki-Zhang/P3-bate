@@ -79,6 +79,7 @@
                 <el-row>
                     <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
                               :min-height="460" size="small"
+                              class="dp-pc"
                               highlight-current-row>
                         <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
                             <template slot-scope="scope">{{ scope.row.id }}</template>
@@ -115,6 +116,39 @@
                                     <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                </el-row>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
+                              :min-height="460" size="small"
+                              class="dp-m"
+                              highlight-current-row>
+                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip min-width="125">
+                            <template slot-scope="scope">{{ scope.row.id }}</template>
+                        </el-table-column>
+                        <el-table-column label="文件名称" show-overflow-tooltip min-width="320">
+                            <template slot-scope="scope">{{ scope.row.name }}</template>
+                        </el-table-column>
+                        <el-table-column label="版本" show-overflow-tooltip min-width="105">
+                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                        </el-table-column>
+                        <el-table-column label="发布状态" show-overflow-tooltip min-width="145">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.status === 0" class="status-red">待发布</span>
+                                <span v-else-if="scope.row.status === 1" class="status-green">已发布</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="更新时间" show-overflow-tooltip min-width="145">
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="操作人" show-overflow-tooltip min-width="105">
+                            <template slot-scope="scope">{{ scope.row.operator }}</template>
+                        </el-table-column>
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="120">
+                            <template slot-scope="scope">
+                                <el-row type="flex" justify="space-around">
+                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>

@@ -17,15 +17,15 @@ let router = new Router({routes: [], mode: 'history', base: process.env.VUE_APP_
 // 守卫
 router.beforeEach(async (to, from, next) => {
     NProgress.start();
+    token = man.cookies.get('token');
+    uuid = man.cookies.get('uuid');
+    userInfo = man.db.load('session.userInfo');
+    webSite = man.db.load('sys.webSite');
     if(!isLoaded) {
         await loadRoutes();
         isLoaded = true;
         next(to.path, true);
     } else {next();}
-    token = man.cookies.get('token');
-    uuid = man.cookies.get('uuid');
-    userInfo = man.db.load('session.userInfo');
-    webSite = man.db.load('sys.webSite');
     // console.log(to);
     // console.log(from);
     // console.log(next);
@@ -91,7 +91,7 @@ let isLoaded = false,
         };
 
         // 线路添加到路由
-        if(userInfo && userInfo.menus.length) routes[0].children = [...routes[0].children, ...userInfo.menus,];
+        if(userInfo && userInfo.menus && userInfo.menus.length) routes[0].children = [...routes[0].children, ...userInfo.menus,];
         router.addRoutes(mergeRoutesComponents(routes));
         await Promise.resolve();
     };
