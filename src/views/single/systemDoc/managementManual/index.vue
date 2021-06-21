@@ -148,7 +148,8 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="120">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
-                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>
+<!--                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>-->
+                                    <el-link type="primary" :underline="false" @click="showAsOperate(scope.row)" class="fs-12">操作</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -165,6 +166,14 @@
                 </el-row>
             </el-row>
         </el-row>
+
+        <!-- 列表操作 -->
+        <van-action-sheet v-model="asShow"
+                          :description="asOptions.description"
+                          :actions="asOptions.actions"
+                          :cancel-text="asOptions.cancelText"
+                          @select="choosedAction"
+                          close-on-click-action/>
     </el-row>
 
 </template>
@@ -180,6 +189,14 @@
             return {
                 dayjs,
 
+                asShow: false,
+                asOptions: {
+                    row: null,
+                    description: '操作选项',
+                    actions: [],
+                    cancelText: '关闭',
+                },
+
                 tbSelectedArr: [],
                 tbFilter: {
                     name: '',
@@ -188,7 +205,6 @@
                 tbData: {list: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
-
             }
         },
         mounted() {
@@ -300,6 +316,41 @@
                 let that = this;
 
 
+            },
+            showAsOperate: function(row) {
+                let that = this;
+
+                that.asOptions.row = row;
+                that.asOptions.actions = [
+                    {name: '版本'},
+                    {name: '发布', color: '#1DC084'},
+                    {name: '详情'},
+                    {name: '撤下'},
+                    {name: '编辑', color: '#E6A23C'},
+                    {name: '删除', color: '#F56C6C'},
+                ];
+                that.asShow = true;
+            },
+            choosedAction: function(action, index) {
+                let that = this;
+                // console.log(action);
+                // console.log(that.asOptions.row);
+
+                switch (action.name) {
+                    case '版本':
+                        break;
+                    case '发布':
+                        break;
+                    case '详情':
+                        that.detail()
+                        break;
+                    case '撤下':
+                        break;
+                    case '编辑':
+                        break;
+                    case '删除':
+                        break;
+                }
             },
         }
     }

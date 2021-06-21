@@ -3,9 +3,21 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white">
+                <!-- 移动端操作按钮 -->
+                <!--<el-row class="block mg-t-20 mg-b-25">
+                    <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">版本</el-button>
+                    <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">发布</el-button>
+                    <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">撤下</el-button>
+                    <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">编辑</el-button>
+                    <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">删除</el-button>
+                </el-row>
+                <el-row class="hr"></el-row>-->
                 <!-- 详情 -->
                 <el-row class="block mg-b-10">
-                    <el-row class="title lh-30 pd-b-10">详情</el-row>
+                    <!--<el-row class="title lh-30 pd-b-10">-->
+                    <el-row class="title pd-b-10">
+                        <span>详情</span>
+                    </el-row>
                     <el-row type="flex" justify="space-between" align="middle" class="preview-info">
                         <el-row>文件名称：<span class="status-blue">实验活动管理程序</span></el-row>
                         <el-row>文件编号：<span class="status-blue">BPD01-01</span></el-row>
@@ -212,7 +224,7 @@
 
 
             cancel: function() {
-                this.$router.push({name: 'system-doc|folder'});
+                this.$router.push({name: 'system-doc|management-manual'});
             },
         }
     }
@@ -287,7 +299,12 @@
                 }
             }
 
-            .btn {width: max-content; height: 60px;}
+            .btn {
+                width: max-content;
+                height: 60px;
+                font-size: 22px;
+                border-radius: 8px;
+            }
 
             .preview-info {
                 font-size: 22px;

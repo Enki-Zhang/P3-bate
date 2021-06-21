@@ -3,10 +3,12 @@ import Vue from 'vue';
 import {
     Dialog,
     Toast,
+    ActionSheet,
 } from 'vant';
 
 Vue.use(Dialog);
 Vue.use(Toast);
+Vue.use(ActionSheet);
 
 
 // 将所有 Toast 的展示时长设置为 2000 毫秒
