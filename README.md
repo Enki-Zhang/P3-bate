@@ -9,11 +9,11 @@
 ##### 打包命令
 `npm run build`
 
-### 项目访问地址
+#### 项目访问地址
 **外网环境：** http://120.241.104.176:9000
 
-### 项目部署方式
--jenkins自动部署, 任务名称：stu-p3lab-front
+#### 项目部署方式
+- jenkins自动部署, 任务名称：stu-p3lab-front
 - 项目部署步骤
 ```sh 
 cd /home/bigdata398/project/stu-p3lab-front
