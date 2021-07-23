@@ -74,7 +74,7 @@
                                     </el-row>
                                 </el-form-item>
                             </el-row>
-                            <el-row>
+                            <el-row class="mg-t-15">
                                 <el-form-item prop="locked" label="文件状态">
                                     <el-switch v-model="form.locked"
                                                :active-value="1" active-text="发布"
@@ -108,7 +108,7 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">查看</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -145,7 +145,7 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">申请</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>

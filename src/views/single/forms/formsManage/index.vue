@@ -4,7 +4,7 @@
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white">
                 <!-- 筛选 -->
-                <!--<el-form ref="fmTbFilter" :model="tbFilter" size="small">
+                <el-form ref="fmTbFilter" :model="tbFilter" size="small">
                     <el-row class="filters">
                         <el-form-item prop="name">
                             <el-row class="item">
@@ -12,7 +12,7 @@
                                 <el-row><el-input v-model="tbFilter.name" placeholder="名称查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
-                        &lt;!&ndash;<el-form-item prop="type">
+                        <!--<el-form-item prop="type">
                             <el-row class="item mg-l-10">
                                 <el-row class="lb lb-unmgl">类型</el-row>
                                 <el-row>
@@ -48,7 +48,7 @@
                                     </el-date-picker>
                                 </el-row>
                             </el-row>
-                        </el-form-item>&ndash;&gt;
+                        </el-form-item>-->
                         <el-form-item>
                             <el-row class="item mg-l-10">
                                 <el-row class="btn">
@@ -62,17 +62,17 @@
                             </el-row>
                         </el-form-item>
                     </el-row>
-                </el-form>-->
+                </el-form>
 
                 <!-- 功能 -->
-                <!--<el-row class="fn-btns">
+                <el-row class="fn-btns">
                     <el-button type="primary" size="small" icon="el-icon-plus"
                                :disabled="tbDataFilter.type === 1" @click="create"
                                class="fn-btn">新增</el-button>
-                    &lt;!&ndash;<el-button type="danger" size="small" icon="el-icon-delete"
+                    <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
-                               class="fn-btn">批量删除</el-button>&ndash;&gt;
-                </el-row>-->
+                               class="fn-btn">批量删除</el-button>-->
+                </el-row>
 
                 <!-- 列表 -->
                 <el-row>
@@ -88,10 +88,10 @@
                         <el-table-column label="版本" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.version }}</template>
                         </el-table-column>
-                        <el-table-column label="创建日期" show-overflow-tooltip min-width="90">
+                        <!--<el-table-column label="创建日期" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <!--<el-table-column label="使用状态" show-overflow-tooltip min-width="80">
+                        <el-table-column label="使用状态" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.status === 0" class="status-green">活动</span>
                                 <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
@@ -100,9 +100,13 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="240">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
-                                    <el-link type="primary" :underline="false" @click="versionManager(scope.row)" class="fs-12">设为主版本</el-link>
+                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="success" :underline="false" @click="processDesign(scope.row)" class="fs-12" style="color: #009688;">流程设计</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -117,9 +121,6 @@
                                    background>
                     </el-pagination>
                 </el-row>
-                <el-row type="flex" justify="center" align="middle" class="page-default-pd-bgc-white edit-page-options-btn">
-                    <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回列表</el-button>
-                </el-row>
             </el-row>
         </el-row>
     </el-row>
@@ -128,10 +129,8 @@
 
 <script>
 
-    const listRouteName = 'forms';
-
     export default {
-        name: "forms_version_manage",
+        name: "index",
         data() {
             return {
 
@@ -239,24 +238,17 @@
             },
             batchDelete: function() {},
 
-            versionManager: function(row) {
+            versionManage: function(row) {
+                let that = this;
 
+                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
+                // /${JSON.stringify(that.tbDataFilter)}
+                that.$router.push({path: `/forms/version-manage`});
             },
             processDesign: function(row) {
                 let that = this;
 
-
-            },
-            cancel: function() {
-                let that = this;
-
-                that.$confirm('是否返回列表', '确认信息', {
-                    distinguishCancelAndClose: true,
-                    confirmButtonText: '返回列表',
-                    cancelButtonText: '取消'
-                }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
-                }).catch();
+                that.$router.push({path: `/forms/process-design`});
             },
         }
     }

@@ -1,222 +1,186 @@
 <template>
 
-    <el-row class="hello pd-tb-15 pd-lr-15">
-        <el-row :gutter="8">
-            <el-col :span="4">
-                <el-button type="default" size="small" @click="sendAjax('get')">get</el-button>
-            </el-col>
-            <el-col :span="4">
-                <el-button type="warning" size="small" @click="sendAjax('post')">post</el-button>
-            </el-col>
-            <el-col :span="4">
-                <el-button type="danger" size="small" @click="ioDownload">流下载</el-button>
-            </el-col>
-            <el-col :span="4">
-                <el-upload ref="excel" action=""
-                           accept=".xls,.xlsx,.csv,.XLS,.XLSX,.CSV"
+    <el-row class="_root_page">
+        <el-row type="flex" class="page-default-h-has-breadcrumb">
+            <my-process-designer ref="processDesigner"
+                                 :key="`designer-${reloadIndex}`"
+                                 v-model="xmlString"
+                                 v-bind="controlForm"
+                                 @element-click="elementClick"
+                                 @init-finished="initModeler"
+                                 keyboard/>
+            <my-properties-panel :key="`penal-${reloadIndex}`"
+                                 :bpmn-modeler="modeler"
+                                 :prefix="controlForm.prefix"
+                                 class="process-panel"/>
+            <!--<el-row type="flex" class="test-btns">
+                <el-button type="success" icon="el-icon-warning-outline" size="mini"
+                           @click="asAndConsole('xml')">显示画布内容
+                </el-button>
+                <el-upload ref="otherFiles"
+                           action="" accept=".xml, .bpmn"
                            :auto-upload="false" :show-file-list="false"
-                           :on-change="(file, fileList) => {chooseUploadFileExcel(file, fileList, 'excel')}">
-                    <el-button type="success" size="small">传表格</el-button>
-                    <!--<span class="img-link"><span class="el-icon-link mg-r-5"></span>上传 Logo</span>-->
+                           :on-change="(file, fileList) => {chooseUploadFile(file, fileList, 'files')}">
+                    <el-button type="primary" icon="el-icon-link" size="mini">渲染文件内容</el-button>
                 </el-upload>
-            </el-col>
-            <el-col :span="4">
-                <el-upload ref="img" action=""
-                           accept=".jpg,.jpeg,.png,.JPG,.JPEG,.PNG"
-                           :auto-upload="false" :show-file-list="false"
-                           :on-change="(file, fileList) => {chooseUploadFileImg(file, fileList, 'img')}">
-                    <el-button type="info" size="small">传图片</el-button>
-                    <!--<span class="img-link"><span class="el-icon-link mg-r-5"></span>上传 Logo</span>-->
-                </el-upload>
-            </el-col>
-            <el-col :span="4">
-                <el-button type="default" size="small" @click="showImgPreview(form.img)" :disabled="!form.img">查已传</el-button>
-            </el-col>
+                <el-button type="warning" icon="el-icon-video-play" size="mini"
+                           @click="playCurrentDesign()">{{ simulationStatus ? '返回编辑' : '开始运行' }}</el-button>
+            </el-row>-->
         </el-row>
-        <el-row :gutter="8" class="mg-t-5">
-            <el-col :span="12">
-                <el-button type="primary" size="small" @click="testA">测试 A</el-button>
-            </el-col>
-            <el-col :span="12">
-                <el-button type="primary" size="small" @click="testB">测试 B</el-button>
-            </el-col>
-        </el-row>
-        <el-row class="mg-t-5">
-            <!--<vue-ueditor-wrap id="ueHello"
-                              v-model="form.ueHello" :config="ueCfg"
-                              @ready="ueReady">
-            </vue-ueditor-wrap>-->
-        </el-row>
-
-        <!-- 组件 -->
-        <img-preview v-model="isShowImgPreview" :imgPath="imgPreviewPath"></img-preview>
     </el-row>
 
 </template>
 
 <script>
 
-    import {mapState} from 'vuex';
-    import {compressAccurately} from 'image-conversion';
-    import imgPreview from '@components/imgPreview';
-    import api from '@api';
-    // import VueUeditorWrap from 'vue-ueditor-wrap';
-    let ue;
+    // 自定义渲染（隐藏了 label 标签）
+    // import CustomRenderer from "@/modules/custom-renderer";
+    // 自定义元素选中时的弹出菜单（修改 默认任务 为 用户任务）
+    import CustomContentPadProvider from "~package/process-designer/plugins/content-pad";
+    // 自定义左侧菜单（修改 默认任务 为 用户任务）
+    import CustomPaletteProvider from "~package/process-designer/plugins/palette";
+    import DefaultEmptyXML from "../../../package/process-designer/plugins/defaultEmpty";
+    // 模拟流转流程
+    import tokenSimulation from "bpmn-js-token-simulation";
 
     export default {
-        name: "hello",
-        components: {
-            imgPreview,
-            // VueUeditorWrap,
-        },
+        name: "index",
+        components: {},
         data() {
-            let that = this;
             return {
-                form: {
-                    excel: '',
-                    img: '',
-                    ueHello: '<p><span style="font-size: 14px;">这是</span><strong>百度 UEditor</strong></p>',
-                },
+                modeler: null,
+                processId: '',
+                processName: '',
+                reloadIndex: 0,
+                xmlString: '',
+                simulationStatus: false,
 
-                isShowImgPreview: false,
-                imgPreviewPath: '',
+                controlForm: {
+                    processId: '',
+                    processName: '',
+                    simulation: true,
+                    labelEditing: false,
+                    labelVisible: false,
+                    prefix: 'camunda',
+                    headerButtonSize: 'mini',
+                    additionalModel: [CustomContentPadProvider, CustomPaletteProvider]
+                },
             }
         },
-        created() {
-            let that = this;
-
-
-        },
-        computed: {
-            ...mapState(['uuid', ]),
-
-            ueCfg: function() {
-                return this.man.cfg.ueditor(process.env.VUE_APP_UEDITOR_SERVER_URL, true);
-            },
-        },
+        created() {},
         methods: {
-            ueReady: function(editorInstance) {
-                ue = editorInstance;
-                // 附带参数（键值对）
-                ue.execCommand('serverparam', {});
-            },
-            sendAjax: function (methodType) {
-                api.testAjax({methodType})
-                    .then((res) => {
-                        this.$notify({
-                            // type: 'info',
-                            title: '请求方式',
-                            dangerouslyUseHTMLString: true,
-                            message: res.data.requestMethod === 'GET'
-                                ? '<span style="color: #f76a8c;">GET</span>'
-                                : '<span style="color: #1eb2a6;">POST</span>'
-                        });
-                    });
-            },
-            ioDownload: function() {
-
-            },
-            chooseUploadFileExcel: function(file, fileList, ref) {
-                let that = this;
-                // console.log(file);
-
-                let fileNameArr = file.name.split('.');
-                if(fileNameArr.length < 2 || !that.man.fast.inArray(fileNameArr[fileNameArr.length - 1], ['xls', 'xlsx', 'csv', 'XLS', 'XLSX', 'CSV'])) {
-                    that.$toast.fail({
-                        message: '不支持的格式',
-                        duration: 1888
-                    });
-                    return false;
-                }
-
-                that.$toast.loading({
-                    message: '正在上传',
-                    forbidClick: true,
-                    loadingType: 'spinner',
+            initModeler(modeler) {
+                this.$nextTick(function() {
+                    this.modeler = modeler;
+                    console.log(this.modeler);
                 });
-
-                api.upload(file.raw).then((res) => {
-                    if(res.status === 200) {
-                        // console.log(res);
-                        that.form[ref] = res.data.path;
-
-                        that.$toast.success({
-                            message: '上传完成',
-                            duration: 1288
-                        });
-                    }
-                }).catch((err) => {that.$toast.clear();});
             },
-            chooseUploadFileImg: function(file, fileList, ref, isCompress = true) {
+            elementClick(element) {
+                this.element = element;
+            },
+
+            asAndConsole: async function(type) {
                 let that = this;
-                // console.log(file);
 
-                let fileNameArr = file.name.split('.');
-                if(fileNameArr.length < 2 || !that.man.fast.inArray(fileNameArr[fileNameArr.length - 1], ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'])) {
-                    that.$toast.fail({
-                        message: '不支持的格式',
-                        duration: 1888
-                    });
-                    return false;
-                }
-
-                that.$toast.loading({
-                    message: '正在上传',
-                    forbidClick: true,
-                    loadingType: 'spinner',
-                });
-
-                const uploadCore = (data, needFormat) => {
-                    api.upload(data, needFormat).then((res) => {
-                        if(res.status === 200) {
-                            that.form[ref] = res.data.path;
-
-                            that.$toast.success({
-                                message: '上传完成',
-                                duration: 1288
-                            });
+                try {
+                    // 按需要类型创建文件并下载
+                    if (type === "xml" || type === "bpmn") {
+                        const {err, xml} = await that.modeler.saveXML();
+                        // 读取异常时抛出异常
+                        if (err) {
+                            console.error(`[Process Designer Warn ]: ${err.message || err}`);
                         }
-                    }).catch(() => {that.$toast.clear();});
-                };
+                        console.log(xml);
+                        // let {href, filename} = that.setEncoded(type.toUpperCase(), name, xml);
+                        // console.log(href, filename);
+                    } else {
+                        const {err, svg} = await that.modeler.saveSVG();
+                        // 读取异常时抛出异常
+                        if (err) {
+                            return console.error(err);
+                        }
+                        console.log(svg);
+                        // let {href, filename} = that.setEncoded("SVG", name, svg);
+                        // console.log(href, filename);
+                    }
+                } catch (e) {
+                    console.error(`[Process Designer Warn ]: ${e.message || e}`);
+                }
+            },
+            chooseUploadFile: function(file, fileList, ref, refIsArray = true) {
+                let that = this;
+                // console.log(file.raw);
 
-                // 是否压缩
-                if(isCompress) {
-                    compressAccurately(file.raw, file.raw.size * 0.6 / 1024).then(res => {
-                        // console.log(res);
-                        // that.man.file.blobAsFile(res, 'asdf', 'png');
-                        let formData = (res instanceof Blob)
-                            ? new File([res], file.raw.name, {
-                                type: file.raw.type,
-                                lastModified: file.raw.lastModified
-                            })
-                            : res;
-                        uploadCore(formData, true);
+                let fileNameArr = file.name.split('.');
+                if(fileNameArr.length < 2 || !that.man.fast.inArray(fileNameArr[fileNameArr.length - 1].toLowerCase(), ['xml', 'bpmn', ])) {
+                    that.$toast.fail({
+                        message: '不支持的格式',
+                        duration: 1888
                     });
-                } else {uploadCore(file.raw, true);}
+                    return false;
+                }
+
+                that.$toast.loading({
+                    message: '解析并渲染',
+                    forbidClick: true,
+                    loadingType: 'spinner',
+                });
+
+                setTimeout(function() {
+                    const reader = new FileReader();
+                    reader.readAsText(file.raw);
+                    reader.onload = function () {
+                        let xmlStr = this.result;
+                        that.createNewDiagram(xmlStr);
+                    };
+
+                    that.$toast.success({
+                        message: '渲染完成',
+                        duration: 888
+                    });
+                }, 1288);
             },
-            showImgPreview: function(imageSrc) {
-                this.imgPreviewPath = this.man.fast.getResourcePath(imageSrc);
-                this.isShowImgPreview = true;
-            },
-            testA: async function () {
+            playCurrentDesign: function() {
                 let that = this;
 
-
-
-                // console.log('执行完毕');
-            },
-            testB: async function () {
-                let that = this;
-
-                console.log(that.uuid);
-
-                that.man.db.save('sys.uuid', that.uuid);
-
-                console.log(that.man.db.load('sys.uuid'));
-
-                // console.log('执行完毕');
+                that.simulationStatus = !that.simulationStatus;
+                that.modeler.get("toggleMode").toggleMode();
             },
 
+            /**
+             * 根据所需类型进行转码并返回下载地址
+             * @param type
+             * @param filename
+             * @param data
+             * @returns {{filename: string, data: *, href: string}}
+             */
+            setEncoded(type, filename = "diagram", data) {
+                const encodedData = encodeURIComponent(data);
+                return {
+                    filename: `${filename}.${type}`,
+                    href: `data:application/${type === "svg" ? "text/xml" : "bpmn20-xml"};charset=UTF-8,${encodedData}`,
+                    data: data
+                };
+            },
+            /**
+             * 创建新的流程图
+             * @param xml
+             * @returns {Promise<void>}
+             */
+            async createNewDiagram(xml) {
+                // 将字符串转换成图显示出来
+                let newId = this.processId || `Process_${new Date().getTime()}`;
+                let newName = this.processName || `业务流程_${new Date().getTime()}`;
+                let xmlString = xml || DefaultEmptyXML(newId, newName, this.prefix);
+                try {
+                    let {warnings} = await this.modeler.importXML(xmlString);
+                    if (warnings && warnings.length) {
+                        warnings.forEach(warn => console.warn(warn));
+                    }
+                } catch (e) {
+                    console.error(`[Process Designer Warn]: ${e.message || e}`);
+                }
+            },
         }
     }
 
@@ -224,8 +188,49 @@
 
 <style lang="scss" scoped>
 
-    .hello {
-        height: calc(100vh - 111px);
+    ._root_page {
+        padding: 15px;
+
+        .test-btns {
+            button {width: max-content; margin-right: 3px;}
+        }
+
+        ::v-deep {
+            .my-process-designer {
+                .my-process-designer__header {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .el-button-group {
+                        margin: 0 4px 4px 0;
+                        display: flex;
+                    }
+                }
+                .my-process-designer__container {
+                    .my-process-designer__canvas {
+                        height: calc(100vh - 180px);
+                    }
+                }
+            }
+            .process-panel__container {
+                background-color: white;
+                width: 600px !important;
+                max-height: calc(100vh - 120px);
+                padding: 0 0 0 8px;
+                @include scroll-bar;
+
+                .panel-tab__content {
+                    .el-table {
+                        tbody .cell:last-child {
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+                    .panel-tab__content--title .el-button,
+                    .element-drawer__button .el-button {width: max-content;}
+                }
+            }
+            .bjs-powered-by {display: none !important;}
+        }
     }
 
 </style>

@@ -11,13 +11,15 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "bpmn-js": "^8.6.0",
-    "bpmn-js-properties-panel": "^0.43.0",
+    "bpmn-js": "^8.3.1",
+    "bpmn-js-properties-panel": "^0.42.0",
+    "bpmn-js-token-simulation": "^0.10.0",
     "camunda-bpmn-moddle": "^5.1.2",
     "core-js": "^3.6.5",
     "countup.js": "^2.0.7",
     "dayjs": "^1.9.6",
-    "element-ui": "^2.13.2",
+    "element-ui": "^2.15.3",
+    "highlight.js": "^10.5.0",
     "image-conversion": "^2.1.1",
     "lodash": "^4.17.19",
     "lowdb": "^1.0.0",
@@ -25,11 +27,12 @@
     "node-rsa": "^1.1.1",
     "nprogress": "^0.2.0",
     "vant": "^2.8.5",
-    "vue": "^2.6.11",
+    "vue": "^2.6.14",
     "vue-cookies": "^1.7.4",
     "vue-countup-v2": "^4.0.0",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
@@ -44,8 +47,9 @@
     "lodash-webpack-plugin": "^0.11.5",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.3",
+    "svg-sprite-loader": "^6.0.9",
     "vue-cli-plugin-element": "~1.0.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.14"
   },
   "browserslist": [
     "> 1%",

@@ -62,7 +62,7 @@
                             <el-row>
                                 <img src="../../../assets/image/default/avatar.png" class="avatar cursor-pointer mg-lr-5">
                             </el-row>
-                            <el-row class="user-name cursor-pointer">{{ userInfo.nickname }}</el-row>
+                            <el-row class="user-name cursor-pointer">{{ userInfo.user.realName || userInfo.user.username }}</el-row>
                             <el-row class="jg mg-lr-10"></el-row>
                             <el-row @click.native="handelDropdownUser('logout')" class="logout cursor-pointer">退出登录</el-row>
                         </el-row>

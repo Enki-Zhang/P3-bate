@@ -115,10 +115,10 @@
 .el-dialog__body {
     padding: 15px 20px !important;
 }
-
 .unset-form-item-mb-15 {
     margin-bottom: unset !important;
 }
+.el-dialog__footer .el-button {width: max-content;}
 
 /* 上传标签内容去掉居中 */
 .el-upload {

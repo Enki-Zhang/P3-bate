@@ -16,8 +16,8 @@
                  :collapse="isCollapse"
                  background-color="#000C17"
                  text-color="#EEEEEE"
-                 active-text-color="#FFF"
-                 class=""><!-- unique-opened -->
+                 active-text-color="#FFF">
+                <!-- unique-opened -->
                 <el-submenu v-for="(v, k) in menus" :key="k"
                             v-if="!v.hidden && v.meta && !v.meta.isSinglePage && v.children && v.children.length"
                             :index="v.name">
@@ -76,7 +76,7 @@
         },
         created() {
             this.isCollapse = !!this.man.db.load('sys.collapseMenu');
-            this.isCollapse = !this.man.fast.browserSystemIsPC();
+            this.isCollapse = !this.browserSystemIsPC;
             this.man.bus.$on('collapseMenu', (res) => {
                 this.isCollapse = res.isCollapse;
                 this.elMenuWidth = res.elMenuWidth;
@@ -90,9 +90,9 @@
             },
             menus: function() {
                 // console.log(this.userInfo.menus);
-                // console.log(routes[0].children);
+                // console.log(routes.inLayout.children);
                 return [
-                    ...routes[0].children,
+                    ...routes.inLayout.children,
                     // ...this.man.test.generateStaticMenus(),
                 ];
             },
@@ -104,13 +104,16 @@
                 }*/
                 return res;
             },
+            browserSystemIsPC: function() {
+                return this.man.fast.browserSystemIsPC();
+            },
         },
         methods: {
             nav: function(routeName) {
                 let that = this;
 
                 // 移动端自动折回
-                if(!that.man.fast.browserSystemIsPC()) {
+                if(!that.browserSystemIsPC) {
                     that.isCollapse = true;
                     // 退出登录
                     if(routeName === 'logged-info|logout') {
@@ -161,6 +164,7 @@
         border-right: unset;
 
         ::v-deep {
+            .el-submenu:first-child {display: none;}
             .el-menu-item {
                 background-color: #00192f !important;
                 padding: 0 8px !important;
@@ -207,6 +211,7 @@
 
             .el-menu {
                 ::v-deep {
+                    .el-submenu:first-child {display: unset;}
                     .el-menu-item {
                         height: 100px;
                         font-size: 28px;

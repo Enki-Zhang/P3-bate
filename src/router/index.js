@@ -9,6 +9,8 @@ Vue.use(Router);
 
 // 初始化路由
 let router = new Router({routes: [], mode: 'history', base: process.env.VUE_APP_ROUTE_BASE}),
+    isInitLoaded = false,
+    isFullLoaded = false,
     token = false,
     uuid = false,
     userInfo = false,
@@ -21,11 +23,6 @@ router.beforeEach(async (to, from, next) => {
     uuid = man.cookies.get('uuid');
     userInfo = man.db.load('session.userInfo');
     webSite = man.db.load('sys.webSite');
-    if(!isLoaded) {
-        await loadRoutes();
-        isLoaded = true;
-        next(to.path, true);
-    } else {next();}
     // console.log(to);
     // console.log(from);
     // console.log(next);
@@ -34,8 +31,14 @@ router.beforeEach(async (to, from, next) => {
     // console.log(userInfo);
     // console.log(routerStatus);
 
+    // 初始加载
+    if(!isInitLoaded) {
+        await loadRoutes(false);
+        isInitLoaded = true;
+        next(to.path, true);
+    }
     // 未登录
-    if(!token || !uuid || !userInfo) {
+    else if(!token || !uuid || !userInfo) {
         if(to.fullPath !== '/auth/login') {
             man.db.save('tmp.backToRouteName', to.fullPath);
             man.db.save('tmp.backToRouteQuery', to.query);
@@ -60,7 +63,11 @@ router.beforeEach(async (to, from, next) => {
     }
     // 已登录
     else {
-        if(to.matched.length) {
+        if(!isFullLoaded) {
+            await loadRoutes(true);
+            isFullLoaded = true;
+            next(to.path, true);
+        } else if(to.matched.length) {
             switch (to.matched[0].name) {
                 case 'auth':
                     next({name: 'layout'});
@@ -75,24 +82,33 @@ router.beforeEach(async (to, from, next) => {
     document.title = to.meta.title
         ? `${to.meta.title} Ι ${process.env.VUE_APP_TITLE_SHORT}`
         : process.env.VUE_APP_TITLE;
+    next();
 });
 router.afterEach(to => {NProgress.done();});
 
 // 加载路由线路
-let isLoaded = false,
-    loadRoutes = async () => {
+let loadRoutes = async (isFullLoad) => {
         // 线路组件合并
         const mergeRoutesComponents = function (routes) {
             routes.forEach(route => {
                 route.component = routerComponentsMap[route.name];
-                if(route.children) mergeRoutesComponents(route.children);
+                if(!!route.children) mergeRoutesComponents(route.children);
             });
             return routes;
         };
 
-        // 线路添加到路由
-        if(userInfo && userInfo.menus && userInfo.menus.length) routes[0].children = [...routes[0].children, ...userInfo.menus,];
-        router.addRoutes(mergeRoutesComponents(routes));
+        // 完整加载
+        if(isFullLoad) {
+            if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) routes.inLayout.children.concat(userInfo.menus);
+
+            router.addRoutes(mergeRoutesComponents([
+                routes.inLayout,
+                ...routes.outOfLayout,
+                ...routes.errors
+            ]));
+        }
+        // 初始化
+        else router.addRoutes(mergeRoutesComponents([...routes.init]));
         await Promise.resolve();
     };
 

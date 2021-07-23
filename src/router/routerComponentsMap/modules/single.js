@@ -14,10 +14,12 @@ export default {
     'system-doc|management-manual|add': _import('single/systemDoc/managementManual/edit'), // 安全管理手册 - 新增
     'system-doc|management-manual|release': _import('single/systemDoc/managementManual/release'), // 安全管理手册 - 发布
     'system-doc|management-manual|detail': _import('single/systemDoc/managementManual/detail'), // 安全管理手册 - 详情
-    // 'system-doc|program-files': _import('single/systemDoc/programFiles'), // 程序文件
+    'system-doc|program-files': _import('single/systemDoc/programFiles'), // 程序文件
 
 
     // 表格管理
     'forms': _import('single/forms'),
-    'forms_version_manage': _import('single/forms/versionManage'),
+    'forms|forms-manage': _import('single/forms/formsManage'),
+    'forms|version-manage': _import('single/forms/versionManage'),
+    'forms|process-design': _import('single/forms/processDesign'),
 };

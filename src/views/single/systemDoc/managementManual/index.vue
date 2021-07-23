@@ -102,16 +102,16 @@
                         <el-table-column label="操作人" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.operator }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="260">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="140">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="release(scope.row)" class="fs-12">发布</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">撤下</el-link>
+                                    <el-link type="primary" :underline="false" @click="release(scope.row)" class="fs-12">查阅</el-link>
+                                    <!--<el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>-->
+                                    <!--<el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">撤下</el-link>-->
                                     <el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>

@@ -120,6 +120,7 @@ module.exports = {
         );
         // 添加别名
         config.resolve.alias
+            .set('~package', resolve('package'))
             .set('@', resolve('src'))
             .set('@api', resolve('src/api'))
             .set('@assets', resolve('src/assets'))

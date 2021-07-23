@@ -4,74 +4,104 @@
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
 
             <el-row>
-                <el-row type="flex" justify="center" align="middle" class="file-manage">
+                <el-row type="flex" justify="center" align="middle"
+                        @click.native="create"
+                        class="file-manage">
                     <img src="../../../../assets/image/systemDoc/btn-file-manage.png">
-                    <span>文件管理</span>
+                    <span>新增文件类型</span>
                 </el-row>
             </el-row>
 
             <el-row type="flex" class="block-list mg-tb-20">
                 <el-row v-for="(v, k) in blockArr" :key="k"
                         type="flex" justify="center" align="middle"
-                        @click.native="navByBlockName(v.name)"
                         class="block">
-                    <el-row>
-                        <img :src="require(`../../../../assets/image/systemDoc/${v.img}`)">
+                    <el-row class="bg-setting">
+                        <el-dropdown trigger="click"
+                                     placement="bottom"
+                                     @command="(cmd) => {chooseMenu(cmd, k, v)}">
+                            <i class="el-icon-more setting"></i>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-edit" command="edit">编辑</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" command="del">删除</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </el-row>
-                    <el-row class="title">{{ v.title }}</el-row>
-                    <el-row class="desc">{{ v.desc }}</el-row>
+                    <el-row @click.native="navByBlockName(v.name)" class="con">
+                        <el-row>
+                            <img :src="require(`@assets/image/systemDoc/${v.icon}`)">
+                        </el-row>
+                        <el-row class="title">
+                            <span>{{ v.title }}</span>
+                        </el-row>
+                        <el-row class="desc">
+                            <span>{{ v.desc }}</span>
+                        </el-row>
+                    </el-row>
                 </el-row>
             </el-row>
 
         </el-row>
+
+        <!-- 组件：编辑 -->
+        <dl-edit v-model="dlEditVisible" :params="dlParams"></dl-edit>
     </el-row>
 
 </template>
 
 <script>
 
+    import dlEdit from "@views/single/systemDoc/folder/dlEdit";
+    import api from "@api";
+
     export default {
         name: "index",
+        components: {dlEdit,},
         data() {
             return {
+                dlParams: {},
+                dlEditVisible: false,
+
                 blockArr: [
                     {
                         name: 'system-doc|management-manual',
-                        img: 'aqglsc.png',
+                        icon: 'aqglsc.png',
                         title: '安全管理手册',
                         desc: '一句话描述一句话描述'
                     },
                     {
                         name: 'system-doc|program-files',
-                        img: 'cxwj.png',
+                        icon: 'cxwj.png',
                         title: '程序文件',
                         desc: '一句话描述一句话描述'
                     },
                     {
                         name: 'system-doc|manual',
-                        img: 'aqsc.png',
+                        icon: 'aqsc.png',
                         title: '安全手册',
                         desc: '一句话描述一句话描述'
                     },
                     {
                         name: 'system-doc|operating-procedures',
-                        img: 'bzczgc.png',
+                        icon: 'bzczgc.png',
                         title: '标准操作规程',
                         desc: '标准操作规程SOP'
                     },
                     {
                         name: 'system-doc|report',
-                        img: 'fxpgbg.png',
+                        icon: 'fxpgbg.png',
                         title: '风险评估报告',
                         desc: '一句话描述一句话描述'
                     },
                     {
                         name: 'system-doc|msds',
-                        img: 'msds.png',
+                        icon: 'msds.png',
                         title: 'MSDS表单',
                         desc: '材料安全数据表'
                     },
                 ],
+
+                invalidClick: false,
             }
         },
         created() {},
@@ -79,7 +109,62 @@
             navByBlockName: function(name) {
                 let that = this;
 
-                that.$router.push({name});
+                if(!that.invalidClick) {
+                    that.$router.push({name});
+                }
+            },
+            create: function() {
+                let that = this;
+
+                that.dlParams = {
+                    mode: 'create'
+                };
+                that.dlEditVisible = true;
+            },
+            edit: function(row) {
+                let that = this;
+
+                that.dlParams = {
+                    mode: 'edit',
+                    detail: row
+                };
+                that.dlEditVisible = true;
+            },
+            remove: function(row) {
+                let that = this;
+
+                that.$confirm(`是否删除该文件类型`, '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    that.$toast.loading('正在删除');
+
+                    /*api.seoCacheClean().then((res) => {
+                        if(res.data.status === 200) {
+                            setTimeout(function() {
+                                that.$toast.success({message: '缓存清理完成', duration: 1288});
+                            }, 888);
+                        } else {
+                            that.$toast.clear();
+                            that.$message.error('清理缓存失败');
+                        }
+                    });*/
+                }).catch();
+            },
+            chooseMenu: function(cmd, k, v) {
+                let that = this;
+
+                switch (cmd) {
+                    case 'edit':
+                        if(that.blockArr[k] === v) {
+                            that.edit(that.blockArr[k]);
+                        }
+                        break;
+                    case 'del':
+                        that.remove(that.blockArr[k]);
+                        break;
+                }
             },
         }
     }
@@ -118,9 +203,30 @@
                 @include unable-select;
                 @include cursor-pointer;
 
-                img {width: 166px; height: 166px;}
-                .title {color: rgba(0, 0, 0, 0.85); font-size: 16px; line-height: 24px;}
-                .desc {color: rgba(0, 0, 0, 0.45); font-size: 14px; line-height: 22px;}
+                .bg-setting {
+                    z-index: 777;
+                    /*background-color: #009688;*/
+                    width: 45px;
+                    height: 30px;
+                    position: absolute;
+                    top: 6px;
+                    right: 0;
+                    text-align: center;
+
+                    .setting {
+                        color: #a09f9f;
+                        font-size: 20px;
+                        line-height: 30px;
+                    }
+                }
+                .con {
+                    width: 100%;
+                    text-align: center;
+
+                    img {width: 166px; height: 166px;}
+                    .title {color: rgba(0, 0, 0, 0.85); font-size: 16px; line-height: 24px;}
+                    .desc {color: rgba(0, 0, 0, 0.45); font-size: 14px; line-height: 22px;}
+                }
             }
         }
     }

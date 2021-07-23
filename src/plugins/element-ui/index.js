@@ -54,6 +54,10 @@ import {
     Cascader,
     Popover,
     Popconfirm,
+    Collapse,
+    CollapseItem,
+    Drawer,
+    Divider,
 } from 'element-ui';
 
 Vue.use(Scrollbar);
@@ -113,3 +117,7 @@ Vue.use(Link);
 Vue.use(Cascader);
 Vue.use(Popover);
 Vue.use(Popconfirm);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
+Vue.use(Drawer);
+Vue.use(Divider);

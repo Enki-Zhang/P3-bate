@@ -14,9 +14,9 @@
                               prefix-icon="el-icon-user" clearable></el-input>
                 </el-form-item>
                 <el-form-item prop="password" :rules="[
-                            {required: true, message: '请填写密码'},
-                            {type: 'string', min: 5, max: 30, message: '密码格式错误'},
-                        ]">
+                    {required: true, message: '请填写密码'},
+                    {type: 'string', min: 5, max: 30, message: '密码格式错误'},
+                ]">
                     <el-input v-model="fmLogin.password" type="password" placeholder="密码"
                               prefix-icon="el-icon-key" clearable></el-input>
                 </el-form-item>
@@ -83,7 +83,7 @@
         },
         created() {
             // 开发环境自动补全
-            if(!['production', 'prod'].includes(process.env.NODE_ENV)) {
+            if(!['production', 'prod'].includes(process.env.NODE_ENV) && window.location.host.split(':')[0] === 'localhost') {
                 this.fmLogin.username = process.env.VUE_APP_AUTH_LOGIN_ACCOUNT;
                 this.fmLogin.password = process.env.VUE_APP_AUTH_LOGIN_PASSWORD;
                 // this.fmLogin.imgCode = process.env.VUE_APP_AUTH_LOGIN_CODE;
@@ -96,7 +96,7 @@
                 this.fmLogin.password = this.man.db.load('sys.loginForm.password');
             }*/
 
-            this.getImgCode();
+            // this.getImgCode();
         },
         methods: {
             choosePlatform: function(type) {
@@ -111,7 +111,7 @@
                         that.btnLoginLoading = true;
                         const formerUser = that.man.db.load('sys.uuid');
 
-                        let loginFailed = true;
+                        /*let loginFailed = true;
                         jsonAccount.map((v, k) => {
                             if(that.fmLogin.username === v.username && that.fmLogin.password === v.password) {
                                 that.man.loading.openFullScreen();
@@ -154,10 +154,10 @@
                                     }, 1288);
                                 }
                             }
-                        });
+                        });*/
 
                         // 鉴权
-                        /*api.securityTokenAdmin({
+                        api.securityTokenAdmin({
                             ...that.fmLogin,
                         }).then((res) => {
                             // console.log(res.data);
@@ -194,11 +194,11 @@
                                     that.$router.push({name: 'layout'});
                                 }, 888);
                             } else if(res.data.status === 400) {
-                                that.getImgCode();
-                                that.fmLogin.imgCode = '';
+                                // that.getImgCode();
+                                // that.fmLogin.imgCode = '';
                                 that.btnLoginLoading = false;
                             } else {that.btnLoginLoading = false;}
-                        });*/
+                        });
                     }
                 });
             },
