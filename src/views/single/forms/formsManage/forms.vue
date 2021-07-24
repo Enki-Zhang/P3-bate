@@ -1454,7 +1454,7 @@
   }
   .switchBox{
     width:48px;
-    height:20px;
+    height:24px;
     padding:2px;
     background:#DCDFE6;
     border-radius:20px;
@@ -1607,10 +1607,13 @@
       }
       .radioBox{
         text-align:left;
+        input{
+            width:auto;
+        }
       }
       .switchBox{
         width:48px;
-        height:20px;
+        height:24px;
         padding:2px;
         background:#DCDFE6;
         border-radius:20px;
@@ -1632,6 +1635,9 @@
           display: block;
           vertical-align: top;
           margin-right: 10px;
+        }
+        input{
+            width:auto;
         }
       }
       .uploadBox{

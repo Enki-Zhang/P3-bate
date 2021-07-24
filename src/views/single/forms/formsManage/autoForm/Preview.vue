@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Vue from 'vue/dist/vue.esm.js'
+import Vue from "vue";
 import 'element-ui/lib/theme-chalk/index.css';
 import { Button,Input,InputNumber,Select,Option,Radio,Switch,Checkbox,CheckboxGroup,TimePicker,DatePicker,TimeSelect,Cascader,Upload } from 'element-ui';
 Vue.use(Button);
