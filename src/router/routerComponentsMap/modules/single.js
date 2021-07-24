@@ -20,6 +20,7 @@ export default {
     // 表格管理
     'forms': _import('single/forms'),
     'forms|forms-manage': _import('single/forms/formsManage'),
+    'forms|forms-forms': _import('single/forms/formsManage/forms'),
     'forms|version-manage': _import('single/forms/versionManage'),
     'forms|process-design': _import('single/forms/processDesign'),
 };

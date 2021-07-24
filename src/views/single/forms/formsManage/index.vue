@@ -97,10 +97,12 @@
                                 <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
                             </template>
                         </el-table-column>-->
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="240">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="280">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="info" :underline="false" @click="formManage(scope.row)" class="fs-12">表单管理</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
@@ -157,6 +159,11 @@
             this.getTableData();
         },
         methods: {
+            formManage(obj){
+                console.log(obj);
+                let that = this;
+                that.$router.push({path: `/forms/forms-forms`});
+            },
             getTableData: function(page = 1, pageSize = 10) {
                 let that = this;
                 that.btnLoadingFilter = true;

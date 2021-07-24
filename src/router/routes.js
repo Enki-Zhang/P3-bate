@@ -301,6 +301,16 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
+                    path: 'forms-forms',
+                    name: 'forms|forms-forms',
+                    meta: {
+                        title: '表单管理',
+                        isShowBreadcrumb: 1,
+                        isSinglePage: 0,
+                    },
+                    hidden: 1,
+                },
+                {
                     path: 'version-manage',
                     name: 'forms|version-manage',
                     meta: {
