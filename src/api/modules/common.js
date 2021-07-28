@@ -9,7 +9,7 @@ import ajax from "@plugins/ajax";
  * @returns {*|void}
  */
 export function upload(data, needFormat) {
-    return ajax.upload('backServer/file/save', data, needFormat);
+    return ajax.upload('/backServer/file/uploadFiles', data, needFormat);
 }
 
 /**
@@ -50,25 +50,4 @@ export function testAjaxSleep(params) {
         case 'post':
             return ajax.post('test/ajax/sleep', params);
     }
-}
-
-/**
- * 测试 ajax
- *
- * @param params
- * @returns {*|void}
- */
-export function testAjaxExt(params) {
-    let ajaxOrigin = ajax.axios({baseURL: 'https://api.ohyesido.cn'});
-    return ajaxOrigin.get('/', params);
-}
-
-/**
- * rsa 解密
- *
- * @param data
- * @returns {*|void}
- */
-export function rsaDecrypt(data) {
-    return ajax.post('test/rsa/decrypt', data);
 }

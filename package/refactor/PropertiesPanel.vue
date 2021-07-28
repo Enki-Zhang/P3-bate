@@ -14,30 +14,30 @@
                 <div slot="title" class="panel-tab__title"><i class="el-icon-s-promotion"></i>流转条件</div>
                 <flow-condition :business-object="elementBusinessObject" :type="elementType"/>
             </el-collapse-item>
-            <el-collapse-item name="condition" v-if="formVisible" key="form">
+            <!--<el-collapse-item name="condition" v-if="formVisible" key="form">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-s-order"></i>表单</div>
                 <element-form :id="elementId" :type="elementType"/>
-            </el-collapse-item>
+            </el-collapse-item>-->
             <el-collapse-item name="task" v-if="elementType.indexOf('Task') !== -1" key="task">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-s-claim"></i>任务</div>
                 <element-task :id="elementId" :type="elementType"/>
             </el-collapse-item>
-            <el-collapse-item name="multiInstance" v-if="elementType.indexOf('Task') !== -1" key="multiInstance">
+            <!--<el-collapse-item name="multiInstance" v-if="elementType.indexOf('Task') !== -1" key="multiInstance">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-s-help"></i>多实例</div>
                 <element-multi-instance :business-object="elementBusinessObject" :type="elementType"/>
-            </el-collapse-item>
-            <el-collapse-item name="listeners" key="listeners">
+            </el-collapse-item>-->
+            <!--<el-collapse-item name="listeners" key="listeners">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-message-solid"></i>执行监听器</div>
                 <element-listeners :id="elementId" :type="elementType"/>
-            </el-collapse-item>
-            <el-collapse-item name="taskListeners" v-if="elementType === 'UserTask'" key="taskListeners">
+            </el-collapse-item>-->
+            <!--<el-collapse-item name="taskListeners" v-if="elementType === 'UserTask'" key="taskListeners">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-message-solid"></i>任务监听器</div>
                 <user-task-listeners :id="elementId" :type="elementType"/>
-            </el-collapse-item>
-            <el-collapse-item name="extensions" key="extensions">
+            </el-collapse-item>-->
+            <!--<el-collapse-item name="extensions" key="extensions">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-circle-plus"></i>扩展属性</div>
                 <element-properties :id="elementId" :type="elementType"/>
-            </el-collapse-item>
+            </el-collapse-item>-->
             <el-collapse-item name="other" key="other">
                 <div slot="title" class="panel-tab__title"><i class="el-icon-s-promotion"></i>其他</div>
                 <element-other-config :id="elementId"/>

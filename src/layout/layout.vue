@@ -55,6 +55,20 @@
             layout_header,
             layout_footer
         },
+        created() {
+            let that = this;
+
+            // 监听 - 改变当前页面面包屑标题
+            that.man.bus.$on('changeCurrentRouteMetaTitle', function(data) {
+                that.$route.meta.title = data.title;
+                that.$forceUpdate();
+            });
+            // 监听 - 改变当前页面虚拟父类面包屑标题
+            that.man.bus.$on('changeCurrentRouteVirtualParentMetaTitle', function(data) {
+                that.$route.meta.virtualParent.meta.title = data.title;
+                that.$forceUpdate();
+            });
+        },
         computed: {
             ...mapState(['pageTitle']),
 

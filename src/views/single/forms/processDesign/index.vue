@@ -1,7 +1,7 @@
 <template>
 
     <el-row class="_root_page">
-        <el-row type="flex" class="page-default-h-has-breadcrumb">
+        <el-row type="flex" class="page-default-pd page-default-h-has-breadcrumb">
             <my-process-designer ref="processDesigner"
                                  :key="`designer-${reloadIndex}`"
                                  v-model="xmlString"
@@ -26,6 +26,10 @@
                 <el-button type="warning" icon="el-icon-video-play" size="mini"
                            @click="playCurrentDesign()">{{ simulationStatus ? '返回编辑' : '开始运行' }}</el-button>
             </el-row>-->
+        </el-row>
+        <el-row type="flex" justify="center" align="middle" class="page-default-pd-bgc-white edit-page-options-btn mg-b-20">
+            <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回列表</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" :loading="btnLoadingSave" @click="save" class="btn">保存修改</el-button>
         </el-row>
     </el-row>
 
@@ -68,6 +72,8 @@
                     headerButtonSize: 'mini',
                     additionalModel: [CustomContentPadProvider, CustomPaletteProvider]
                 },
+
+                btnLoadingSave: false,
             }
         },
         created() {},
@@ -82,6 +88,12 @@
                 this.element = element;
             },
 
+            save: function() {
+
+            },
+            cancel: function() {
+
+            },
             asAndConsole: async function(type) {
                 let that = this;
 
@@ -192,7 +204,10 @@
 <style lang="scss" scoped>
 
     ._root_page {
-        padding: 15px;
+        /*padding: 8px 15px;*/
+
+        .page-default-pd {padding: 10px 20px 0 20px;}
+        .page-default-h-has-breadcrumb {min-height: calc(100vh - 280px);}
 
         .test-btns {
             button {width: max-content; margin-right: 3px;}
@@ -210,14 +225,14 @@
                 }
                 .my-process-designer__container {
                     .my-process-designer__canvas {
-                        height: calc(100vh - 180px);
+                        height: calc(100vh - 260px);
                     }
                 }
             }
             .process-panel__container {
                 background-color: white;
                 width: 600px !important;
-                max-height: calc(100vh - 120px);
+                max-height: calc(100vh - 240px);
                 padding: 0 0 0 8px;
                 @include scroll-bar;
 
@@ -232,7 +247,7 @@
                     .element-drawer__button .el-button {width: max-content;}
                 }
             }
-            .djs-palette {left: 10px;}
+            .djs-palette {top: calc(calc(100vh - 588px) / 2); left: 0px;}
             .bjs-powered-by {display: none !important;}
         }
     }

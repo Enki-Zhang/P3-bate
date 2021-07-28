@@ -4,10 +4,10 @@
             <slot name="control-header"></slot>
             <template v-if="!$slots['control-header']">
                 <el-button-group key="file-control">
-                    <el-button :size="headerButtonSize" :type="headerButtonType" icon="el-icon-folder-opened"
+                    <!--<el-button :size="headerButtonSize" :type="headerButtonType" icon="el-icon-folder-opened"
                                @click="$refs.refFile.click()">打开文件
-                    </el-button>
-                    <el-tooltip effect="light">
+                    </el-button>-->
+                    <!--<el-tooltip effect="light">
                         <div slot="content">
                             <el-button :size="headerButtonSize" type="text" @click="downloadProcessAsXml()">下载为XML文件
                             </el-button>
@@ -20,8 +20,8 @@
                         </div>
                         <el-button :size="headerButtonSize" :type="headerButtonType" icon="el-icon-download">下载文件
                         </el-button>
-                    </el-tooltip>
-                    <el-tooltip effect="light">
+                    </el-tooltip>-->
+                    <!--<el-tooltip effect="light">
                         <div slot="content">
                             <el-button :size="headerButtonSize" type="text" @click="previewProcessXML">预览XML</el-button>
                             <br/>
@@ -29,13 +29,13 @@
                             </el-button>
                         </div>
                         <el-button :size="headerButtonSize" :type="headerButtonType" icon="el-icon-view">预览</el-button>
-                    </el-tooltip>
-                    <!--<el-tooltip v-if="simulation" effect="light" :content="this.simulationStatus ? '退出模拟' : '开启模拟'">
+                    </el-tooltip>-->
+                    <el-tooltip v-if="simulation" effect="light" :content="this.simulationStatus ? '退出模拟' : '开启模拟'">
                         <el-button :size="headerButtonSize" :type="headerButtonType" icon="el-icon-cpu"
                                    @click="processSimulation">
                             模拟
                         </el-button>
-                    </el-tooltip>-->
+                    </el-tooltip>
                 </el-button-group>
                 <el-button-group key="align-control">
                     <el-tooltip effect="light" content="向左对齐">

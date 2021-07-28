@@ -67,7 +67,8 @@
                 <!-- 功能 -->
                 <el-row class="fn-btns">
                     <el-button type="primary" size="small" icon="el-icon-plus"
-                               :disabled="tbDataFilter.type === 1" @click="create"
+                               :disabled="tbDataFilter.type === 1"
+                               @click="create"
                                class="fn-btn">新增</el-button>
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
@@ -76,42 +77,39 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
+                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
                               :min-height="460" size="small"
-                              highlight-current-row border>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip width="280">
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
-                        </el-table-column>
-                        <el-table-column label="文件名称" show-overflow-tooltip min-width="160">
-                            <template slot-scope="scope">{{ scope.row.name }}</template>
-                        </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="160">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
-                        </el-table-column>
-                        <el-table-column label="发布状态" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-green">待发布</span>
-                                <span v-else-if="scope.row.status === 1" class="status-red">已发布</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="更新时间" show-overflow-tooltip min-width="90">
+                              class="dp-pc"
+                              highlight-current-row>
+                        <el-table-column label="日期" fixed="left" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <el-table-column label="操作人" show-overflow-tooltip min-width="160">
+                        <el-table-column label="姓名" fixed="left" show-overflow-tooltip min-width="220">
+                            <template slot-scope="scope">{{ scope.row.name }}</template>
+                        </el-table-column>
+                        <el-table-column label="类别" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.operator }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="280">
+                        <el-table-column label="性别" show-overflow-tooltip min-width="60">
+                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                        </el-table-column>
+                        <el-table-column label="时间" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="审批人" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                        </el-table-column>
+                        <el-table-column label="备注" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                        </el-table-column>
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="140">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
-                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
+                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">查看</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="success" :underline="false" @click="edit(scope.row)" class="fs-12" style="color: #009688;">发布</el-link>
+                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">下载</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">撤下</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -119,8 +117,8 @@
                 </el-row>
 
                 <!-- 分页 -->
-                <el-row v-if="tbData.content.length" class="mg-t-20 mg-b-10 txt-c">
-                    <el-pagination :total="tbData.totalElements" :current-page="tbData.number + 1" :page-size="10"
+                <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
+                    <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="10"
                                    layout="total, prev, pager, next, jumper"
                                    @current-change="handlePaginationChange"
                                    background>
@@ -128,26 +126,45 @@
                 </el-row>
             </el-row>
         </el-row>
+
+        <!-- 列表操作 -->
+        <van-action-sheet v-model="asShow"
+                          :description="asOptions.description"
+                          :actions="asOptions.actions"
+                          :cancel-text="asOptions.cancelText"
+                          @select="choosedAction"
+                          close-on-click-action/>
     </el-row>
 
 </template>
 
 <script>
 
+    import dayjs from 'dayjs';
+    import jsonTableData from '@mock/systemDocManagementManual.json';
+
     export default {
         name: "index",
         data() {
             return {
+                dayjs,
+
+                asShow: false,
+                asOptions: {
+                    row: null,
+                    description: '操作选项',
+                    actions: [],
+                    cancelText: '关闭',
+                },
 
                 tbSelectedArr: [],
                 tbFilter: {
                     name: '',
                     createTime: [],
                 },
-                tbData: {content: []},
+                tbData: {list: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
-
             }
         },
         mounted() {
@@ -164,34 +181,17 @@
         methods: {
             getTableData: function(page = 1, pageSize = 10) {
                 let that = this;
-                that.btnLoadingFilter = true;
+                that.tbData.total = jsonTableData.length;
+                that.tbData.list = [];
 
-                let params = {
-                    ...that.tbDataFilter,
-                    pageCurrent: page,
-                    pageSize,
-                };
-
-                /*api.sysLogList(params).then((res) => {
-                    // console.log(res);
-                    if(res.data.status === 200) {
-                        that.tbData = {...res.data.data};
+                let limit = page > 1
+                    ? [(page - 1) * pageSize, page * pageSize]
+                    : [0, pageSize];
+                jsonTableData.map((v, k) => {
+                    if(k >= limit[0] && k < limit[1]) {
+                        that.tbData.list.push(v);
                     }
-                    that.btnLoadingFilter = false;
-                });*/
-
-                that.tbData = {
-                    content: [
-                        {
-                            id: 1,
-                            name: '张三',
-                            version: '1.0',
-                            status: 1,
-                            createTime: '',
-                            operator: '管理员',
-                        }
-                    ],
-                };
+                });
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
@@ -220,7 +220,18 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system/doc/management/manual/add/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `/system-doc/management-manual/add/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+            },
+            versionManage: function(row) {
+                let that = this;
+
+                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
+                that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
+            },
+            detail: function() {
+                let that = this;
+
+                that.$router.push({path: `/system-doc/management-manual/detail/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
             },
             edit: function(row) {
                 let that = this;
@@ -229,7 +240,7 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system/doc/program/files/edit/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `/system-doc/management-manual/edit/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
             },
             remove: function(row) {
                 let that = this;
@@ -256,16 +267,51 @@
             },
             batchDelete: function() {},
 
-            versionManage: function(row) {
+
+            release: function() {
                 let that = this;
 
-                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
-                that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `management-manual/release/${JSON.stringify(that.tbDataFilter)}`});
             },
             processDesign: function(row) {
                 let that = this;
 
 
+            },
+            showAsOperate: function(row) {
+                let that = this;
+
+                that.asOptions.row = row;
+                that.asOptions.actions = [
+                    {name: '版本'},
+                    {name: '发布', color: '#1DC084'},
+                    {name: '详情'},
+                    {name: '撤下'},
+                    {name: '编辑', color: '#E6A23C'},
+                    {name: '删除', color: '#F56C6C'},
+                ];
+                that.asShow = true;
+            },
+            choosedAction: function(action, index) {
+                let that = this;
+                // console.log(action);
+                // console.log(that.asOptions.row);
+
+                switch (action.name) {
+                    case '版本':
+                        break;
+                    case '发布':
+                        break;
+                    case '详情':
+                        that.detail()
+                        break;
+                    case '撤下':
+                        break;
+                    case '编辑':
+                        break;
+                    case '删除':
+                        break;
+                }
             },
         }
     }
@@ -274,6 +320,14 @@
 
 <style lang="scss" scoped>
 
-
+    ._root_page {
+        ::v-deep {
+            .el-table tr th {
+                background: #FAFAFA;
+                padding: 15px 0;
+                font-size: 14px;
+            }
+        }
+    }
 
 </style>

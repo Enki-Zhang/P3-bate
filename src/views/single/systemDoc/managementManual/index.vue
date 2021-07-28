@@ -107,7 +107,7 @@
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="release(scope.row)" class="fs-12">查阅</el-link>
+                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">查阅</el-link>
                                     <!--<el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>-->
                                     <!--<el-row class="fg">|</el-row>
@@ -207,6 +207,10 @@
                 btnLoadingFilter: false,
             }
         },
+        beforeCreate() {
+            // 更改当前路由面包屑 title
+            this.man.bus.$emit('changeCurrentRouteMetaTitle', JSON.parse(this.$route.params.pq));
+        },
         mounted() {
             this.tbFilter = this.$route.params._lpq !== undefined ? {
                 createTime: (this.$route.params._lpq.startDate && this.$route.params._lpq.endDate)
@@ -260,7 +264,18 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `management-manual/add/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `/system-doc/management-manual/add/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+            },
+            versionManage: function(row) {
+                let that = this;
+
+                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
+                that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
+            },
+            detail: function() {
+                let that = this;
+
+                that.$router.push({path: `/system-doc/management-manual/detail/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
             },
             edit: function(row) {
                 let that = this;
@@ -269,7 +284,7 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system/doc/management/manual/edit/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `/system-doc/management-manual/edit/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
             },
             remove: function(row) {
                 let that = this;
@@ -296,21 +311,11 @@
             },
             batchDelete: function() {},
 
-            versionManage: function(row) {
-                let that = this;
 
-                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
-                that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
-            },
             release: function() {
                 let that = this;
 
                 that.$router.push({path: `management-manual/release/${JSON.stringify(that.tbDataFilter)}`});
-            },
-            detail: function() {
-                let that = this;
-
-                that.$router.push({path: `management-manual/detail/${JSON.stringify(that.tbDataFilter)}`});
             },
             processDesign: function(row) {
                 let that = this;

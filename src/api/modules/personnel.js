@@ -1,9 +1,9 @@
 import ajax from "@plugins/ajax";
 
-// 角色管理
+// 组织架构
 
-export function menuList(params) {
-    return ajax.get('userServer/menu/list', params);
+export function menuTree(params) {
+    return ajax.get('userServer/menu/tree', params);
 }
 export function sysRoleList(params) {
     return ajax.get('userServer/sysRole/list', params);
@@ -11,32 +11,17 @@ export function sysRoleList(params) {
 export function sysRoleFind(params) {
     return ajax.get(`userServer/sysRole/find/${params}`);
 }
+export function sysRoleAdd(data) {
+    return ajax.post('userServer/sysRole/save', data);
+}
 export function sysRoleEdit(data) {
     return ajax.post('userServer/sysRole/edit', data);
 }
-
-// 部门管理
-
-export function departmentSelect(params) {
-    return ajax.get('userServer/department/select', params);
-}
-export function departmentList(params) {
-    return ajax.get('userServer/department/list', params);
-}
-export function departmentSave(data) {
-    return ajax.post('userServer/department/save', data);
-}
-export function departmentFind(params) {
-    return ajax.get(`userServer/department/find/${params}`);
-}
-export function departmentEdit(data) {
-    return ajax.post('userServer/department/edit', data);
-}
-export function departmentDel(data) {
-    return ajax.post(`userServer/department/del/${data}`);
+export function sysRoleDel(data) {
+    return ajax.post(`userServer/sysRole/del/${data}`);
 }
 
-// 后台帐号管理
+// 人事资料
 
 export function sysUserList(params) {
     return ajax.get('userServer/sysUser/list', params);

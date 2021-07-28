@@ -24,7 +24,7 @@
                     <template v-if="v.meta.isLoggedInfo">
                         <template slot="title">
                             <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
-                            <span>{{ userInfo.nickname }}</span>
+                            <span>{{ userInfo.user.realName || userInfo.user.username }}</span>
                         </template>
                         <div v-for="(vv, kk) in v.children" :key="kk"
                              v-if="!vv.hidden">

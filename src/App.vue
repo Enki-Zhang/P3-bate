@@ -62,6 +62,8 @@
 
     /* 移动端适配 */
     @media screen and (max-width: 750px) {
+        #app {overflow: hidden;}
+
         // 表单
         .fm {
             ::v-deep {
