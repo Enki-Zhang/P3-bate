@@ -37,7 +37,7 @@ module.exports = {
     indexPath: 'index.html',
     filenameHashing: true,
     lintOnSave: false,
-    runtimeCompiler: false,
+    runtimeCompiler: true,
     productionSourceMap: false,
 
     configureWebpack: config => {
