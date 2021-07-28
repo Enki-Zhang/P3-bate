@@ -35,7 +35,7 @@ router.beforeEach(async (to, from, next) => {
     if(!isInitLoaded) {
         await loadRoutes(false);
         isInitLoaded = true;
-        next(to.path, true);
+        next(to.fullPath, true);
     }
     // 未登录
     else if(!token || !uuid || !userInfo) {
@@ -66,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
         if(!isFullLoaded) {
             await loadRoutes(true);
             isFullLoaded = true;
-            next(to.path, true);
+            next(to.fullPath, true);
         } else if(to.matched.length) {
             switch (to.matched[0].name) {
                 case 'auth':

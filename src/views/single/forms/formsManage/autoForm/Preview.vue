@@ -548,6 +548,7 @@ export default {
       line-height: 44px;
       height: 44px;
       text-align: center;
+      margin:0;
     }
     span{
       position: absolute;

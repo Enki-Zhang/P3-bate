@@ -3,692 +3,762 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb ">
             <el-row class="page-default-pd-bgc-white">
-                <div class="board">
-                    <div class="leftBox">
-                      <div class = "l_li">
-                        <p>输入型组件</p>
-                        <draggable 
-                          v-model="componentInputBox" 
-                          :options="{group:{name: 'itxst',pull:'clone'},sort: false}" 
-                          animation="300" 
-                          :move="onMove">
-                              <div 
-                                class="componentItem" 
-                                v-for="item in componentInputBox" 
-                                :key="item.id">
-                                {{item.attr_name}}
-                              </div>
-                        </draggable>
-                      </div>
-                      <div class = "l_li">
-                        <p>选择型组件</p>
-                        <draggable 
-                          v-model="componentSelectBox" 
-                          :options="{group:{name: 'itxst',pull:'clone'},sort: false}" 
-                          animation="300" 
-                          :move="onMove">
-                              <div 
-                                class="componentItem" 
-                                v-for="item in componentSelectBox" 
-                                :key="item.id">
-                                {{item.attr_name}}
-                              </div>
-                        </draggable>
-                      </div>
-                      <div class = "l_li">
-                        <p>布局型组件</p>
-                        <draggable 
-                          v-model="componentLayerBox" 
-                          :options="{group:{name: 'itxst',pull:'clone'},sort: false}" 
-                          animation="300" 
-                          :move="onMove">
-                              <div 
-                                class="componentItem" 
-                                v-for="item in componentLayerBox" 
-                                :key="item.id">
-                                {{item.attr_name}}
-                              </div>
-                        </draggable>
-                      </div>
-                    </div>
+                <el-form ref="dataForm" :model="dataForm" style = "padding-top:10px;" label-width="80px">
+                  <el-row>
+                    <el-col :span="8">
+                      <el-form-item label="表单名称">
+                        <el-input 
+                          v-model="dataForm.formName"
+                          size="small"
+                          :style="{width:inputWidth + 'px'}">  
+                        </el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-form-item label="表单编号">
+                        <el-input 
+                          v-model="dataForm.formNumber"
+                          size="small"
+                          :style="{width:inputWidth + 'px'}">
+                         </el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-form-item label="表单Key">
+                        <el-input 
+                          v-model="dataForm.formKey"
+                          size="small"
+                          :style="{width:inputWidth + 'px'}">
+                         </el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-form-item label="版本号">
+                        <el-input 
+                          v-model="dataForm.versions"
+                          size="small"
+                          :style="{width:inputWidth + 'px'}">
+                        </el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                      <el-form-item label="描述">
+                        <el-input 
+                          v-model="dataForm.description"
+                          :style="{width:inputWidth + 'px'}"
+                          :rows="3"
+                          resize="none"
+                          type="textarea">
+                        </el-input>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </el-form>
 
-                    <div class="centerBox">
-                      <draggable 
-                        ghostClass="dr-placeholder"
-                        class = "areaBox"
-                        v-model="formBox" 
-                        @add="onAdd" 
-                        group="itxst" 
-                        animation="300" 
-                        handle=".dragBtn"
-                        :move="onMove">
-                          <template v-for="item,index in formBox" >
-                            <div 
-                              v-if = "item.type == 'childForm'" 
-                              :key="item.id" 
-                              class = "formItem formItemTable" 
-                              :class = "item.id == selectingId ? 'selecting' : ''" 
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <div class = "label">子表单</div>
-                              <div class = "area">
-                                <draggable 
-                                  class="childAreaBox"
-                                  ghostClass="dr-placeholder"
-                                  v-model="item.arr" 
-                                  @add="onAddChild" 
-                                  group="itxst" 
-                                  animation="300"
-                                  :data-index="index"
-                                  :data-type="item.type"
-                                  :move="onMove">
-                                  <template v-for="item2,index2 in item.arr" >
-                                    <div 
-                                      :key="item2.id" 
-                                      v-if = "item2.type == 'input'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div>
-                                        <input 
-                                          class = "inputBox"
-                                          :placeholder="formBox[index]['arr'][index2].attr_placeholder"
-                                          readonly 
-                                          type = "text" 
-                                          v-model = "formBox[index]['arr'][index2].attr_value"/>
-                                      </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'inputNumber'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "inputNumberBox">
+                <div class = "formContent">
+                  <p class = "title">表单内容</p>
+                  <div class="board">
+                      <div class="leftBox">
+                        <div class = "l_li">
+                          <p>输入型组件</p>
+                          <draggable 
+                            v-model="componentInputBox" 
+                            :options="{group:{name: 'itxst',pull:'clone'},sort: false}" 
+                            animation="300" 
+                            :move="onMove">
+                                <div 
+                                  class="componentItem" 
+                                  v-for="item in componentInputBox" 
+                                  :key="item.id">
+                                  {{item.attr_name}}
+                                </div>
+                          </draggable>
+                        </div>
+                        <div class = "l_li">
+                          <p>选择型组件</p>
+                          <draggable 
+                            v-model="componentSelectBox" 
+                            :options="{group:{name: 'itxst',pull:'clone'},sort: false}" 
+                            animation="300" 
+                            :move="onMove">
+                                <div 
+                                  class="componentItem" 
+                                  v-for="item in componentSelectBox" 
+                                  :key="item.id">
+                                  {{item.attr_name}}
+                                </div>
+                          </draggable>
+                        </div>
+                        <div class = "l_li">
+                          <p>布局型组件</p>
+                          <draggable 
+                            v-model="componentLayerBox" 
+                            :options="{group:{name: 'itxst',pull:'clone'},sort: false}" 
+                            animation="300" 
+                            :move="onMove">
+                                <div 
+                                  class="componentItem" 
+                                  v-for="item in componentLayerBox" 
+                                  :key="item.id">
+                                  {{item.attr_name}}
+                                </div>
+                          </draggable>
+                        </div>
+                      </div>
+
+                      <div class="centerBox">
+                        <draggable 
+                          ghostClass="dr-placeholder"
+                          class = "areaBox"
+                          v-model="formBox" 
+                          @add="onAdd" 
+                          group="itxst" 
+                          animation="300" 
+                          handle=".dragBtn"
+                          :move="onMove">
+                            <template v-for="item,index in formBox" >
+                              <div 
+                                v-if = "item.type == 'childForm'" 
+                                :key="item.id" 
+                                class = "formItem formItemTable" 
+                                :class = "item.id == selectingId ? 'selecting' : ''" 
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <div class = "label">子表单</div>
+                                <div class = "area">
+                                  <draggable 
+                                    class="childAreaBox"
+                                    ghostClass="dr-placeholder"
+                                    v-model="item.arr" 
+                                    @add="onAddChild" 
+                                    group="itxst" 
+                                    animation="300"
+                                    :data-index="index"
+                                    :data-type="item.type"
+                                    :move="onMove">
+                                    <template v-for="item2,index2 in item.arr" >
+                                      <div 
+                                        :key="item2.id" 
+                                        v-if = "item2.type == 'input'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div>
                                           <input 
+                                            class = "inputBox"
                                             :placeholder="formBox[index]['arr'][index2].attr_placeholder"
                                             readonly 
-                                            type = "number" 
+                                            type = "text" 
                                             v-model = "formBox[index]['arr'][index2].attr_value"/>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'textarea'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div>
-                                        <textarea 
-                                          :placeholder="formBox[index]['arr'][index2].attr_placeholder"
-                                          readonly 
-                                          style = "resize:none" 
-                                          rows = "4" 
-                                          v-model = "formBox[index]['arr'][index2].attr_value"/></textarea>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'inputNumber'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "inputNumberBox">
+                                            <input 
+                                              :placeholder="formBox[index]['arr'][index2].attr_placeholder"
+                                              readonly 
+                                              type = "number" 
+                                              v-model = "formBox[index]['arr'][index2].attr_value"/>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'select'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "selectBox">
-                                        <input 
-                                          :value = "formBox[index]['arr'][index2].data_value" 
-                                          readonly 
-                                          type = "text" 
-                                          class = "select" 
-                                          :placeholder="formBox[index]['arr'][index2].attr_placeholder" />
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'textarea'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div>
+                                          <textarea 
+                                            :placeholder="formBox[index]['arr'][index2].attr_placeholder"
+                                            readonly 
+                                            style = "resize:none" 
+                                            rows = "4" 
+                                            v-model = "formBox[index]['arr'][index2].attr_value"/></textarea>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'linkSelect'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "selectBox">
-                                        <input :placeholder = "item2.attr_placeholder" readonly type = "text" :value = "item2.attr_data_link_value.join('/')"/>
-                                      </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'radio'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "radioBox">
-                                        <label 
-                                          style = "display:block"
-                                          v-for = "v,index in item2.attr_data_list"
-                                          :key = "index">
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'select'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "selectBox">
                                           <input 
-                                            :name="item2.id" 
-                                            type="radio" 
-                                            :value="v.name" 
-                                            :checked = "index == item2.data_index && v.name == item2.data_value" /> {{v.name}} 
-                                        </label>
+                                            :value = "formBox[index]['arr'][index2].data_value" 
+                                            readonly 
+                                            type = "text" 
+                                            class = "select" 
+                                            :placeholder="formBox[index]['arr'][index2].attr_placeholder" />
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'check'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "checkBox">
-                                        <label 
-                                          v-for = "v,index in item2.attr_data_check_list"
-                                          :key = "index">
-                                          <input 
-                                            :name="item2.id" 
-                                            type="checkbox" 
-                                            :value="v.name" 
-                                            :checked = "v.check" /> {{v.name}} 
-                                        </label>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'linkSelect'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "selectBox">
+                                          <input :placeholder = "item2.attr_placeholder" readonly type = "text" :value = "item2.attr_data_link_value.join('/')"/>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'switch'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "switchBox" :class = "item2.attr_boolean_value ? 'on' : ''">
-                                        <b></b>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'radio'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "radioBox">
+                                          <label 
+                                            style = "display:block"
+                                            v-for = "v,index in item2.attr_data_list"
+                                            :key = "index">
+                                            <input 
+                                              :name="item2.id" 
+                                              type="radio" 
+                                              :value="v.name" 
+                                              :checked = "index == item2.data_index && v.name == item2.data_value" /> {{v.name}} 
+                                          </label>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'time'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div>
-                                        <input type="time" step = "1" v-model = "item2.attr_time_value"/>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'check'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "checkBox">
+                                          <label 
+                                            v-for = "v,index in item2.attr_data_check_list"
+                                            :key = "index">
+                                            <input 
+                                              :name="item2.id" 
+                                              type="checkbox" 
+                                              :value="v.name" 
+                                              :checked = "v.check" /> {{v.name}} 
+                                          </label>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'date'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div>
-                                        <input type="date" v-model = "item2.attr_date_value"/>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'switch'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "switchBox" :class = "item2.attr_boolean_value ? 'on' : ''">
+                                          <b></b>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'dateRange'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "timeRangeBox">
-                                        <input type="date" v-model = "item2.attr_date_range_value[0]"/>
-                                        <b> - </b>
-                                        <input type="date" v-model = "item2.attr_date_range_value[1]"/>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'time'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div>
+                                          <input type="time" step = "1" v-model = "item2.attr_time_value"/>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'timeRange'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "timeRangeBox">
-                                        <input type="time" step = "1" v-model = "item2.attr_time_range_value[0]"/>
-                                        <b> - </b>
-                                        <input type="time" step = "1" v-model = "item2.attr_time_range_value[1]"/>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'date'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div>
+                                          <input type="date" v-model = "item2.attr_date_value"/>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      :key="item2.id" 
-                                      v-else-if = "item2.type == 'upload'"
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <div class = "uploadBox">
-                                        <span>+</span>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'dateRange'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "timeRangeBox">
+                                          <input type="date" v-model = "item2.attr_date_range_value[0]"/>
+                                          <b> - </b>
+                                          <input type="date" v-model = "item2.attr_date_range_value[1]"/>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div 
-                                      v-else
-                                      :class = "item2.id == selectingId ? 'selecting' : ''" 
-                                      class = "formItem" 
-                                      @click = "selectItem(index,index2)">
-                                      <i class = "dragBtn"></i>
-                                      <i class = "delBtn" @click = "delCompent"></i>
-                                      <p>{{item2.attr_name}}</p>
-                                      <p class = "defaultValue">{{item2.attr_value}}</p>
-                                    </div>
-                                  </template>
-                                  
-                                </draggable>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'timeRange'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "timeRangeBox">
+                                          <input type="time" step = "1" v-model = "item2.attr_time_range_value[0]"/>
+                                          <b> - </b>
+                                          <input type="time" step = "1" v-model = "item2.attr_time_range_value[1]"/>
+                                        </div>
+                                      </div>
+                                      <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'upload'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div class = "uploadBox">
+                                          <span>+</span>
+                                        </div>
+                                      </div>
+                                      <div 
+                                        v-else
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <p class = "defaultValue">{{item2.attr_value}}</p>
+                                      </div>
+                                    </template>
+                                    
+                                  </draggable>
+                                </div>
                               </div>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'button'" 
-                              :key="item.id"
-                              class = "formItem formItemButton" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'input'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <input 
-                                :placeholder="formBox[index].attr_placeholder" 
-                                readonly 
-                                type = "text" 
-                                v-model = "formBox[index].attr_value"/>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'inputNumber'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "inputBox">
+                              <div 
+                                v-else-if = "item.type == 'button'" 
+                                :key="item.id"
+                                class = "formItem formItemButton" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'input'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
                                 <input 
-                                  :placeholder="formBox[index].attr_placeholder"
-                                  readonly 
-                                  type = "number" 
-                                  v-model = "formBox[index].attr_value"/>
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'textarea'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <textarea 
-                                :placeholder="formBox[index].attr_placeholder"
-                                readonly 
-                                rows="4" 
-                                v-model = "formBox[index].attr_value"/></textarea>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'select'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "selectBox">
-                                <input 
-                                  :value = "formBox[index].data_value" 
+                                  :placeholder="formBox[index].attr_placeholder" 
                                   readonly 
                                   type = "text" 
-                                  class = "select" 
-                                  :placeholder="formBox[index].attr_placeholder" />
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'radio'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "radioBox">
-                                <label 
-                                  :style = "{display:item.attr_layer}"
-                                  v-for = "v,index in item.attr_data_list"
-                                  :key = "index">
+                                  v-model = "formBox[index].attr_value"/>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'inputNumber'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "inputBox">
                                   <input 
-                                    :name="item.id" 
-                                    type="radio" 
-                                    :value="v.name" 
-                                    :checked = "index == item.data_index && v.name == item.data_value" /> {{v.name}} 
-                                </label>
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'check'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "checkBox">
-                                <label 
-                                  :style = "{display:item.attr_layer}"
-                                  v-for = "v,index in item.attr_data_check_list"
-                                  :key = "index">
+                                    :placeholder="formBox[index].attr_placeholder"
+                                    readonly 
+                                    type = "number" 
+                                    v-model = "formBox[index].attr_value"/>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'textarea'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <textarea 
+                                  :placeholder="formBox[index].attr_placeholder"
+                                  readonly 
+                                  rows="4" 
+                                  v-model = "formBox[index].attr_value"/></textarea>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'select'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "selectBox">
                                   <input 
-                                    :name="item.id" 
-                                    type="checkbox" 
-                                    :value="v.name" 
-                                    :checked = "v.check" /> {{v.name}} 
-                                </label>
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'switch'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "switchBox" :class = "item.attr_boolean_value ? 'on' : ''">
-                                <b></b>
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'time'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <input type="time" step = "1" v-model = "item.attr_time_value"/>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'timeRange'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "timeRangeBox">
-                                <input type="time" step = "1" v-model = "item.attr_time_range_value[0]"/>
-                                <b> - </b>
-                                <input type="time" step = "1" v-model = "item.attr_time_range_value[1]"/>
-                              </span>
-                              
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'date'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <input type="date" v-model = "item.attr_date_value"/>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'dateRange'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "dateRangeBox">
-                                <input type="date" v-model = "item.attr_date_range_value[0]"/>
-                                <b> - </b>
-                                <input type="date" v-model = "item.attr_date_range_value[1]"/>
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'linkSelect'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "selectBox">
-                                <input readonly :placeholder = "item.attr_placeholder" type = "text" :value = "item.attr_data_link_value.join('/')"/>
-                              </span>
-                            </div>
-                            <div 
-                              v-else-if = "item.type == 'upload'" 
-                              :key="item.id"
-                              class = "formItem formItemInput" 
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                              <span class = "uploadBox">
-                                <span>+</span>
-                              </span>
-                            </div>
-                            <div 
-                              v-else 
-                              :key="item.id" 
-                              class = "formItem" 
-                              :style = "{textAlign:item.attr_label_align}"
-                              :class = "item.id == selectingId ? 'selecting' : ''"  
-                              @click = "selectItem(index)">
-                              <i class = "dragBtn"></i>
-                              <i class = "delBtn" @click = "delCompent"></i>
-                              <span>{{item.attr_name}}</span>
-                            </div>
-                          </template>
-                      </draggable>
-                    </div>
+                                    :value = "formBox[index].data_value" 
+                                    readonly 
+                                    type = "text" 
+                                    class = "select" 
+                                    :placeholder="formBox[index].attr_placeholder" />
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'radio'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "radioBox">
+                                  <label 
+                                    :style = "{display:item.attr_layer}"
+                                    v-for = "v,index in item.attr_data_list"
+                                    :key = "index">
+                                    <input 
+                                      :name="item.id" 
+                                      type="radio" 
+                                      :value="v.name" 
+                                      :checked = "index == item.data_index && v.name == item.data_value" /> {{v.name}} 
+                                  </label>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'check'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "checkBox">
+                                  <label 
+                                    :style = "{display:item.attr_layer}"
+                                    v-for = "v,index in item.attr_data_check_list"
+                                    :key = "index">
+                                    <input 
+                                      :name="item.id" 
+                                      type="checkbox" 
+                                      :value="v.name" 
+                                      :checked = "v.check" /> {{v.name}} 
+                                  </label>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'switch'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "switchBox" :class = "item.attr_boolean_value ? 'on' : ''">
+                                  <b></b>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'time'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <input type="time" step = "1" v-model = "item.attr_time_value"/>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'timeRange'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "timeRangeBox">
+                                  <input type="time" step = "1" v-model = "item.attr_time_range_value[0]"/>
+                                  <b> - </b>
+                                  <input type="time" step = "1" v-model = "item.attr_time_range_value[1]"/>
+                                </span>
+                                
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'date'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <input type="date" v-model = "item.attr_date_value"/>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'dateRange'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "dateRangeBox">
+                                  <input type="date" v-model = "item.attr_date_range_value[0]"/>
+                                  <b> - </b>
+                                  <input type="date" v-model = "item.attr_date_range_value[1]"/>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'linkSelect'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "selectBox">
+                                  <input readonly :placeholder = "item.attr_placeholder" type = "text" :value = "item.attr_data_link_value.join('/')"/>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'upload'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "uploadBox">
+                                  <span>+</span>
+                                </span>
+                              </div>
+                              <div 
+                                v-else 
+                                :key="item.id" 
+                                class = "formItem" 
+                                :style = "{textAlign:item.attr_label_align}"
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                              </div>
+                            </template>
+                        </draggable>
+                      </div>
 
-                    <div class="rightBox">
-                      <!-- <span>生成代码</span> -->
-                      <span class = "btn" @click = "toPreview">预览</span>
-                      <span class = "btn" @click = "toClear">清空</span>
-                      <div class = "attrBox" v-if = "selectingId != -1">
-                        <div class = "row" v-for = "v,k in attrObj" :key = "k" v-if = "k.indexOf('attr_') > -1">
-                          <p>{{attrNameObj[k]}}</p>
-                          <template>
-                            <div v-if = "k == 'attr_label_align' || k == 'attr_input_align'">
-                              <select v-model = "attrObj[k]">
-                                <option value = "left">左对齐</option>
-                                <option value = "center">居中</option>
-                                <option value = "right">右对齐</option>
-                              </select>
-                            </div>
-                            <div v-else-if = "k == 'attr_layer'">
-                              <select v-model = "attrObj[k]">
-                                <option value = "inline-block">水平</option>
-                                <option value = "block">垂直</option>
-                              </select>
-                            </div>
-                            <div v-else-if = "k == 'attr_boolean_value'">
-                              <select v-model = "attrObj[k]">
-                                <option :value = "true">开</option>
-                                <option :value = "false">关</option>
-                              </select>
-                            </div>
-                            <div v-else-if = "k == 'attr_data_list'">
-                              <table class = "selectList">
-                                <tr>
-                                  <th>名称</th>
-                                  <th>操作</th>
-                                </tr>
-                                <tr v-for = "v,index in attrObj[k]" :key = "index">
-                                  <td><input v-model = "v.name" type = "text"/></td>
-                                  <td>
-                                    <a @click = "selectDefault(index)" href="javascript:void(0);">设为默认</a>
-                                    <a @click = "selectDel(index)" href="javascript:void(0);">删除</a>
-                                  </td>
-                                </tr>
-                              </table>
-                              <div>
-                                <a @click = "selectAdd" class = "btn2" href = "javascript:void(0);">添加</a>
+                      <div class="rightBox">
+                        <!-- <span>生成代码</span> -->
+                        <div class = "mainBtn">
+                            <span class = "btn" @click = "toPreview">预览</span>
+                            <span class = "btn" @click = "toClear">清空</span>
+                            <span class = "btn" @click = "resetFormBox">重置</span>
+                        </div>
+                        <div class = "attrBox" v-if = "selectingId != -1">
+                          <div class = "row" v-for = "v,k in attrObj" :key = "k" v-if = "k.indexOf('attr_') > -1">
+                            <p>{{attrNameObj[k]}}</p>
+                            <template>
+                              <div v-if = "k == 'attr_label_align' || k == 'attr_input_align'">
+                                <select v-model = "attrObj[k]">
+                                  <option value = "left">左对齐</option>
+                                  <option value = "center">居中</option>
+                                  <option value = "right">右对齐</option>
+                                </select>
                               </div>
-                            </div>
-                            <div v-else-if = "k == 'attr_data_check_list'">
-                              <table class = "selectList">
-                                <tr>
-                                  <th></th>
-                                  <th>名称</th>
-                                  <th>操作</th>
-                                </tr>
-                                <tr v-for = "v,index in attrObj[k]" :key = "index">
-                                  <td><input type = "checkbox" v-model = "v.check" @change = "checkSelect(index)"/></td>
-                                  <td><input v-model = "v.name" type = "text"/></td>
-                                  <td>
-                                    <a @click = "checkDel(index)" href="javascript:void(0);">删除</a>
-                                  </td>
-                                </tr>
-                              </table>
-                              <div>
-                                <a @click = "checkAdd" class = "btn2" href = "javascript:void(0);">添加</a>
+                              <div v-else-if = "k == 'attr_layer'">
+                                <select v-model = "attrObj[k]">
+                                  <option value = "inline-block">水平</option>
+                                  <option value = "block">垂直</option>
+                                </select>
                               </div>
-                            </div>
-                            <div v-else-if = "k == 'attr_data_link_value'">
-                              <el-cascader
-                                clearable
-                                size="small"
-                                v-model="attrObj[k]"
-                                :options="attrObj['attr_data_link_list']">
-                              </el-cascader>
-                            </div>
-                            <div v-else-if = "k == 'attr_time_value'">
-                              <el-time-picker
-                                size="small"
-                                v-model="attrObj[k]"
-                                value-format="HH:mm:ss"
-                                :picker-options="{
-                                  selectableRange: '00:00:00 - 23:59:59'
-                                }">
-                              </el-time-picker>
-                            </div>
-                            <div v-else-if = "k == 'attr_time_range_value'">
-                              <el-time-picker
-                                style = "width:100%"
-                                is-range
-                                size="small"
-                                v-model="attrObj[k]"
-                                value-format="HH:mm:ss"
-                                range-separator="-">
-                              </el-time-picker>
-                            </div>
-                            <div v-else-if = "k == 'attr_data_link_list'">
-                              <a @click = "popLinkSelect" href = "javascript:void(0);">设置选项</a>
-                            </div>
-                            <div v-else-if = "k == 'attr_date_value'">
-                              <el-date-picker
-                                size="small"
-                                value-format="yyyy-MM-dd"
-                                v-model="attrObj[k]"
-                                type="date">
-                              </el-date-picker>
-                            </div>
-                            <div v-else-if = "k == 'attr_date_range_value'">
-                              <el-date-picker
-                                style = "width:100%"
-                                size="small"
-                                value-format="yyyy-MM-dd"
-                                v-model="attrObj[k]"
-                                type="daterange"
-                                range-separator="-">
-                              </el-date-picker>
-                            </div>
-                            <div v-else>
-                              <input type = "text" v-model = "attrObj[k]"/>
-                            </div>
-                          </template>
+                              <div v-else-if = "k == 'attr_boolean_value'">
+                                <select v-model = "attrObj[k]">
+                                  <option :value = "true">开</option>
+                                  <option :value = "false">关</option>
+                                </select>
+                              </div>
+                              <div v-else-if = "k == 'attr_data_list'">
+                                <table class = "selectList">
+                                  <tr>
+                                    <th>名称</th>
+                                    <th>操作</th>
+                                  </tr>
+                                  <tr v-for = "v,index in attrObj[k]" :key = "index">
+                                    <td><input v-model = "v.name" type = "text"/></td>
+                                    <td>
+                                      <a @click = "selectDefault(index)" href="javascript:void(0);">设为默认</a>
+                                      <a @click = "selectDel(index)" href="javascript:void(0);">删除</a>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <div>
+                                  <a @click = "selectAdd" class = "btn2" href = "javascript:void(0);">添加</a>
+                                </div>
+                              </div>
+                              <div v-else-if = "k == 'attr_data_check_list'">
+                                <table class = "selectList">
+                                  <tr>
+                                    <th></th>
+                                    <th>名称</th>
+                                    <th>操作</th>
+                                  </tr>
+                                  <tr v-for = "v,index in attrObj[k]" :key = "index">
+                                    <td><input type = "checkbox" v-model = "v.check" @change = "checkSelect(index)"/></td>
+                                    <td><input v-model = "v.name" type = "text"/></td>
+                                    <td>
+                                      <a @click = "checkDel(index)" href="javascript:void(0);">删除</a>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <div>
+                                  <a @click = "checkAdd" class = "btn2" href = "javascript:void(0);">添加</a>
+                                </div>
+                              </div>
+                              <div v-else-if = "k == 'attr_data_link_value'">
+                                <el-cascader
+                                  clearable
+                                  size="small"
+                                  v-model="attrObj[k]"
+                                  :options="attrObj['attr_data_link_list']">
+                                </el-cascader>
+                              </div>
+                              <div v-else-if = "k == 'attr_time_value'">
+                                <el-time-picker
+                                  size="small"
+                                  v-model="attrObj[k]"
+                                  value-format="HH:mm:ss"
+                                  :picker-options="{
+                                    selectableRange: '00:00:00 - 23:59:59'
+                                  }">
+                                </el-time-picker>
+                              </div>
+                              <div v-else-if = "k == 'attr_time_range_value'">
+                                <el-time-picker
+                                  style = "width:100%"
+                                  is-range
+                                  size="small"
+                                  v-model="attrObj[k]"
+                                  value-format="HH:mm:ss"
+                                  range-separator="-">
+                                </el-time-picker>
+                              </div>
+                              <div v-else-if = "k == 'attr_data_link_list'">
+                                <a @click = "popLinkSelect" href = "javascript:void(0);">设置选项</a>
+                              </div>
+                              <div v-else-if = "k == 'attr_date_value'">
+                                <el-date-picker
+                                  size="small"
+                                  value-format="yyyy-MM-dd"
+                                  v-model="attrObj[k]"
+                                  type="date">
+                                </el-date-picker>
+                              </div>
+                              <div v-else-if = "k == 'attr_date_range_value'">
+                                <el-date-picker
+                                  style = "width:100%"
+                                  size="small"
+                                  value-format="yyyy-MM-dd"
+                                  v-model="attrObj[k]"
+                                  type="daterange"
+                                  range-separator="-">
+                                </el-date-picker>
+                              </div>
+                              <div v-else>
+                                <input type = "text" v-model = "attrObj[k]"/>
+                              </div>
+                            </template>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <previewBox :data = "formBox" ref = "preview"/>
+                      <previewBox :data = "formBox" ref = "preview"/>
 
-                    <el-dialog
-                      title="设置选项"
-                      :visible.sync="linkSelectPop"
-                      width="50%">
-                      <div class = "linkSelectBox">
-                        <div class = "l_first" v-for = "v,index in (attrObj.hasOwnProperty('attr_data_link_list') ? attrObj.attr_data_link_list : [])" :key = "index">
-                          <div class = "l_row">
-                            <span>文本：</span><input v-model = "v.label"/>
-                            <span>值：</span><input v-model = "v.value"/>
-                            <span><a @click = "linkSelectAdd(0,index)" href="javascript:void(0);">添加子选项</a></span>
-                            <span><a @click = "linkSelectDel(index)" href="javascript:void(0);">删除</a></span>
-                          </div>
-                          <div class = "l_second" v-if = "v.hasOwnProperty('children')" v-for = "v2,index2 in v.children" :key = "index2">
+                      <el-dialog
+                        title="设置选项"
+                        :visible.sync="linkSelectPop"
+                        width="50%">
+                        <div class = "linkSelectBox">
+                          <div class = "l_first" v-for = "v,index in (attrObj.hasOwnProperty('attr_data_link_list') ? attrObj.attr_data_link_list : [])" :key = "index">
                             <div class = "l_row">
-                              <span>文本：</span><input v-model = "v2.label"/>
-                              <span>值：</span><input v-model = "v2.value"/>
-                              <span><a @click = "linkSelectAdd(0,index,index2)" href="javascript:void(0);">添加子选项</a></span>
-                              <span><a @click = "linkSelectDel(index,index2)" href="javascript:void(0);">删除</a></span>
+                              <span>文本：</span><input v-model = "v.label"/>
+                              <span>值：</span><input v-model = "v.value"/>
+                              <span><a @click = "linkSelectAdd(0,index)" href="javascript:void(0);">添加子选项</a></span>
+                              <span><a @click = "linkSelectDel(index)" href="javascript:void(0);">删除</a></span>
                             </div>
-                            <div class = "l_third" v-if = "v2.hasOwnProperty('children')" v-for = "v3,index3 in v2.children" :key = "index3">
+                            <div class = "l_second" v-if = "v.hasOwnProperty('children')" v-for = "v2,index2 in v.children" :key = "index2">
                               <div class = "l_row">
-                                <span>文本：</span><input v-model = "v3.label"/>
-                                <span>值：</span><input v-model = "v3.value"/>
-                                <span><a @click = "linkSelectDel(index,index2,index3)" href="javascript:void(0);">删除</a></span>
+                                <span>文本：</span><input v-model = "v2.label"/>
+                                <span>值：</span><input v-model = "v2.value"/>
+                                <span><a @click = "linkSelectAdd(0,index,index2)" href="javascript:void(0);">添加子选项</a></span>
+                                <span><a @click = "linkSelectDel(index,index2)" href="javascript:void(0);">删除</a></span>
+                              </div>
+                              <div class = "l_third" v-if = "v2.hasOwnProperty('children')" v-for = "v3,index3 in v2.children" :key = "index3">
+                                <div class = "l_row">
+                                  <span>文本：</span><input v-model = "v3.label"/>
+                                  <span>值：</span><input v-model = "v3.value"/>
+                                  <span><a @click = "linkSelectDel(index,index2,index3)" href="javascript:void(0);">删除</a></span>
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div class = "l_btn"><a @click = "linkSelectAdd(0)" href="javascript:void(0);">添加子选项</a></div>
                         </div>
-                        <div class = "l_btn"><a @click = "linkSelectAdd(0)" href="javascript:void(0);">添加子选项</a></div>
-                      </div>
-                    </el-dialog>
+                      </el-dialog>
+                  </div>
                 </div>
+
+                <el-row style = "padding-bottom:20px;padding-left:10px;">
+                  <el-button 
+                      type="primary" 
+                      size="small" 
+                      style = "width:90px;"
+                      :loading="btnLoadingFilter" 
+                      @click = "submitForm"
+                      >
+                      提交
+                  </el-button>
+                </el-row>
             </el-row>
         </el-row>
     </el-row>
@@ -699,11 +769,23 @@
     import draggable from "vuedraggable";
     import previewBox from "./autoForm/Preview"
     import componentObj from "./autoForm/Component.js"
+    import api from "@api";
 
     export default {
         name: "forms",
         data() {
             return {
+                inputWidth:320,
+                btnLoadingFilter:false,
+                dataForm:{
+                  description:'',
+                  formKey: '',
+                  formName: '',
+                  formNumber: '',
+                  keyInfo: '',
+                  versions: 1
+                },
+
                 linkSelectPop:false,
                 attrNameObj:componentObj.attr,
                 componentInputBox: componentObj.inputList,
@@ -721,9 +803,58 @@
             previewBox
         },
         mounted() {
-            
+            this.getInfo();
         },
         methods: {
+            resetFormBox(){
+              this.formBox = JSON.parse(this.dataForm.keyInfo);
+            },
+            getInfo(){
+              console.log(this.$route.query);
+              if(!this.$route.query.hasOwnProperty('id'))return;
+              api.formInfo(this.$route.query.id).then((res) => {
+                  if(res.data.status === 200) {
+                    this.dataForm = {...res.data.data};
+                    this.formBox = JSON.parse(res.data.data.keyInfo);
+                  }
+               });
+
+            },
+            submitForm(){
+              this.$refs.dataForm.validate((valid) => {
+                if (valid) {
+                  
+                  this.dataForm.keyInfo = JSON.stringify(this.formBox);
+                  this.btnLoadingFilter = true;
+
+                  let params = {
+                      ...this.dataForm
+                  };
+
+                  let fnName = 'formAdd';
+                  if(this.$route.query.hasOwnProperty('id')){
+                    params['id'] = this.$route.query.id;
+                    fnName = 'formEdit';
+                  }
+
+                  api[fnName](params).then((res) => {
+                      this.btnLoadingFilter = false;
+                      if(res.data.status === 200) {
+                          this.$message({
+                            message: this.$route.query.hasOwnProperty('id') ? '编辑成功' : '添加成功',
+                            type: 'success'
+                          });
+                          this.$router.push({path: `/forms/forms-manage`});
+                      }
+                  });
+
+                } 
+                else {
+                  console.log('error submit!!');
+                  return false;
+                }
+              });
+            },
             linkSelectDel(){
                 if(this.selectingIndex.length == 1){
                   var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
@@ -1102,15 +1233,22 @@
 
 <style lang="less" scoped>
 @mainColor: #409eff;
+@moduleBorderColor:#dedede;
 @borderColor:#dcdfe6;
 @borderColor2:#ccc;
 
+.formContent{
+  padding:0 10px 30px;
+  .title{
+    margin:0;
+  }
+}
+
 .board {
   display: flex;
-  height: 100vh;
   box-sizing: border-box;
   .leftBox {
-    border: 1px solid #aaa;
+    border: 1px solid @moduleBorderColor;
     width: 262px;
     padding: 10px;
     height: 100%;
@@ -1130,38 +1268,46 @@
   }
   .centerBox {
     box-sizing: border-box;
-    border: 1px solid #aaa;
+    border: 1px solid @moduleBorderColor;
     flex-grow: 1;
     padding: 10px;
     width: 0;
   }
   .rightBox {
-    border: 1px solid #aaa;
+    border: 1px solid @moduleBorderColor;
     width: 260px;
     padding: 10px;
+    padding-bottom:0;
     height: 100%;
     box-sizing: border-box;
     margin-left: 10px;
 
-    .btn{
-      width:100%;
-      text-align:center;
-      border-radius: 4px;
-      border:1px solid #ccc;
-      font-size: 12px;
-      display: block;
-      height: 30px;
-      line-height: 30px;
-      margin:0;
-      margin-bottom: 10px;
-      cursor: pointer;
+    .mainBtn{
+        .btn{
+          width:auto;
+          text-align:center;
+          border-radius: 4px;
+          border:1px solid #ccc;
+          font-size: 12px;
+          margin:0;
+          display:inline-block;
+          vertical-align:top;
+          margin-bottom: 10px;
+          margin-right:10px;
+          cursor: pointer;
+          padding:4px 10px;
+        }
     }
+
+    
     .btn2{
       font-size:14px;
     }
     .attrBox{
       text-align:left;
       .row{
+        border-top:1px solid @moduleBorderColor;
+        padding-top:10px;
         padding-bottom:10px;
         &>p{
           padding-bottom:6px;

@@ -4,12 +4,22 @@
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white">
                 <!-- 筛选 -->
-                <el-form ref="fmTbFilter" :model="tbFilter" size="small">
+                <el-form ref="fmTbFilter" :model="tbDataFilter" size="small">
                     <el-row class="filters">
-                        <el-form-item prop="name">
+                        <el-form-item prop="formNumber">
                             <el-row class="item">
-                                <el-row class="lb lb-unmgl">名称</el-row>
-                                <el-row><el-input v-model="tbFilter.name" placeholder="名称查询" class="inp-small"></el-input></el-row>
+                                <el-row class="lb lb-unmgl">表单编号</el-row>
+                                <el-row>
+                                    <el-input v-model="tbDataFilter.formNumber" placeholder="编号查询" class="inp-small"></el-input>
+                                </el-row>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item prop="formName">
+                            <el-row class="item mg-l-10">
+                                <el-row class="lb lb-unmgl">表单名称</el-row>
+                                <el-row>
+                                    <el-input v-model="tbDataFilter.formName" placeholder="名称查询" class="inp-small"></el-input>
+                                </el-row>
                             </el-row>
                         </el-form-item>
                         <!--<el-form-item prop="type">
@@ -52,12 +62,26 @@
                         <el-form-item>
                             <el-row class="item mg-l-10">
                                 <el-row class="btn">
-                                    <el-button type="primary" size="small" icon="el-icon-search"
-                                               :loading="btnLoadingFilter" @click="filterTableData(true)">查询</el-button>
+                                    <el-button 
+                                        type="primary" 
+                                        size="small" 
+                                        icon="el-icon-search"
+                                        :loading="btnLoadingFilter" 
+                                        @click="filterTableData(true)">
+                                        查询
+                                    </el-button>
                                 </el-row>
                                 <el-row class="btn">
-                                    <el-button type="default" size="small" icon="el-icon-refresh"
-                                               @click="() => {$refs.fmTbFilter.resetFields(); filterTableData(false);}">重置</el-button>
+                                    <el-button 
+                                        type="default" 
+                                        size="small" 
+                                        icon="el-icon-refresh"
+                                        @click="() => {
+                                            $refs.fmTbFilter.resetFields(); 
+                                            filterTableData(false);
+                                        }">
+                                        重置
+                                    </el-button>
                                 </el-row>
                             </el-row>
                         </el-form-item>
@@ -66,9 +90,14 @@
 
                 <!-- 功能 -->
                 <el-row class="fn-btns">
-                    <el-button type="primary" size="small" icon="el-icon-plus"
-                               :disabled="tbDataFilter.type === 1" @click="create"
-                               class="fn-btn">新增</el-button>
+                    <el-button 
+                        type="primary" 
+                        size="small" 
+                        icon="el-icon-plus"
+                        @click="create"
+                        class="fn-btn">
+                        新增
+                    </el-button>
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
                                class="fn-btn">批量删除</el-button>-->
@@ -80,13 +109,13 @@
                               :min-height="460" size="small"
                               highlight-current-row border>
                         <el-table-column label="编号" fixed="left" show-overflow-tooltip width="280">
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
+                            <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                         </el-table-column>
                         <el-table-column label="名称" show-overflow-tooltip min-width="160">
-                            <template slot-scope="scope">{{ scope.row.name }}</template>
+                            <template slot-scope="scope">{{ scope.row.formName }}</template>
                         </el-table-column>
                         <el-table-column label="版本" show-overflow-tooltip min-width="160">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                            <template slot-scope="scope">{{ scope.row.versions }}</template>
                         </el-table-column>
                         <!--<el-table-column label="创建日期" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
@@ -102,8 +131,6 @@
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="info" :underline="false" @click="formManage(scope.row)" class="fs-12">表单管理</el-link>
-                                    <el-row class="fg">|</el-row>
                                     <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
@@ -116,11 +143,14 @@
                 </el-row>
 
                 <!-- 分页 -->
-                <el-row v-if="tbData.content.length" class="mg-t-20 mg-b-10 txt-c">
-                    <el-pagination :total="tbData.totalElements" :current-page="tbData.number + 1" :page-size="10"
-                                   layout="total, prev, pager, next, jumper"
-                                   @current-change="handlePaginationChange"
-                                   background>
+                <el-row v-if="tbData.total > 0" class="mg-t-20 mg-b-10 txt-c">
+                    <el-pagination 
+                        :total="tbData.total" 
+                        :current-page="tbData.current" 
+                        :page-size="tbData.size"
+                        layout="total, prev, pager, next, jumper"
+                        @current-change="handlePaginationChange"
+                        background>
                     </el-pagination>
                 </el-row>
             </el-row>
@@ -130,121 +160,89 @@
 </template>
 
 <script>
-
+    import api from "@api";
     export default {
         name: "index",
         data() {
             return {
-
-                tbSelectedArr: [],
-                tbFilter: {
-                    name: '',
-                    createTime: [],
+                tbData: {
+                    content: [],
+                    total:0,
+                    size:10,
+                    current:1
                 },
-                tbData: {content: []},
-                tbDataFilter: {...this.tbFilter},
-                btnLoadingFilter: false,
-
+                tbDataFilter: {
+                    formName:'',
+                    formNumber:''
+                },
+                btnLoadingFilter: false
             }
         },
         mounted() {
-            this.tbFilter = this.$route.params._lpq !== undefined ? {
-                createTime: (this.$route.params._lpq.startDate && this.$route.params._lpq.endDate)
-                    ? [this.$route.params._lpq.startDate, this.$route.params._lpq.endDate]
-                    : [],
-                ...this.$route.params._lpq
-            } : this.tbFilter;
-            this.tbDataFilter = {...this.tbFilter};
-            delete this.tbDataFilter.createTime;
             this.getTableData();
         },
         methods: {
-            formManage(obj){
-                console.log(obj);
-                let that = this;
-                that.$router.push({path: `/forms/forms-forms`});
-            },
+            
             getTableData: function(page = 1, pageSize = 10) {
-                let that = this;
-                that.btnLoadingFilter = true;
+                this.btnLoadingFilter = true;
 
                 let params = {
-                    ...that.tbDataFilter,
+                    ...this.tbDataFilter,
                     pageCurrent: page,
                     pageSize,
                 };
 
-                /*api.sysLogList(params).then((res) => {
-                    // console.log(res);
+                api.formList(params).then((res) => {
+                    this.btnLoadingFilter = false;
                     if(res.data.status === 200) {
-                        that.tbData = {...res.data.data};
+                        this.tbData.content = res.data.data.records;
+                        this.tbData.current = res.data.data.current;
+                        this.tbData.size = res.data.data.size;
+                        this.tbData.total = res.data.data.total;
                     }
-                    that.btnLoadingFilter = false;
-                });*/
-
-                that.tbData = {
-                    content: [
-                        {id: 1, name: '内测版', version: '1.0'}
-                    ],
-                };
+                 });
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
             },
             filterTableData: function(isFilter = true) {
                 let that = this;
-
-                if(isFilter) {
-                    that.tbDataFilter = {
-                        ...that.tbFilter,
-                        startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
-                        endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
-                    };
-                    delete that.tbDataFilter.createTime;
-                } else {
-                    that.tbDataFilter = {};
-                }
-
+                //console.log(this.tbDataFilter);
                 that.getTableData(1);
             },
-
             create: function() {
-                let that = this;
-                if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                    that.$message.warning('您无权限进行此操作');
-                    return;
-                }
-
-                that.$router.push({path: `/sys/user/add/${JSON.stringify(that.tbDataFilter)}`});
+                // let that = this;
+                // if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
+                //     that.$message.warning('您无权限进行此操作');
+                //     return;
+                // }
+                this.$router.push({path: `/forms/forms-forms`});
             },
             edit: function(row) {
-
+                this.$router.push({path: '/forms/forms-forms',query:{id:parseInt(row.id)}});
             },
             remove: function(row) {
-                let that = this;
-                if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
-                    that.$message.warning('您无权限进行此操作');
-                    return;
-                }
+                // let that = this;
+                // if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
+                //     that.$message.warning('您无权限进行此操作');
+                //     return;
+                // }
 
-                that.$confirm('确认要删除所选数据吗？', '确认信息', {
+                this.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,
                     confirmButtonText: '删除',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    /*api.sysUserDel(row.id).then((res) => {
+                    api.formDel(row.id).then((res) => {
                         if(res.data.status === 200) {
-                            that.$message.success('保存成功');
-                            that.getTableData();
+                            this.$message.success('删除成功');
+                            this.getTableData(this.tbData.current);
                         }
-                    });*/
+                    });
                 }).catch();
             },
-            handleSelectionChange: function(chooseArr) {
-                this.tbSelectedArr = chooseArr;
+            batchDelete: function() {
             },
-            batchDelete: function() {},
-
             versionManage: function(row) {
                 let that = this;
 

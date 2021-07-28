@@ -7,6 +7,7 @@ import * as web from './modules/web';
 import * as member from './modules/member';
 import * as course from './modules/course';
 import * as sys from './modules/sys';
+import * as form from './modules/form';
 
 const api = {
     ...common,
@@ -18,6 +19,7 @@ const api = {
     ...member,
     ...course,
     ...sys,
+    ...form,
 };
 
 /*const files = require.context('./modules/', true, /\.js$/);
