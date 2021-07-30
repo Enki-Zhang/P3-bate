@@ -2,18 +2,18 @@
     <div style="margin-top: 16px">
         <el-form-item label="处理用户">
             <el-select v-model="userTaskForm.assignee" @change="updateElementTask('assignee')">
-                <el-option v-for="ak in mockData" :key="'ass-' + ak" :label="`用户${ak}`" :value="`user${ak}`"/>
+                <el-option v-for="(v, k) in mockCL" :key="`ass-${k}`" :label="v.name" :value="v.uid"/>
             </el-select>
         </el-form-item>
         <el-form-item label="候选用户">
             <el-select v-model="userTaskForm.candidateUsers" multiple collapse-tags
                        @change="updateElementTask('candidateUsers')">
-                <el-option v-for="uk in mockData" :key="'user-' + uk" :label="`用户${uk}`" :value="`user${uk}`"/>
+                <el-option v-for="(v, k) in mockHX" :key="`user-${k}`" :label="v.name" :value="v.uid"/>
             </el-select>
         </el-form-item>
         <el-form-item label="候选分组">
             <el-select v-model="userTaskForm.candidateGroups" multiple @change="updateElementTask('candidateGroups')">
-                <el-option v-for="gk in mockData" :key="'ass-' + gk" :label="`分组${gk}`" :value="`group${gk}`"/>
+                <el-option v-for="(v, k) in mockFZ" :key="`group-${k}`" :label="v.name" :value="v.uid"/>
             </el-select>
             <!--  collapse-tags -->
         </el-form-item>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+
     export default {
         name: "UserTask",
         props: {
@@ -47,7 +48,21 @@
                     priority: ""
                 },
                 userTaskForm: {},
-                mockData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                mockData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+
+                mockCL: [
+                    {uid: 1, name: '张三'},
+                    {uid: 2, name: '李四'},
+                    {uid: 3, name: '王五'},
+                ],
+                mockHX: [
+                    {uid: 1, name: '赵六'},
+                    {uid: 2, name: '刘七'},
+                    {uid: 3, name: '苏八'},
+                ],
+                mockFZ: [
+
+                ],
             };
         },
         watch: {

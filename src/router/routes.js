@@ -79,29 +79,45 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual',
+                    path: 'management-manual/:pq',
                     name: 'system-doc|management-manual',
-                    meta: {title: '安全管理手册', isShowBreadcrumb: 1,},
+                    meta: {title: '', isShowBreadcrumb: 1,},
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/add/:_lpq?',
+                    path: 'management-manual/add/:pq/:_lpq?',
                     name: 'system-doc|management-manual|add',
                     meta: {
-                        title: '新增安全管理手册',
+                        title: '新增',
                         isShowBreadcrumb: 1,
                         isSinglePage: 0,
                         isNeedVirtualParent: 1,
                         virtualParent: {
                             path: 'management-manual',
                             name: 'system-doc|management-manual',
-                            meta: {title: '安全管理手册', virtualParent: null, isSinglePage: 1},
+                            meta: {title: '', virtualParent: null, isSinglePage: 1},
                         }
                     },
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/detail/:_lpq?',
+                    path: 'management-manual/version/:pq/:_lpq?',
+                    name: 'system-doc|management-manual|version',
+                    meta: {
+                        title: '版本管理',
+                        isShowBreadcrumb: 1,
+                        isSinglePage: 0,
+                        isNeedVirtualParent: 1,
+                        virtualParent: {
+                            path: 'management-manual',
+                            name: 'system-doc|management-manual',
+                            meta: {title: '', virtualParent: null, isSinglePage: 1},
+                        }
+                    },
+                    hidden: 1,
+                },
+                {
+                    path: 'management-manual/detail/:pq/:_lpq?',
                     name: 'system-doc|management-manual|detail',
                     meta: {
                         title: '文件详情',
@@ -111,15 +127,25 @@ const inLayout = {
                         virtualParent: {
                             path: 'management-manual',
                             name: 'system-doc|management-manual',
-                            meta: {title: '安全管理手册', virtualParent: null, isSinglePage: 1},
+                            meta: {title: '', virtualParent: null, isSinglePage: 1},
                         }
                     },
                     hidden: 1,
                 },
                 {
-                    path: 'program-files',
-                    name: 'system-doc|program-files',
-                    meta: {title: '程序文件', isShowBreadcrumb: 1,},
+                    path: 'management-manual/edit/:pq/:_lpq?',
+                    name: 'system-doc|management-manual|edit',
+                    meta: {
+                        title: '编辑',
+                        isShowBreadcrumb: 1,
+                        isSinglePage: 0,
+                        isNeedVirtualParent: 1,
+                        virtualParent: {
+                            path: 'management-manual',
+                            name: 'system-doc|management-manual',
+                            meta: {title: '', virtualParent: null, isSinglePage: 1},
+                        }
+                    },
                     hidden: 1,
                 },
                 /*{
@@ -205,10 +231,55 @@ const inLayout = {
                     hidden: 0,
                 },
                 {
-                    path: 'info',
-                    name: 'personnel_info',
+                    path: 'organization/add/:_lpq?',
+                    name: 'personnel_organization|add',
+                    meta: {
+                        title: '新增角色',
+                        isShowBreadcrumb: 1,
+                        isNeedVirtualParent: 1,
+                        virtualParent: {
+                            path: 'organization',
+                            name: 'personnel_organization',
+                            meta: {title: '组织架构', virtualParent: null, isSinglePage: 1},
+                        }
+                    },
+                    hidden: 1,
+                },
+                {
+                    path: 'organization/edit/:id/:_lpq?',
+                    name: 'personnel_organization|edit',
+                    meta: {
+                        title: '编辑角色',
+                        isShowBreadcrumb: 1,
+                        isNeedVirtualParent: 1,
+                        virtualParent: {
+                            path: 'organization',
+                            name: 'personnel_organization',
+                            meta: {title: '组织架构', virtualParent: null, isSinglePage: 1},
+                        }
+                    },
+                    hidden: 1,
+                },
+                {
+                    path: 'information',
+                    name: 'personnel_information',
                     meta: {title: '人事资料', isShowBreadcrumb: 1, },
                     hidden: 0,
+                },
+                {
+                    path: 'information/add/:_lpq?',
+                    name: 'personnel_information|add',
+                    meta: {
+                        title: '新增角色',
+                        isShowBreadcrumb: 1,
+                        isNeedVirtualParent: 1,
+                        virtualParent: {
+                            path: 'information',
+                            name: 'personnel_information',
+                            meta: {title: '人事资料', virtualParent: null, isSinglePage: 1},
+                        }
+                    },
+                    hidden: 1,
                 },
                 {
                     path: 'attendance/overview',
@@ -329,6 +400,33 @@ const inLayout = {
                         isSinglePage: 0,
                     },
                     hidden: 1,
+                },
+            ]
+        },
+        {
+            path: 'settings',
+            name: 'settings',
+            icon: 'forms',
+            meta: {title: '系统管理', isShowBreadcrumb: 1,},
+            hidden: 0,
+            children: [
+                {
+                    path: 'sys-manage',
+                    name: 'settings_sys-manage',
+                    meta: {title: '系统设置', isShowBreadcrumb: 1,},
+                    hidden: 0,
+                },
+                {
+                    path: 'menu-manage',
+                    name: 'settings_menu-manage',
+                    meta: {title: '菜单管理', isShowBreadcrumb: 1,},
+                    hidden: 0,
+                },
+                {
+                    path: 'role-manage',
+                    name: 'settings_role-manage',
+                    meta: {title: '角色管理', isShowBreadcrumb: 1,},
+                    hidden: 0,
                 },
             ]
         },

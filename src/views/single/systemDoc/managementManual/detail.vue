@@ -152,6 +152,10 @@
 
             }
         },
+        beforeCreate() {
+            // 更改当前路由面包屑 title
+            this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.params.pq));
+        },
         created() {
             // this.convertWordToText('/BPD01-01 生物安全管理活动程序.docx');
         },

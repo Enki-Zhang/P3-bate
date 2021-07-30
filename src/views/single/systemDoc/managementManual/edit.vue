@@ -38,7 +38,7 @@
                                         <el-upload
                                                 ref="otherFiles" action=""
                                                 :auto-upload="false" :show-file-list="false"
-                                                :on-change="(file, fileList) => {chooseUploadFile(file, fileList, 'files')}">
+                                                :on-change="(file, fileList) => {chooseUploadFile(file, fileList, 'files', false)}">
                                             <!--                                        <span class="img-link"><span class="el-icon-link mg-r-5"></span>上传附件</span>-->
                                             <el-button type="primary" icon="el-icon-link">上传附件</el-button>
                                         </el-upload>
@@ -48,7 +48,7 @@
                                             <el-upload
                                                     ref="otherFiles" action=""
                                                     :auto-upload="false" :show-file-list="false"
-                                                    :on-change="(file, fileList) => {chooseUploadFile(file, fileList, 'files')}">
+                                                    :on-change="(file, fileList) => {chooseUploadFile(file, fileList, 'files', false)}">
                                                 <!--                                            <span class="img-link"><span class="el-icon-link mg-r-5"></span>上传附件</span>-->
                                                 <el-button type="primary" icon="el-icon-link">上传附件</el-button>
                                             </el-upload>
@@ -176,6 +176,8 @@
 
     import dayjs from 'dayjs';
     import jsonTableData from '@mock/systemDocManagementManual.json';
+    import api from "@api";
+    const listRouteName = 'system-doc|management-manual';
 
     export default {
         name: "edit",
@@ -198,6 +200,10 @@
                 btnLoadingFilter: false,
 
             }
+        },
+        beforeCreate() {
+            // 更改当前路由面包屑 title
+            this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.params.pq));
         },
         mounted() {
             this.tbFilter = this.$route.params._lpq !== undefined ? {
@@ -269,6 +275,7 @@
                 });
 
                 api.upload(file.raw).then((res) => {
+                    console.log(res);
                     if(res.data.status === 200) {
                         if(refIsArray) {
                             that.form[ref].push({
@@ -311,7 +318,15 @@
 
 
             cancel: function() {
-                this.$router.push({name: 'system-doc|folder'});
+                let that = this;
+
+                that.$confirm('是否返回列表', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '返回列表',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                }).catch();
             },
         }
     }

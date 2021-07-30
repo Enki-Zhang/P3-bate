@@ -138,4 +138,11 @@
   .fn-btn {min-width: min-content; max-width: max-content;}
   // 列表缩略 tips
   .el-tooltip__popper {font-size: 26px !important;}
+  // dropdown
+  .el-dropdown-menu {
+    .el-dropdown-menu__item {
+      font-size: 28px;
+      padding: 20px 40px;
+    }
+  }
 }

@@ -2,6 +2,10 @@
 const _import = require('@plugins/dynamic-import/import.views.' + process.env.NODE_ENV);
 import layout from "@layout/layout";
 
+// 以下为路由 name 的符号释义
+// _ 下横线之前为高亮
+// - 减号为大写转小写分隔
+// | 竖线为后缀，直接切除
 let routerComponentsMap = {
     // 引入布局文件
     'layout': layout,

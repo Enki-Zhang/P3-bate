@@ -27,7 +27,7 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </el-row>
-                    <el-row @click.native="navByBlockName(v.name)" class="con">
+                    <el-row @click.native="navByBlockName(v)" class="con">
                         <el-row>
                             <img :src="require(`@assets/image/systemDoc/${v.icon}`)">
                         </el-row>
@@ -64,37 +64,37 @@
 
                 blockArr: [
                     {
-                        name: 'system-doc|management-manual',
+                        name: 'management-manual',
                         icon: 'aqglsc.png',
                         title: '安全管理手册',
                         desc: '一句话描述一句话描述'
                     },
                     {
-                        name: 'system-doc|program-files',
+                        name: 'program-files',
                         icon: 'cxwj.png',
                         title: '程序文件',
                         desc: '一句话描述一句话描述'
                     },
                     {
-                        name: 'system-doc|manual',
+                        name: 'manual',
                         icon: 'aqsc.png',
                         title: '安全手册',
                         desc: '一句话描述一句话描述'
                     },
                     {
-                        name: 'system-doc|operating-procedures',
+                        name: 'operating-procedures',
                         icon: 'bzczgc.png',
                         title: '标准操作规程',
                         desc: '标准操作规程SOP'
                     },
                     {
-                        name: 'system-doc|report',
+                        name: 'report',
                         icon: 'fxpgbg.png',
                         title: '风险评估报告',
                         desc: '一句话描述一句话描述'
                     },
                     {
-                        name: 'system-doc|msds',
+                        name: 'msds',
                         icon: 'msds.png',
                         title: 'MSDS表单',
                         desc: '材料安全数据表'
@@ -106,11 +106,16 @@
         },
         created() {},
         methods: {
-            navByBlockName: function(name) {
+            navByBlockName: function(block) {
                 let that = this;
 
                 if(!that.invalidClick) {
-                    that.$router.push({name});
+                    that.$router.push({
+                        path: `/system-doc/management-manual/${JSON.stringify({
+                            name: block.name,
+                            title: block.title
+                        })}`
+                    });
                 }
             },
             create: function() {
@@ -238,6 +243,7 @@
             .file-manage {
                 width: 290px;
                 height: 80px;
+                margin-top: -20px;
                 font-size: 26px;
                 line-height: 80px;
 
@@ -251,8 +257,20 @@
                     margin: 12px;
                     border-radius: 15px;
                     img {width: 200px; height: 200px;}
-                    .title {font-size: 28px; line-height: 50px;}
-                    .desc {font-size: 22px; line-height: 30px;}
+
+                    .bg-setting {
+                        width: 80px;
+                        height: 50px;
+                        .setting {
+                            font-size: 35px;
+                            line-height: 50px;
+                        }
+                    }
+
+                    .con {
+                        .title {font-size: 28px; line-height: 50px;}
+                        .desc {font-size: 22px; line-height: 30px;}
+                    }
                 }
             }
         }
