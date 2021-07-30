@@ -26,24 +26,19 @@ export function sysRoleDel(data) {
 export function sysUserList(params) {
     return ajax.get('userServer/sysUser/list', params);
 }
-export function sysUserSave(data) {
-    return ajax.post('userServer/sysUser/save', data);
-}
 export function sysUserFind(params) {
     return ajax.get(`userServer/sysUser/find/${params}`);
 }
-export function sysUserEdit(data) {
-    return ajax.post('userServer/sysUser/edit', data);
+export function sysRoleSelect(params) {
+    return ajax.get(`userServer/sysRole/select`, params);
+}
+export function sysUserJurisdiction(data) {
+    return ajax.post(`userServer/sysUser/jurisdiction`, data);
+}
+export function sysUserResetPwd(data) {
+    // return ajax.post(`userServer/sysUser/resetPwd/${data}`);
+    return ajax.post(`userServer/sysUser/resetPwd`, data);
 }
 export function sysUserDel(data) {
     return ajax.post(`userServer/sysUser/del/${data}`);
-}
-export function sysUserResetPwd(data) {
-    return ajax.post(`userServer/sysUser/resetPwd/${data}`);
-}
-
-// 操作日志
-
-export function sysLogList(params) {
-    return ajax.get('userServer/sysLog/list', params);
 }

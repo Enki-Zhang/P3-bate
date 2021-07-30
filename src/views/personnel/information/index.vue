@@ -6,10 +6,16 @@
                 <!-- 筛选 -->
                 <el-form ref="fmTbFilter" :model="tbFilter" size="small">
                     <el-row class="filters">
-                        <el-form-item prop="name">
+                        <el-form-item prop="username">
                             <el-row class="item">
-                                <el-row class="lb lb-unmgl">文件名</el-row>
-                                <el-row><el-input v-model="tbFilter.name" placeholder="文件名查询" class="inp-small"></el-input></el-row>
+                                <el-row class="lb lb-unmgl">用户名</el-row>
+                                <el-row><el-input v-model="tbFilter.username" placeholder="用户名查询" class="inp-small"></el-input></el-row>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item prop="phone">
+                            <el-row class="item mg-l-10">
+                                <el-row class="lb lb-unmgl">手机号码</el-row>
+                                <el-row><el-input v-model="tbFilter.phone" placeholder="手机号码查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
                         <!--<el-form-item prop="type">
@@ -24,7 +30,7 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>-->
-                        <el-form-item prop="auditStatus">
+                        <!--<el-form-item prop="auditStatus">
                             <el-row class="item mg-l-10">
                                 <el-row class="lb lb-unmgl">发布状态</el-row>
                                 <el-row>
@@ -35,7 +41,7 @@
                                     </el-select>
                                 </el-row>
                             </el-row>
-                        </el-form-item>
+                        </el-form-item>-->
                         <!--<el-form-item prop="createTime">
                             <el-row class="item">
                                 <el-row class="lb">创建时间</el-row>
@@ -66,10 +72,10 @@
 
                 <!-- 功能 -->
                 <el-row class="fn-btns">
-                    <el-button type="primary" size="small" icon="el-icon-plus"
+                    <!--<el-button type="primary" size="small" icon="el-icon-plus"
                                :disabled="tbDataFilter.type === 1"
                                @click="create"
-                               class="fn-btn">新增</el-button>
+                               class="fn-btn">新增</el-button>-->
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
                                class="fn-btn">批量删除</el-button>-->
@@ -77,40 +83,44 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
+                    <el-table ref="multipleTable" :data="tbData.records" tooltip-effect="dark"
                               :min-height="460" size="small"
                               class="dp-pc"
                               highlight-current-row>
-                        <el-table-column label="序号" fixed="left" show-overflow-tooltip>
+                        <el-table-column label="序号" fixed="left" show-overflow-tooltip min-width="60">
                             <template slot-scope="scope">{{ scope.row.id }}</template>
                         </el-table-column>
-                        <el-table-column label="姓名" show-overflow-tooltip min-width="220">
-                            <template slot-scope="scope">{{ scope.row.name }}</template>
+                        <el-table-column label="姓名" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.username }}</template>
                         </el-table-column>
                         <el-table-column label="性别" show-overflow-tooltip min-width="60">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                            <template slot-scope="scope">{{ scope.row.sex ? '男' : '女' }}</template>
                         </el-table-column>
                         <el-table-column label="出生日期" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                            <template slot-scope="scope">{{ scope.row.birthday ? dayjs(scope.row.birthday).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
                         <el-table-column label="电子邮箱" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                            <template slot-scope="scope">{{ scope.row.email }}</template>
                         </el-table-column>
-                        <el-table-column label="手机号码" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                        <el-table-column label="手机号码" show-overflow-tooltip min-width="100">
+                            <template slot-scope="scope">{{ scope.row.phone }}</template>
                         </el-table-column>
                         <el-table-column label="住址" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                            <template slot-scope="scope">{{ scope.row.address }}</template>
                         </el-table-column>
                         <el-table-column label="组别" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.operator }}</template>
+                            <template slot-scope="scope">{{ scope.row.role }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="140">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="220">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">查看</el-link>
                                     <el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">下载</el-link>
+                                    <el-link type="primary" :underline="false" @click="showDlRole(scope.row)" class="fs-12">组别</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="resetPassword(scope.row)" class="fs-12">重置密码</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="download(scope.row)" class="fs-12">下载</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
                                 </el-row>
@@ -130,6 +140,8 @@
             </el-row>
         </el-row>
 
+        <!-- 组件：组别 -->
+        <dl-role v-model="dlRoleVisible" :params="dlParams" @closed="getTableData()"></dl-role>
         <!-- 移动端：列表操作 -->
         <van-action-sheet v-model="asShow"
                           :description="asOptions.description"
@@ -145,12 +157,19 @@
 
     import dayjs from 'dayjs';
     import api from "@api";
+    import dlRole from "@views/personnel/information/dlRole";
 
     export default {
         name: "index",
+        components: {
+            dlRole,
+        },
         data() {
             return {
                 dayjs,
+
+                dlParams: {},
+                dlRoleVisible: false,
 
                 asShow: false,
                 asOptions: {
@@ -162,7 +181,8 @@
 
                 tbSelectedArr: [],
                 tbFilter: {
-                    name: '',
+                    username: '',
+                    phone: '',
                     createTime: [],
                 },
                 tbData: {list: []},
@@ -193,9 +213,9 @@
                 };
 
                 api.sysUserList(params).then((res) => {
-                    // console.log(res);
+                    // console.log(res.data.data);
                     if(res.data.status === 200) {
-                        that.tbData = {...res.data};
+                        that.tbData = {...res.data.data};
                     }
                     that.btnLoadingFilter = false;
                 });
@@ -220,53 +240,65 @@
                 that.getTableData(1);
             },
 
-            create: function() {
-                let that = this;
-                // if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
-
-                that.$router.push({path: `/personnel/information/add/${JSON.stringify(that.tbDataFilter)}`});
-            },
-            versionManage: function(row) {
-                let that = this;
-
-                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
-                that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
-            },
             detail: function() {
                 let that = this;
 
                 that.$router.push({path: `/system-doc/management-manual/detail/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
             },
-            edit: function(row) {
+            showDlRole: function(row) {
                 let that = this;
-                // if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
 
-                that.$router.push({path: `/system-doc/management-manual/edit/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+                api.sysUserFind(row.id).then((res) => {
+                    if(res.data.status === 200) {
+                        that.dlParams = {...res.data.data};
+                        that.dlRoleVisible = true;
+                    }
+                });
+            },
+            resetPassword: function(row) {
+                let that = this;
+                /*if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }*/
+
+                that.$confirm('确认要重置该人员的密码吗？', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '重置密码',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    api.sysUserResetPwd({
+                        userId: row.id,
+                        pwd: '123456'
+                    }).then((res) => {
+                        if(res.data.status === 200) {
+                            that.$message.success('操作成功');
+                            that.getTableData();
+                        }
+                    });
+                }).catch();
+            },
+            download: function(row) {
+
             },
             remove: function(row) {
                 let that = this;
-                if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
+                /*if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
                     that.$message.warning('您无权限进行此操作');
                     return;
-                }
+                }*/
 
                 that.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,
                     confirmButtonText: '删除',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    /*api.sysUserDel(row.id).then((res) => {
+                    api.sysUserDel(row.id).then((res) => {
                         if(res.data.status === 200) {
-                            that.$message.success('保存成功');
+                            that.$message.success('操作成功');
                             that.getTableData();
                         }
-                    });*/
+                    });
                 }).catch();
             },
             handleSelectionChange: function(chooseArr) {
@@ -274,17 +306,6 @@
             },
             batchDelete: function() {},
 
-
-            release: function() {
-                let that = this;
-
-                that.$router.push({path: `management-manual/release/${JSON.stringify(that.tbDataFilter)}`});
-            },
-            processDesign: function(row) {
-                let that = this;
-
-
-            },
             showAsOperate: function(row) {
                 let that = this;
 

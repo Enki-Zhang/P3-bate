@@ -58,7 +58,7 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.data"
+                    <el-table ref="multipleTable" :data="tbData.records"
                               tooltip-effect="dark" size="small"
                               highlight-current-row border>
                         <el-table-column label="角色编号" fixed="left" show-overflow-tooltip min-width="200">
@@ -70,9 +70,9 @@
                         <el-table-column label="描述" show-overflow-tooltip min-width="280">
                             <template slot-scope="scope">{{ scope.row.description }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="90">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="110">
                             <template slot-scope="scope">
-                                <el-row type="flex" justify="space-between">
+                                <el-row type="flex" justify="space-around">
                                     <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
@@ -148,7 +148,7 @@
                 api.sysRoleList(params).then((res) => {
                     // console.log(res);
                     if(res.data.status === 200) {
-                        that.tbData = {...res.data};
+                        that.tbData = {...res.data.data};
                     }
                     that.btnLoadingFilter = false;
                 });

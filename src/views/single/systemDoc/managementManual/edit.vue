@@ -177,6 +177,7 @@
     import dayjs from 'dayjs';
     import jsonTableData from '@mock/systemDocManagementManual.json';
     import api from "@api";
+    const listRouteName = 'system-doc|management-manual';
 
     export default {
         name: "edit",
@@ -317,7 +318,15 @@
 
 
             cancel: function() {
-                this.$router.push({name: 'system-doc|folder'});
+                let that = this;
+
+                that.$confirm('是否返回列表', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '返回列表',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                }).catch();
             },
         }
     }

@@ -270,7 +270,7 @@
                 let that = this;
 
                 // console.log(`${JSON.stringify(that.tbDataFilter)}`);
-                that.$router.push({path: `/forms/version/manage/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({path: `/system-doc/management-manual/version/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
             },
             detail: function() {
                 let that = this;

@@ -101,10 +101,10 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/edit/:pq/:_lpq?',
-                    name: 'system-doc|management-manual|edit',
+                    path: 'management-manual/version/:pq/:_lpq?',
+                    name: 'system-doc|management-manual|version',
                     meta: {
-                        title: '编辑',
+                        title: '版本管理',
                         isShowBreadcrumb: 1,
                         isSinglePage: 0,
                         isNeedVirtualParent: 1,
@@ -132,12 +132,22 @@ const inLayout = {
                     },
                     hidden: 1,
                 },
-                /*{
-                    path: 'program-files',
-                    name: 'system-doc|program-files',
-                    meta: {title: '程序文件', isShowBreadcrumb: 1,},
+                {
+                    path: 'management-manual/edit/:pq/:_lpq?',
+                    name: 'system-doc|management-manual|edit',
+                    meta: {
+                        title: '编辑',
+                        isShowBreadcrumb: 1,
+                        isSinglePage: 0,
+                        isNeedVirtualParent: 1,
+                        virtualParent: {
+                            path: 'management-manual',
+                            name: 'system-doc|management-manual',
+                            meta: {title: '', virtualParent: null, isSinglePage: 1},
+                        }
+                    },
                     hidden: 1,
-                },*/
+                },
                 /*{
                     path: 'program/files/edit',
                     name: 'system_doc_program_files_edit',
@@ -393,7 +403,7 @@ const inLayout = {
                 },
             ]
         },
-        /*{
+        {
             path: 'settings',
             name: 'settings',
             icon: 'forms',
@@ -419,7 +429,7 @@ const inLayout = {
                     hidden: 0,
                 },
             ]
-        },*/
+        },
     ]
 };
 
