@@ -810,7 +810,6 @@
               this.formBox = JSON.parse(this.dataForm.keyInfo);
             },
             getInfo(){
-              console.log(this.$route.query);
               if(!this.$route.query.hasOwnProperty('id'))return;
               api.formInfo(this.$route.query.id).then((res) => {
                   if(res.data.status === 200) {

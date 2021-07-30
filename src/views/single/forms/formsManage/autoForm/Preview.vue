@@ -50,24 +50,24 @@ export default {
   },
   methods:{
     getText(i){
-      return `<div :style = "{textAlign:data[${i}].attr_label_align,fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
+      return `<div :style = "{textAlign:'right',fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
     },
     getInput(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input 
                     size = "small" 
                     v-model = "data[${i}].attr_value" 
-                    :style = "{textAlign:data[${i}].attr_input_align}" 
                     :placeholder="data[${i}].attr_placeholder">
                   </el-input>
               </div>`;
     },
     getTime(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-time-picker
                     size="small"
+                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     value-format="HH:mm:ss"
                     v-model="data[${i}].attr_time_value"
                     :picker-options="{
@@ -78,11 +78,12 @@ export default {
     },
     getTimeRange(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
         
                   <el-time-picker
                     is-range
                     size="small"
+                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     v-model="data[${i}].attr_time_range_value"
                     value-format="HH:mm:ss"
                     range-separator="-"
@@ -92,8 +93,9 @@ export default {
     },
     getDateRange(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-date-picker
+                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     size="small"
                     value-format="yyyy-MM-dd"
                     v-model="data[${i}].attr_date_range_value"
@@ -104,8 +106,9 @@ export default {
     },
     getDate(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-date-picker
+                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     size="small"
                     value-format="yyyy-MM-dd"
                     v-model="data[${i}].attr_date_value"
@@ -115,7 +118,7 @@ export default {
     },
     getInputNumber(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input-number 
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     size = "small" 
@@ -129,11 +132,12 @@ export default {
     },
     getSelect(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-select 
                     size = "small" 
-                    v-model=" data[${i}].data_value" 
+                    v-model="data[${i}].data_value" 
+                    :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     :placeholder="data[${i}].attr_placeholder">
                     <el-option
                       v-for="v,index in data[${i}].attr_data_list"
@@ -146,11 +150,12 @@ export default {
     },
     getLinkSelect(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-cascader
                     size="small"
                     clearable
+                    :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     :placeholder="data[${i}].attr_placeholder"
                     v-model="data[${i}].attr_data_link_value"
                     :options="data[${i}].attr_data_link_list">
@@ -159,7 +164,7 @@ export default {
     },
     getRadio(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <span>
                     <el-radio 
@@ -174,7 +179,7 @@ export default {
     },
     getCheck(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-checkbox-group v-model = "data[${i}].data_value">
                     <el-checkbox
@@ -188,7 +193,7 @@ export default {
     },
     getSwitch(i){
       return `<div class = "previewRow inputBox">
-                  <span :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-switch
                     v-model="data[${i}].attr_boolean_value">
@@ -197,7 +202,7 @@ export default {
     },
     getTextarea(i){
       return `<div class = "previewRow inputBox">
-                  <span class = "labelTextarea" :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input 
                     size = "small" 
                     resize = "none" 
@@ -210,7 +215,7 @@ export default {
     },
     getUpload(i){
       return `<div class = "previewRow inputBox">
-                  <span class = "labelTextarea" :style = "{textAlign:data[${i}].attr_label_align,width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-upload
                     class="avatar-uploader"
                     :action="data[${i}].attr_url"

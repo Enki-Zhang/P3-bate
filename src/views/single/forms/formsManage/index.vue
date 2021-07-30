@@ -131,6 +131,8 @@
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
                                     <el-row class="fg">|</el-row>
+                                    <el-link type="info" :underline="false" @click="prevManage(scope.row)" class="fs-12">前置表单</el-link>
+                                    <el-row class="fg">|</el-row>
                                     <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
@@ -155,6 +157,101 @@
                 </el-row>
             </el-row>
         </el-row>
+
+        <el-dialog
+          title="前置表单管理"
+          :visible.sync="prevFormPop"
+          width="50%">
+            <el-row style = "padding-bottom:20px;">
+                <el-button 
+                    type="primary" 
+                    size="small" 
+                    icon="el-icon-plus"
+                    @click="addPrevPop"
+                    class="fn-btn">
+                    新增
+                </el-button>
+            </el-row>
+            <el-table 
+                ref="prevFormTable" 
+                :data="prevData.content" 
+                tooltip-effect="dark"
+                :min-height="460" 
+                size="small"
+                highlight-current-row border>
+                <el-table-column label="前置表单id" show-overflow-tooltip width="160">
+                    <template slot-scope="scope">{{ scope.row.frontTableId }}</template>
+                </el-table-column>
+                <el-table-column label="当前表单id" show-overflow-tooltip>
+                    <template slot-scope="scope">{{ scope.row.formId }}</template>
+                </el-table-column>
+                <el-table-column label="当前表单名称" show-overflow-tooltip>
+                    <template slot-scope="scope">{{ scope.row.formName }}</template>
+                </el-table-column>
+                <el-table-column label="创建时间" show-overflow-tooltip width="180">
+                    <template slot-scope="scope">{{ scope.row.createTime | dateStr }}</template>
+                </el-table-column>
+                <el-table-column label="操作" show-overflow-tooltip width="100">
+                    <template slot-scope="scope">
+                        <el-row type="flex" justify="space-around">
+                            <el-link type="danger" :underline="false" @click="removePrevForm(scope.row)" class="fs-12">删除</el-link>
+                        </el-row>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <el-row v-if="prevData.total > 0" class="mg-t-20 mg-b-10 txt-c">
+                <el-pagination 
+                    :total="prevData.total" 
+                    :current-page="prevData.current" 
+                    :page-size="prevData.size"
+                    layout="total, prev, pager, next, jumper"
+                    @current-change="handlePaginationChange2"
+                    background>
+                </el-pagination>
+            </el-row>
+        </el-dialog>
+
+        <el-dialog
+          title="选择要添加的前置表单"
+          :visible.sync="prevFormPop2"
+          width="60%">
+            <el-table 
+                ref="prevFormTable2" 
+                :data="prevData2.content" 
+                tooltip-effect="dark"
+                :min-height="460" 
+                size="small"
+                highlight-current-row border>
+                <el-table-column label="编号" show-overflow-tooltip width="160">
+                    <template slot-scope="scope">{{ scope.row.formNumber }}</template>
+                </el-table-column>
+                <el-table-column label="名称" show-overflow-tooltip>
+                    <template slot-scope="scope">{{ scope.row.formName }}</template>
+                </el-table-column>
+                <el-table-column label="版本" show-overflow-tooltip width="160">
+                    <template slot-scope="scope">{{ scope.row.versions }}</template>
+                </el-table-column>
+                <el-table-column label="操作" show-overflow-tooltip width="100">
+                    <template slot-scope="scope">
+                        <el-row type="flex" justify="space-around">
+                            <el-link type="primary" :underline="false" @click="addPrevForm(scope.row)" class="fs-12">选择</el-link>
+                        </el-row>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页 -->
+            <el-row v-if="prevData2.total > 0" class="mg-t-20 mg-b-10 txt-c">
+                <el-pagination 
+                    :total="prevData2.total" 
+                    :current-page="prevData2.current" 
+                    :page-size="prevData2.size"
+                    layout="total, prev, pager, next, jumper"
+                    @current-change="handlePaginationChange3"
+                    background>
+                </el-pagination>
+            </el-row>
+        </el-dialog>
     </el-row>
 
 </template>
@@ -175,14 +272,64 @@
                     formName:'',
                     formNumber:''
                 },
-                btnLoadingFilter: false
+                btnLoadingFilter: false,
+                prevFormPop:false,
+                curId:-1,
+                prevData:{
+                    content:[],
+                    total:0,
+                    size:10,
+                    current:1
+                },
+                prevFormPop2:false,
+                prevData2:{
+                    content:[],
+                    total:0,
+                    size:10,
+                    current:1
+                }
+            }
+        },
+        filters:{
+            dateStr(str){
+                function formal(str){
+                    return parseInt(str) < 10 ? '0' + str : '' + str;
+                }
+
+                if(str == null || str == '')
+                    return '';
+                let d = new Date(parseInt(str));
+                let year = d.getFullYear();
+                let month = formal(d.getMonth() + 1);
+                let date = formal(d.getDate());
+                let hour = formal(d.getHours());
+                let minute = formal(d.getMinutes());
+                let second = formal(d.getSeconds());
+                return `${year}-${month}-${date} ${hour}:${minute}:${second}`;   
             }
         },
         mounted() {
             this.getTableData();
         },
         methods: {
-            
+            addPrevForm:function(row){
+                let params = {
+                    formId:this.curId,
+                    frontTableId:row.id
+                };
+
+                api.formPrevAdd(params).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$message.success('添加成功');
+                        this.prevFormPop2 = false;
+                        this.getPrevFormData(this.prevData.current);
+                    }
+                });
+            },
+            addPrevPop:function(){
+                this.prevFormPop2 = true;
+                this.getPrevFormData2();
+            },
             getTableData: function(page = 1, pageSize = 10) {
                 this.btnLoadingFilter = true;
 
@@ -202,8 +349,45 @@
                     }
                  });
             },
+            getPrevFormData: function(page = 1, pageSize = 10) {
+                let params = {
+                    formId:this.curId,
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                api.formPrevList(params).then((res) => {
+                    if(res.data.status === 200) {
+                        this.prevData.content = res.data.data.records;
+                        this.prevData.current = res.data.data.current;
+                        this.prevData.size = res.data.data.size;
+                        this.prevData.total = res.data.data.total;
+                    }
+                 });
+            },
+            getPrevFormData2: function(page = 1, pageSize = 10) {
+                let params = {
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                api.formList(params).then((res) => {
+                    if(res.data.status === 200) {
+                        this.prevData2.content = res.data.data.records;
+                        this.prevData2.current = res.data.data.current;
+                        this.prevData2.size = res.data.data.size;
+                        this.prevData2.total = res.data.data.total;
+                    }
+                });
+            },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
+            },
+            handlePaginationChange2: function(page) {
+                this.getPrevFormData(page);
+            },
+            handlePaginationChange3: function(page) {
+                this.getPrevFormData2(page);
             },
             filterTableData: function(isFilter = true) {
                 let that = this;
@@ -241,18 +425,31 @@
                     });
                 }).catch();
             },
-            batchDelete: function() {
+            removePrevForm:function(row){
+                this.$confirm('确认要删除所选数据吗？', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '删除',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    api.formPrevDel(row.id).then((res) => {
+                        if(res.data.status === 200) {
+                            this.$message.success('删除成功');
+                            this.getPrevFormData(this.prevData.current);
+                        }
+                    });
+                }).catch();
+            },
+            prevManage:function(row){
+                this.prevFormPop = true;
+                this.curId = row.id;
+                this.getPrevFormData();
             },
             versionManage: function(row) {
                 let that = this;
-
-                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
-                // /${JSON.stringify(that.tbDataFilter)}
-                that.$router.push({path: `/forms/version-manage`});
+                that.$router.push({path: `/forms/version-manage`,query:{id:row.id}});
             },
             processDesign: function(row) {
                 let that = this;
-
                 that.$router.push({path: `/forms/process-design`});
             },
         }

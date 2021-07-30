@@ -10,7 +10,6 @@ let componentAttrName = {
     'attr_data_link_list':'数据列表',
     'attr_width':'宽度',
     'attr_input_width':'输入框宽度',
-    'attr_label_align':'文本水平对齐',
     'attr_input_align':'输入框水平对齐',
     'attr_min':'最小值',
     'attr_max':'最大值',
@@ -26,21 +25,18 @@ let componentInput = [
     // { 
     //     attr_name: '文本',
     //     attr_value:'这是写死的文本',
-    //     attr_label_align:'left',
     //     type:'text',
     //     attr_size:14
     // },
     { 
         attr_name: '单行输入框',
         attr_value:'',
-        attr_label_align:'right',
         attr_placeholder:'请输入',
         type:'input'
     },
     { 
         attr_name: '多行输入框',
         attr_value:'',
-        attr_label_align:'right',
         attr_placeholder:'请输入',
         type:'textarea'
     },
@@ -51,7 +47,6 @@ let componentInput = [
         attr_max:100,
         attr_input_width:150,
         attr_placeholder:'请输入',
-        attr_label_align:'right',
         type:'inputNumber'
     }
     //{ id: 99, attr_name: '按钮',type:'button',belongTo:'componentBox'},
@@ -72,6 +67,7 @@ let componentSelect = [
     },
     { 
         attr_name: '级联选择',
+        attr_input_width:250,
         attr_data_link_list:[
           {
               value: '选项1',
@@ -141,21 +137,25 @@ let componentSelect = [
     { 
         attr_name: '时间选择',
         attr_time_value:'',
+        attr_input_width:150,
         type:'time'
     },
     { 
         attr_name: '时间范围',
         attr_time_range_value:['',''],
+        attr_input_width:360,
         type:'timeRange'
     },
     { 
         attr_name: '日期选择',
         attr_date_value:'',
+        attr_input_width:150,
         type:'date'
     },
     { 
         attr_name: '日期范围',
         attr_date_range_value:'',
+        attr_input_width:360,
         type:'dateRange'
     },
     { 
