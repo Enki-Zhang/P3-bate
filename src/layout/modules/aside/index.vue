@@ -92,6 +92,7 @@
                 // console.log(this.userInfo.menus);
                 // console.log(routes.inLayout.children);
                 return [
+                    // ...this.userInfo.menus,
                     ...routes.inLayout.children,
                     // ...this.man.test.generateStaticMenus(),
                 ];

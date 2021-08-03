@@ -4,8 +4,9 @@ const _import = require('@plugins/dynamic-import/import.views.' + process.env.NO
 // 单菜单
 export default {
 
-    // 概览
+    // 工作台
     'workbench': _import('single/workbench'),
+
 
     // 生物安全实验室管理体系文件
     'system-doc': _import('single/systemDoc'),

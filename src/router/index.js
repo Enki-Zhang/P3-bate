@@ -88,29 +88,30 @@ router.afterEach(to => {NProgress.done();});
 
 // 加载路由线路
 let loadRoutes = async (isFullLoad) => {
-        // 线路组件合并
-        const mergeRoutesComponents = function (routes) {
-            routes.forEach(route => {
-                route.component = routerComponentsMap[route.name];
-                if(!!route.children) mergeRoutesComponents(route.children);
-            });
-            return routes;
-        };
-
-        // 完整加载
-        if(isFullLoad) {
-            if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) routes.inLayout.children.concat(userInfo.menus);
-
-            router.addRoutes(mergeRoutesComponents([
-                routes.inLayout,
-                ...routes.outOfLayout,
-                ...routes.errors
-            ]));
-        }
-        // 初始化
-        else router.addRoutes(mergeRoutesComponents([...routes.init]));
-        await Promise.resolve();
+    // 线路组件合并
+    const mergeRoutesComponents = function (routes, isSetRedirect = true) {
+        routes.forEach(route => {
+            route.component = routerComponentsMap[route.name];
+            if(!!route.redirectToName) route.redirect = {name: route.redirectToName};
+            if(!!route.children) mergeRoutesComponents(route.children, true);
+        });
+        return routes;
     };
+
+    // 完整加载
+    if(isFullLoad) {
+        if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) routes.inLayout.children = [...routes.inLayout.children.concat(userInfo.menus)];
+
+        router.addRoutes(mergeRoutesComponents([
+            routes.inLayout,
+            ...routes.outOfLayout,
+            ...routes.errors
+        ]));
+    }
+    // 初始化
+    else router.addRoutes(mergeRoutesComponents([...routes.init]));
+    await Promise.resolve();
+};
 
 // 修复提示重定向报错
 const originalPush = Router.prototype.push;

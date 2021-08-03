@@ -1,5 +1,6 @@
 import * as common from './modules/common';
 import * as auth from './modules/auth';
+import * as systemDoc from './modules/systemDoc';
 import * as personnel from './modules/personnel';
 import * as form from './modules/form';
 import * as settings from './modules/settings';
@@ -7,6 +8,7 @@ import * as settings from './modules/settings';
 const api = {
     ...common,
     ...auth,
+    ...systemDoc,
     ...personnel,
     ...form,
     ...settings,

@@ -10,7 +10,7 @@ const init = [
                 name: 'auth_login',
             }
         ]
-    },
+    }
 ];
 
 // 布局内
@@ -34,8 +34,8 @@ const inLayout = {
 
 
 
-        /*{
-            /!* 移动端菜单登录信息 *!/
+        {
+            /* 移动端菜单登录信息 */
             path: 'logged-info',
             name: 'logged-info',
             icon: 'avatar',
@@ -49,22 +49,22 @@ const inLayout = {
                     hidden: 0,
                 },
             ]
-        },*/
-        /*{
+        },
+        {
             path: 'workbench',
             name: 'workbench',
             icon: 'workbench',
             meta: {title: '工作台', isShowBreadcrumb: 1, isSinglePage: 1,},
             hidden: 0,
-        },*/
-        /*{
+        },
+        {
             path: 'overview',
             name: 'overview',
             icon: 'overview',
             meta: {title: '一览表', isShowBreadcrumb: 1, isSinglePage: 1,},
             hidden: 0,
-        },*/
-        /*{
+        },
+        {
             path: 'system-doc',
             name: 'system-doc',
             icon: 'system-doc',
@@ -79,13 +79,13 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual',
+                    path: 'management-manual/:pq',
                     name: 'system-doc|management-manual',
                     meta: {title: '', isShowBreadcrumb: 1,},
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/add',
+                    path: 'management-manual/add/:pq/:_lpq?',
                     name: 'system-doc|management-manual|add',
                     meta: {
                         title: '新增',
@@ -101,7 +101,7 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/version',
+                    path: 'management-manual/version/:pq/:_lpq?',
                     name: 'system-doc|management-manual|version',
                     meta: {
                         title: '版本管理',
@@ -117,7 +117,7 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/detail',
+                    path: 'management-manual/detail/:pq/:_lpq?',
                     name: 'system-doc|management-manual|detail',
                     meta: {
                         title: '文件详情',
@@ -133,7 +133,7 @@ const inLayout = {
                     hidden: 1,
                 },
                 {
-                    path: 'management-manual/edit',
+                    path: 'management-manual/edit/:pq/:_lpq?',
                     name: 'system-doc|management-manual|edit',
                     meta: {
                         title: '编辑',
@@ -148,7 +148,7 @@ const inLayout = {
                     },
                     hidden: 1,
                 },
-                /!*{
+                /*{
                     path: 'program/files/edit',
                     name: 'system_doc_program_files_edit',
                     meta: {
@@ -163,34 +163,34 @@ const inLayout = {
                         }
                     },
                     hidden: 1,
-                },*!/
-                /!*{
+                },*/
+                /*{
                     path: 'operating/procedures',
                     name: 'system_doc_operating_procedures',
                     meta: {title: '标准操作流程', isShowBreadcrumb: 1,},
                     hidden: 0,
-                },*!/
-                /!*{
+                },*/
+                /*{
                     path: 'manual',
                     name: 'system_doc_manual',
                     meta: {title: '安全手册', isShowBreadcrumb: 1,},
                     hidden: 0,
-                },*!/
-                /!*{
+                },*/
+                /*{
                     path: 'msds',
                     name: 'system_doc_msds',
                     meta: {title: 'MSDS表单', isShowBreadcrumb: 1,},
                     hidden: 0,
-                },*!/
-                /!*{
+                },*/
+                /*{
                     path: 'report',
                     name: 'system_doc_report',
                     meta: {title: '风险评估报告', isShowBreadcrumb: 1,},
                     hidden: 0,
-                },*!/
+                },*/
             ]
-        },*/
-        /*{
+        },
+        {
             path: 'activity',
             name: 'activity',
             icon: 'activity',
@@ -410,12 +410,12 @@ const inLayout = {
             meta: {title: '系统管理', isShowBreadcrumb: 1,},
             hidden: 0,
             children: [
-                /!*{
+                /*{
                     path: 'sys-manage',
                     name: 'settings_sys-manage',
                     meta: {title: '系统设置', isShowBreadcrumb: 1,},
                     hidden: 0,
-                },*!/
+                },*/
                 {
                     path: 'menu-manage',
                     name: 'settings_menu-manage',
@@ -423,7 +423,7 @@ const inLayout = {
                     hidden: 0,
                 },
             ]
-        },*/
+        },
     ]
 };
 
