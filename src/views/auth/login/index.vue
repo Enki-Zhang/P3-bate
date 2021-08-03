@@ -191,7 +191,7 @@
                                         // that.man.db.save('sys.webSite', 1);
                                     }
 
-                                    that.$router.push({name: 'layout'});
+                                    that.$router.push({path: '/'});
                                 }, 888);
                             } else if(res.data.status === 400) {
                                 // that.getImgCode();

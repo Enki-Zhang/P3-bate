@@ -6,19 +6,19 @@
         <el-row>
             <el-form ref="fm" :model="form" label-position="right" label-width="120px">
                 <el-row>
-                    <el-form-item prop="title" label="文件类型名称" size="small" :rules="[
+                    <el-form-item prop="name" label="文件类型名称" size="small" :rules="[
                             {required: true, message: '请填写文件类型名称'},
                             {type: 'string', min: 2, max: 8, message: '长度应为 2 ~ 8 个字符'},
                         ]">
-                        <el-input v-model="form.title" placeholder="文件类型名称" clearable></el-input>
+                        <el-input v-model="form.name" placeholder="文件类型名称" clearable></el-input>
                     </el-form-item>
                 </el-row>
                 <el-row>
-                    <el-form-item prop="desc" label="文件类型描述" size="small" :rules="[
+                    <el-form-item prop="description" label="文件类型描述" size="small" :rules="[
                             {required: true, message: '请填写文件类型描述'},
                             {type: 'string', min: 2, max: 12, message: '长度应为 2 ~ 12 个字符'},
                         ]">
-                        <el-input v-model="form.desc" placeholder="文件类型描述" clearable></el-input>
+                        <el-input v-model="form.description" placeholder="文件类型描述" clearable></el-input>
                     </el-form-item>
                 </el-row>
                 <el-row>
@@ -67,8 +67,7 @@
                 form: {
                     name: '',
                     icon: '',
-                    title: '',
-                    desc: ''
+                    description: ''
                 },
                 iconArr: [
                     'aqglsc.png', 'cxwj.png', 'aqsc.png',
@@ -97,25 +96,39 @@
             save: function() {
                 let that = this;
                 that.form.icon = this.choosedIcon;
+                console.log(that.form);
 
                 that.$refs.fm.validate(valid => {
                     if(valid) {
-                        console.log(that.form);
+                        that.btnLoadingSave = true;
 
-                        /*that.btnLoadingSave = true;
-
-                        api.updatePwdAdmin({
-                            ...that.form,
-                            // userId: that.userInfo.user.userId
-                        }).then((res) => {
-                            // console.log(res);
-
-                            if(res.data.status === 200) {
+                        if(that.params.detail.id) {
+                            api.systemDocumentTypeUpdate({
+                                ...that.form,
+                            }).then((res) => {
+                                // console.log(res);
                                 that.btnLoadingSave = false;
-                                that.dialogVisible = false;
-                                that.$message.success('登录密码修改成功');
-                            } else {that.btnLoadingSave = false;}
-                        });*/
+
+                                if(res.data.status === 200) {
+                                    that.dialogVisible = false;
+                                    that.$message.success('操作成功');
+                                    that.$emit('reloadTableData', 'success');
+                                }
+                            });
+                        } else {
+                            api.systemDocumentTypeSave({
+                                ...that.form,
+                            }).then((res) => {
+                                // console.log(res);
+                                that.btnLoadingSave = false;
+
+                                if(res.data.status === 200) {
+                                    that.dialogVisible = false;
+                                    that.$message.success('操作成功');
+                                    that.$emit('reloadTableData', 'success');
+                                }
+                            });
+                        }
                     } else {return false;}
                 });
             },

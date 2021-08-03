@@ -9,7 +9,7 @@ import ajax from "@plugins/ajax";
  * @returns {*|void}
  */
 export function upload(data, needFormat) {
-    return ajax.upload('/backServer/file/uploadFiles', data, needFormat);
+    return ajax.upload('/backServer/file/uploadFile', data, needFormat);
 }
 
 /**

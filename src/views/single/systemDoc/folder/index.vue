@@ -13,7 +13,7 @@
             </el-row>
 
             <el-row type="flex" class="block-list mg-tb-20">
-                <el-row v-for="(v, k) in blockArr" :key="k"
+                <el-row v-for="(v, k) in folderList" :key="k"
                         type="flex" justify="center" align="middle"
                         class="block">
                     <el-row class="bg-setting">
@@ -28,14 +28,14 @@
                         </el-dropdown>
                     </el-row>
                     <el-row @click.native="navByBlockName(v)" class="con">
-                        <el-row>
+                        <el-row v-if="v.icon">
                             <img :src="require(`@assets/image/systemDoc/${v.icon}`)">
                         </el-row>
                         <el-row class="title">
-                            <span>{{ v.title }}</span>
+                            <span>{{ v.name }}</span>
                         </el-row>
                         <el-row class="desc">
-                            <span>{{ v.desc }}</span>
+                            <span>{{ v.description }}</span>
                         </el-row>
                     </el-row>
                 </el-row>
@@ -44,7 +44,7 @@
         </el-row>
 
         <!-- 组件：编辑 -->
-        <dl-edit v-model="dlEditVisible" :params="dlParams"></dl-edit>
+        <dl-edit v-model="dlEditVisible" :params="dlParams" @reloadTableData="getFolderList()"></dl-edit>
     </el-row>
 
 </template>
@@ -62,59 +62,39 @@
                 dlParams: {},
                 dlEditVisible: false,
 
-                blockArr: [
-                    {
-                        name: 'management-manual',
-                        icon: 'aqglsc.png',
-                        title: '安全管理手册',
-                        desc: '一句话描述一句话描述'
-                    },
-                    {
-                        name: 'program-files',
-                        icon: 'cxwj.png',
-                        title: '程序文件',
-                        desc: '一句话描述一句话描述'
-                    },
-                    {
-                        name: 'manual',
-                        icon: 'aqsc.png',
-                        title: '安全手册',
-                        desc: '一句话描述一句话描述'
-                    },
-                    {
-                        name: 'operating-procedures',
-                        icon: 'bzczgc.png',
-                        title: '标准操作规程',
-                        desc: '标准操作规程SOP'
-                    },
-                    {
-                        name: 'report',
-                        icon: 'fxpgbg.png',
-                        title: '风险评估报告',
-                        desc: '一句话描述一句话描述'
-                    },
-                    {
-                        name: 'msds',
-                        icon: 'msds.png',
-                        title: 'MSDS表单',
-                        desc: '材料安全数据表'
-                    },
-                ],
+                folderList: [],
 
                 invalidClick: false,
             }
         },
-        created() {},
+        created() {
+            this.getFolderList();
+        },
         methods: {
+            getFolderList: function() {
+                let that = this;
+                that.$toast.loading('加载中');
+
+                api.systemDocumentTypePage().then((res) => {
+                    that.$toast.clear();
+
+                    if(res.data.status === 200) {
+                        that.folderList = {...res.data.data.records};
+                    }
+                });
+            },
             navByBlockName: function(block) {
                 let that = this;
 
                 if(!that.invalidClick) {
                     that.$router.push({
-                        path: `/system-doc/management-manual/${JSON.stringify({
-                            name: block.name,
-                            title: block.title
-                        })}`
+                        path: `/system-doc/management-manual`,
+                        query: {
+                            folderTitle: JSON.stringify({
+                                id: block.id,
+                                title: block.name
+                            }),
+                        }
                     });
                 }
             },
@@ -129,11 +109,15 @@
             edit: function(row) {
                 let that = this;
 
-                that.dlParams = {
-                    mode: 'edit',
-                    detail: row
-                };
-                that.dlEditVisible = true;
+                api.systemDocumentTypeFindById(row.id).then((res) => {
+                    if(res.data.status === 200) {
+                        that.dlParams = {
+                            mode: 'edit',
+                            detail: row
+                        };
+                        that.dlEditVisible = true;
+                    }
+                });
             },
             remove: function(row) {
                 let that = this;
@@ -145,16 +129,14 @@
                 }).then(() => {
                     that.$toast.loading('正在删除');
 
-                    /*api.seoCacheClean().then((res) => {
+                    api.systemDocumentTypeDelete(row.id).then((res) => {
                         if(res.data.status === 200) {
                             setTimeout(function() {
-                                that.$toast.success({message: '缓存清理完成', duration: 1288});
+                                that.$toast.success({message: '操作成功', duration: 1288});
+                                that.getFolderList();
                             }, 888);
-                        } else {
-                            that.$toast.clear();
-                            that.$message.error('清理缓存失败');
-                        }
-                    });*/
+                        } else {that.$toast.clear();}
+                    });
                 }).catch();
             },
             chooseMenu: function(cmd, k, v) {
@@ -162,12 +144,12 @@
 
                 switch (cmd) {
                     case 'edit':
-                        if(that.blockArr[k] === v) {
-                            that.edit(that.blockArr[k]);
+                        if(that.folderList[k] === v) {
+                            that.edit(that.folderList[k]);
                         }
                         break;
                     case 'del':
-                        that.remove(that.blockArr[k]);
+                        that.remove(that.folderList[k]);
                         break;
                 }
             },

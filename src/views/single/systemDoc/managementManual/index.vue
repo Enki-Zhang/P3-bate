@@ -24,11 +24,11 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>-->
-                        <el-form-item prop="auditStatus">
+                        <el-form-item prop="status">
                             <el-row class="item mg-l-10">
                                 <el-row class="lb lb-unmgl">发布状态</el-row>
                                 <el-row>
-                                    <el-select v-model="tbFilter.auditStatus" class="inp">
+                                    <el-select v-model="tbFilter.status" class="inp">
                                         <el-option label="全部" value=""></el-option>
                                         <el-option label="待发布" :value="0"></el-option>
                                         <el-option label="已发布" :value="1"></el-option>
@@ -77,14 +77,13 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
+                    <el-table ref="multipleTable" :data="tbData.records" tooltip-effect="dark"
                               :min-height="460" size="small"
-                              class="dp-pc"
-                              highlight-current-row>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
+                              highlight-current-row class="dp-pc">
+                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip min-width="200">
+                            <template slot-scope="scope">{{ scope.row.documentNo }}</template>
                         </el-table-column>
-                        <el-table-column label="文件名称" show-overflow-tooltip min-width="220">
+                        <el-table-column label="文件名称" show-overflow-tooltip min-width="200">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
                         </el-table-column>
                         <el-table-column label="版本" show-overflow-tooltip min-width="60">
@@ -97,59 +96,21 @@
                             </template>
                         </el-table-column>
                         <el-table-column label="更新时间" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                            <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
                         <el-table-column label="操作人" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.operator }}</template>
+                            <template slot-scope="scope">{{ scope.row.updateUser }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="140">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">查阅</el-link>
-                                    <!--<el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>-->
-                                    <!--<el-row class="fg">|</el-row>
-                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">撤下</el-link>-->
                                     <el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
-                                </el-row>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
-                              :min-height="460" size="small"
-                              class="dp-m"
-                              highlight-current-row>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip min-width="125">
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
-                        </el-table-column>
-                        <el-table-column label="文件名称" show-overflow-tooltip min-width="320">
-                            <template slot-scope="scope">{{ scope.row.name }}</template>
-                        </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="105">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
-                        </el-table-column>
-                        <el-table-column label="发布状态" show-overflow-tooltip min-width="145">
-                            <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-red">待发布</span>
-                                <span v-else-if="scope.row.status === 1" class="status-green">已发布</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="更新时间" show-overflow-tooltip min-width="145">
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
-                        </el-table-column>
-                        <el-table-column label="操作人" show-overflow-tooltip min-width="105">
-                            <template slot-scope="scope">{{ scope.row.operator }}</template>
-                        </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="120">
-                            <template slot-scope="scope">
-                                <el-row type="flex" justify="space-around">
-<!--                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">详情</el-link>-->
-                                    <el-link type="primary" :underline="false" @click="showAsOperate(scope.row)" class="fs-12">操作</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -182,6 +143,7 @@
 
     import dayjs from 'dayjs';
     import jsonTableData from '@mock/systemDocManagementManual.json';
+    import api from "@api";
 
     export default {
         name: "index",
@@ -209,14 +171,13 @@
         },
         beforeCreate() {
             // 更改当前路由面包屑 title
-            this.man.bus.$emit('changeCurrentRouteMetaTitle', JSON.parse(this.$route.params.pq));
+            if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
         mounted() {
-            this.tbFilter = this.$route.params._lpq !== undefined ? {
-                createTime: (this.$route.params._lpq.startDate && this.$route.params._lpq.endDate)
-                    ? [this.$route.params._lpq.startDate, this.$route.params._lpq.endDate]
-                    : [],
-                ...this.$route.params._lpq
+            let _lpq = this.$route.query._lpq !== undefined ? JSON.parse(this.$route.query._lpq) : false;
+            this.tbFilter = _lpq ? {
+                createTime: (_lpq.startDate && _lpq.endDate) ? [_lpq.startDate, _lpq.endDate] : [],
+                ..._lpq
             } : this.tbFilter;
             this.tbDataFilter = {...this.tbFilter};
             delete this.tbDataFilter.createTime;
@@ -225,16 +186,22 @@
         methods: {
             getTableData: function(page = 1, pageSize = 10) {
                 let that = this;
-                that.tbData.total = jsonTableData.length;
-                that.tbData.list = [];
+                that.btnLoadingFilter = true;
 
-                let limit = page > 1
-                    ? [(page - 1) * pageSize, page * pageSize]
-                    : [0, pageSize];
-                jsonTableData.map((v, k) => {
-                    if(k >= limit[0] && k < limit[1]) {
-                        that.tbData.list.push(v);
+                let folderTitle = JSON.parse(that.$route.query.folderTitle);
+                let params = {
+                    ...that.tbDataFilter,
+                    typeId: folderTitle.id,
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                api.systemDocumentPage(params).then((res) => {
+                    // console.log(res);
+                    if(res.data.status === 200) {
+                        that.tbData = {...res.data.data};
                     }
+                    that.btnLoadingFilter = false;
                 });
             },
             handlePaginationChange: function(page) {
@@ -264,18 +231,37 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system-doc/management-manual/add/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({
+                    path: `/system-doc/management-manual/add`,
+                    query: {
+                        lpq: JSON.stringify(that.tbDataFilter),
+                        folderTitle: that.$route.query.folderTitle,
+                        id: 0,
+                    }
+                });
             },
             versionManage: function(row) {
                 let that = this;
 
-                // console.log(`${JSON.stringify(that.tbDataFilter)}`);
-                that.$router.push({path: `/system-doc/management-manual/version/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({
+                    path: `/system-doc/management-manual/version`,
+                    query: {
+                        lpq: JSON.stringify(that.tbDataFilter),
+                        folderTitle: that.$route.query.folderTitle,
+                    }
+                });
             },
-            detail: function() {
+            detail: function(row) {
                 let that = this;
 
-                that.$router.push({path: `/system-doc/management-manual/detail/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({
+                    path: `/system-doc/management-manual/detail`,
+                    query: {
+                        lpq: JSON.stringify(that.tbDataFilter),
+                        folderTitle: that.$route.query.folderTitle,
+                        id: row.id,
+                    }
+                });
             },
             edit: function(row) {
                 let that = this;
@@ -284,26 +270,33 @@
                 //     return;
                 // }
 
-                that.$router.push({path: `/system-doc/management-manual/edit/${that.$route.params.pq}/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({
+                    path: `/system-doc/management-manual/edit`,
+                    query: {
+                        lpq: JSON.stringify(that.tbDataFilter),
+                        folderTitle: that.$route.query.folderTitle,
+                        id: row.id,
+                    }
+                });
             },
             remove: function(row) {
                 let that = this;
-                if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
-                    that.$message.warning('您无权限进行此操作');
-                    return;
-                }
+                // if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
+                //     that.$message.warning('您无权限进行此操作');
+                //     return;
+                // }
 
                 that.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,
                     confirmButtonText: '删除',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    /*api.sysUserDel(row.id).then((res) => {
+                    api.systemDocumentDelete(row.id).then((res) => {
                         if(res.data.status === 200) {
                             that.$message.success('保存成功');
                             that.getTableData();
                         }
-                    });*/
+                    });
                 }).catch();
             },
             handleSelectionChange: function(chooseArr) {
@@ -312,16 +305,6 @@
             batchDelete: function() {},
 
 
-            release: function() {
-                let that = this;
-
-                that.$router.push({path: `management-manual/release/${JSON.stringify(that.tbDataFilter)}`});
-            },
-            processDesign: function(row) {
-                let that = this;
-
-
-            },
             showAsOperate: function(row) {
                 let that = this;
 

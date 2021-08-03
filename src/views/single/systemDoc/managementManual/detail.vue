@@ -19,8 +19,8 @@
                         <span>详情</span>
                     </el-row>
                     <el-row type="flex" justify="space-between" align="middle" class="preview-info">
-                        <el-row>文件名称：<span class="status-blue">实验活动管理程序</span></el-row>
-                        <el-row>文件编号：<span class="status-blue">BPD01-01</span></el-row>
+                        <el-row>文件名称：<span class="status-blue">{{ detail.name }}</span></el-row>
+                        <el-row>文件编号：<span class="status-blue">{{ detail.documentNo }}</span></el-row>
                         <el-row>第 <span class="status-blue">1</span> 版 <span class="status-blue">0</span> 次修订</el-row>
                     </el-row>
                     <!-- mammoth 插件方式 -->
@@ -127,7 +127,7 @@
 <script>
 
     import dayjs from 'dayjs';
-    import jsonTableData from '@mock/systemDocManagementManual.json';
+    import api from "@api";
     let mammoth = require("mammoth");
 
     export default {
@@ -139,38 +139,31 @@
                 wordText: '',
                 previewSrc: 'public.ohyesido.cn/test.docx',
 
-                tbSelectedArr: [],
-                tbFilter: {
-                    name: '',
-                    createTime: [],
-                },
-                tbData: {list: []},
-                tbDataFilter: {...this.tbFilter},
-                btnLoadingFilter: false,
+                detail: {},
 
                 btnLoadingSave: false,
-
             }
         },
         beforeCreate() {
             // 更改当前路由面包屑 title
-            this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.params.pq));
+            if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
         created() {
-            // this.convertWordToText('/BPD01-01 生物安全管理活动程序.docx');
-        },
-        mounted() {
-            this.tbFilter = this.$route.params._lpq !== undefined ? {
-                createTime: (this.$route.params._lpq.startDate && this.$route.params._lpq.endDate)
-                    ? [this.$route.params._lpq.startDate, this.$route.params._lpq.endDate]
-                    : [],
-                ...this.$route.params._lpq
-            } : this.tbFilter;
-            this.tbDataFilter = {...this.tbFilter};
-            delete this.tbDataFilter.createTime;
-            this.getTableData();
+            if(this.$route.query.id > 0) this.getDetail();
+            // this.getTableData();
         },
         methods: {
+            getDetail: function() {
+                let that = this;
+
+                api.systemDocumentFindById(that.$route.query.id).then((res) => {
+                    // console.log(res);
+                    if(res.data.status === 200) {
+                        // that.tbData = {...res.data.data};
+                    }
+                    that.btnLoadingFilter = false;
+                });
+            },
             save: function() {
 
             },
@@ -194,17 +187,8 @@
             },
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
-                that.tbData.total = jsonTableData.length;
-                that.tbData.list = [];
 
-                let limit = page > 1
-                    ? [(page - 1) * pageSize, page * pageSize]
-                    : [0, pageSize];
-                jsonTableData.map((v, k) => {
-                    if(k >= limit[0] && k < limit[1]) {
-                        that.tbData.list.push(v);
-                    }
-                });
+
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);

@@ -18,6 +18,7 @@
                                                         v-if="v.meta && !v.meta.isSinglePage">
                                         {{ v.meta.title }}
                                     </el-breadcrumb-item>
+                                    <el-breadcrumb-item v-else-if="!!v.toPath" :to="{path: v.path, query: v.query}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
                                     <el-breadcrumb-item v-else :to="{name: v.name}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
                                     <el-breadcrumb-item class="breadcrumb-current">{{ $route.meta.title }}</el-breadcrumb-item>
                                 </el-breadcrumb>
