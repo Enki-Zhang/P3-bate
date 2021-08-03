@@ -4,6 +4,9 @@
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white">
                 <!-- 筛选 -->
+                <!-- <el-row>
+                    <el-button type = "primary" @click = "test">test</el-button>
+                </el-row> -->
                 <el-form ref="fmTbFilter" :model="tbDataFilter" size="small">
                     <el-row class="filters">
                         <el-form-item prop="formNumber">
@@ -252,14 +255,21 @@
                 </el-pagination>
             </el-row>
         </el-dialog>
+
+        <!-- <formPreview @success = "test2" ref = "formPreview"/> -->
     </el-row>
 
 </template>
 
 <script>
+    //import formPreview from "@/components/formPreview";
+
     import api from "@api";
     export default {
         name: "index",
+        components:{
+            //formPreview
+        },
         data() {
             return {
                 tbData: {
@@ -312,6 +322,13 @@
             this.getTableData();
         },
         methods: {
+            // test(){
+            //     var str = "[{\"attr_name\":\"姓名\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1627528304819\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"多行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"textarea\",\"id\":\"module_1627528307059\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"年龄\",\"attr_value\":1,\"attr_min\":0,\"attr_max\":100,\"attr_input_width\":150,\"attr_placeholder\":\"请输入\",\"type\":\"inputNumber\",\"id\":\"module_1627528308841\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"性别\",\"attr_input_width\":150,\"attr_data_list\":[{\"id\":1,\"name\":\"男\"},{\"id\":2,\"name\":\"女\"}],\"attr_placeholder\":\"请选择\",\"data_index\":0,\"data_value\":\"男\",\"type\":\"select\",\"id\":\"module_1627528311936\",\"label_width\":100,\"belongTo\":\"formBox\"}]";
+            //     this.$refs.formPreview.showFn(str);
+            // },
+            // test2(result){
+            //     console.log(result);
+            // },
             addPrevForm:function(row){
                 let params = {
                     formId:this.curId,

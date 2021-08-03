@@ -19,7 +19,7 @@ export default {
 
     // 物资管理
     'supplies':_import('single/supplies'),
-    'supplies_device':_import('single/supplies/device'),
+    'supplies_organization':_import('single/supplies/device'),
     'supplies_consumables':_import('single/supplies/device'),
     'supplies_other-items':_import('single/supplies/device'),
     'supplies_service-items':_import('single/supplies/device'),
