@@ -1,6 +1,15 @@
 import ajax from "@plugins/ajax";
 
 /**
+ * 获取物资管理列表
+ * @param params
+ * @returns {void|*}
+ */
+export function formInfoList(params) {
+    return ajax.get('userServer/customFormInfo/list',params);
+}
+
+/**
  * 获取前置表单列表
  * @param params
  * @returns {void|*}

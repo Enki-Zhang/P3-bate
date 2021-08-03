@@ -311,7 +311,7 @@ const inLayout = {
             children: [
                 {
                     path: 'device',
-                    name: 'supplies_organization',
+                    name: 'supplies_device',
                     meta: {title: '科研设备', isShowBreadcrumb: 1, },
                     hidden: 0,
                 },
