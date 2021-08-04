@@ -30,43 +30,6 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>
-                        <!--<el-form-item prop="type">
-                            <el-row class="item mg-l-10">
-                                <el-row class="lb lb-unmgl">类型</el-row>
-                                <el-row>
-                                    <el-select v-model="tbFilter.type" class="inp">
-                                        <el-option label="全部" value=""></el-option>
-                                        <el-option label="普通管理员" :value="0"></el-option>
-                                        <el-option label="超级管理员" :value="1"></el-option>
-                                    </el-select>
-                                </el-row>
-                            </el-row>
-                        </el-form-item>
-                        <el-form-item prop="auditStatus">
-                            <el-row class="item mg-l-10">
-                                <el-row class="lb lb-unmgl">使用状态</el-row>
-                                <el-row>
-                                    <el-select v-model="tbFilter.auditStatus" class="inp">
-                                        <el-option label="全部" value=""></el-option>
-                                        <el-option label="活动" :value="0"></el-option>
-                                        <el-option label="冻结" :value="1"></el-option>
-                                    </el-select>
-                                </el-row>
-                            </el-row>
-                        </el-form-item>
-                        <el-form-item prop="createTime">
-                            <el-row class="item">
-                                <el-row class="lb">创建时间</el-row>
-                                <el-row>
-                                    <el-date-picker v-model="tbFilter.createTime"
-                                                    type="daterange" size="small"
-                                                    start-placeholder="开始日期" range-separator="至" end-placeholder="结束日期"
-                                                    format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-                                                    style="width: 230px !important;">
-                                    </el-date-picker>
-                                </el-row>
-                            </el-row>
-                        </el-form-item>-->
                         <el-form-item>
                             <el-row class="item mg-l-10">
                                 <el-row class="btn">
@@ -96,54 +59,36 @@
                     </el-row>
                 </el-form>
 
-                <!-- 功能 -->
-                <!-- <el-row class="fn-btns">
-                    <el-button 
-                        type="primary" 
-                        size="small" 
-                        icon="el-icon-plus"
-                        @click="create"
-                        class="fn-btn">
-                        新增
-                    </el-button>
-                </el-row> -->
-
                 <!-- 列表 -->
                 <el-row>
                     <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row border>
-                        <el-table-column label="编号" fixed="left" show-overflow-tooltip width="280">
-                            <template slot-scope="scope">{{ scope.row.formNumber }}</template>
+                        <el-table-column label="编号" fixed="left" show-overflow-tooltip width="40">
+                            <template slot-scope="scope">{{ scope.row.formId }}</template>
                         </el-table-column>
-                        <el-table-column label="名称" show-overflow-tooltip min-width="160">
-                            <template slot-scope="scope">{{ scope.row.formName }}</template>
-                        </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="160">
-                            <template slot-scope="scope">{{ scope.row.versions }}</template>
-                        </el-table-column>
-                        <!--<el-table-column label="创建日期" show-overflow-tooltip min-width="90">
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
-                        </el-table-column>
-                        <el-table-column label="使用状态" show-overflow-tooltip min-width="80">
+                        <el-table-column v-for = "v,index in tbColumn" :key = "index" :label="v.name" show-overflow-tooltip >
                             <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-green">活动</span>
-                                <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
-                            </template>
-                        </el-table-column>-->
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="280">
-                            <template slot-scope="scope">
-                                <el-row type="flex" justify="space-around">
-                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="info" :underline="false" @click="prevManage(scope.row)" class="fs-12">前置表单</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
-                                    <el-row class="fg">|</el-row>
-                                    <el-link type="success" :underline="false" @click="processDesign(scope.row)" class="fs-12" style="color: #009688;">流程设计</el-link>
-                                </el-row>
+                                <div v-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'linkSelect'">
+                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName].join('/')}}
+                                </div>
+                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'check'">
+                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName].join(',')}}
+                                </div>
+                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'switch'">
+                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName] ? '是' : '否'}}
+                                </div>
+                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'timeRange' || JSON.parse(scope.row.formInfo)[v.index].type == 'dateRange'">
+                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName].join('至')}}
+                                </div>
+                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'upload'">
+                                    <img
+                                        v-if = "JSON.parse(scope.row.formInfo)[v.index][v.valueName] != ''" 
+                                        :src = "JSON.parse(scope.row.formInfo)[v.index][v.valueName]"/>
+                                </div>
+                                <div v-else>
+                                    {{ JSON.parse(scope.row.formInfo)[v.index][v.valueName] }}
+                                </div>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -163,100 +108,6 @@
             </el-row>
         </el-row>
 
-        <el-dialog
-          title="前置表单管理"
-          :visible.sync="prevFormPop"
-          width="50%">
-            <el-row style = "padding-bottom:20px;">
-                <el-button 
-                    type="primary" 
-                    size="small" 
-                    icon="el-icon-plus"
-                    @click="addPrevPop"
-                    class="fn-btn">
-                    新增
-                </el-button>
-            </el-row>
-            <el-table 
-                ref="prevFormTable" 
-                :data="prevData.content" 
-                tooltip-effect="dark"
-                :min-height="460" 
-                size="small"
-                highlight-current-row border>
-                <el-table-column label="前置表单id" show-overflow-tooltip width="160">
-                    <template slot-scope="scope">{{ scope.row.frontTableId }}</template>
-                </el-table-column>
-                <el-table-column label="当前表单id" show-overflow-tooltip>
-                    <template slot-scope="scope">{{ scope.row.formId }}</template>
-                </el-table-column>
-                <el-table-column label="当前表单名称" show-overflow-tooltip>
-                    <template slot-scope="scope">{{ scope.row.formName }}</template>
-                </el-table-column>
-                <el-table-column label="创建时间" show-overflow-tooltip width="180">
-                    <template slot-scope="scope">{{ scope.row.createTime | dateStr }}</template>
-                </el-table-column>
-                <el-table-column label="操作" show-overflow-tooltip width="100">
-                    <template slot-scope="scope">
-                        <el-row type="flex" justify="space-around">
-                            <el-link type="danger" :underline="false" @click="removePrevForm(scope.row)" class="fs-12">删除</el-link>
-                        </el-row>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!-- 分页 -->
-            <el-row v-if="prevData.total > 0" class="mg-t-20 mg-b-10 txt-c">
-                <el-pagination 
-                    :total="prevData.total" 
-                    :current-page="prevData.current" 
-                    :page-size="prevData.size"
-                    layout="total, prev, pager, next, jumper"
-                    @current-change="handlePaginationChange2"
-                    background>
-                </el-pagination>
-            </el-row>
-        </el-dialog>
-
-        <el-dialog
-          title="选择要添加的前置表单"
-          :visible.sync="prevFormPop2"
-          width="60%">
-            <el-table 
-                ref="prevFormTable2" 
-                :data="prevData2.content" 
-                tooltip-effect="dark"
-                :min-height="460" 
-                size="small"
-                highlight-current-row border>
-                <el-table-column label="编号" show-overflow-tooltip width="160">
-                    <template slot-scope="scope">{{ scope.row.formNumber }}</template>
-                </el-table-column>
-                <el-table-column label="名称" show-overflow-tooltip>
-                    <template slot-scope="scope">{{ scope.row.formName }}</template>
-                </el-table-column>
-                <el-table-column label="版本" show-overflow-tooltip width="160">
-                    <template slot-scope="scope">{{ scope.row.versions }}</template>
-                </el-table-column>
-                <el-table-column label="操作" show-overflow-tooltip width="100">
-                    <template slot-scope="scope">
-                        <el-row type="flex" justify="space-around">
-                            <el-link type="primary" :underline="false" @click="addPrevForm(scope.row)" class="fs-12">选择</el-link>
-                        </el-row>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!-- 分页 -->
-            <el-row v-if="prevData2.total > 0" class="mg-t-20 mg-b-10 txt-c">
-                <el-pagination 
-                    :total="prevData2.total" 
-                    :current-page="prevData2.current" 
-                    :page-size="prevData2.size"
-                    layout="total, prev, pager, next, jumper"
-                    @current-change="handlePaginationChange3"
-                    background>
-                </el-pagination>
-            </el-row>
-        </el-dialog>
     </el-row>
 
 </template>
@@ -268,9 +119,9 @@
         data() {
             return {
                 nameId:{
-                    'supplies_device':'0001',
-                    'supplies_consumables':'0001',
-                    'supplies_other-items':'0002',
+                    'supplies_organization':'0001',
+                    'supplies_consumables':'0002',
+                    'supplies_other-items':'0101',
                     'supplies_service-items':'0002',
                     'supplies_dormitory':'0002',
                     'supplies_car':'0002',
@@ -285,22 +136,8 @@
                 tbDataFilter: {
                     datetime:null
                 },
-                btnLoadingFilter: false,
-                prevFormPop:false,
-                curId:-1,
-                prevData:{
-                    content:[],
-                    total:0,
-                    size:10,
-                    current:1
-                },
-                prevFormPop2:false,
-                prevData2:{
-                    content:[],
-                    total:0,
-                    size:10,
-                    current:1
-                }
+                tbColumn:[],
+                btnLoadingFilter: false
             }
         },
         filters:{
@@ -322,26 +159,51 @@
             }
         },
         mounted() {
-            this.getTableData();
+            //this.getTableData();
+            this.getColumn();
         },
         methods: {
-            addPrevForm:function(row){
-                let params = {
-                    formId:this.curId,
-                    frontTableId:row.id
-                };
+            getColumn:function(){
 
-                api.formPrevAdd(params).then((res) => {
+                function getValueName(type){
+                    let obj ={
+                        'input':'attr_value',
+                        'textarea':'attr_value',
+                        'inputNumber':'attr_value',
+                        'select':'data_value',
+                        'radio':'data_value',
+                        'check':'data_value',
+                        'linkSelect':'attr_data_link_value',
+                        'switch':'attr_boolean_value',
+                        'time':'attr_time_value',
+                        'timeRange':'attr_time_range_value',
+                        'date':'attr_date_value',
+                        'dateRange':'attr_date_range_value',
+                        'upload':'data_url'
+                    }
+                    return obj[type];
+                }
+
+                let formKey = this.nameId[this.$route.name];
+                api.formStructInfo(formKey).then((res) => {
+                    this.btnLoadingFilter = false;
                     if(res.data.status === 200) {
-                        this.$message.success('添加成功');
-                        this.prevFormPop2 = false;
-                        this.getPrevFormData(this.prevData.current);
+                        let arr = JSON.parse(res.data.data.keyInfo);
+                        let columnArr = [];
+                        for(var i = 0;i < arr.length;i++){
+                            if(arr[i].type != 'childForm'){
+                                columnArr.push({
+                                    name:arr[i].attr_name,
+                                    index:i,
+                                    type:arr[i].type,
+                                    valueName:getValueName(arr[i].type)
+                                }); 
+                            }  
+                        }
+                        this.tbColumn = columnArr;
+                        this.getTableData();
                     }
                 });
-            },
-            addPrevPop:function(){
-                this.prevFormPop2 = true;
-                this.getPrevFormData2();
             },
             getTableData: function(page = 1, pageSize = 10) {
                 this.btnLoadingFilter = true;
@@ -351,7 +213,7 @@
                     pageCurrent: page,
                     pageSize,
                 };
-
+                console.log(this.$route.name);
                 let formKey = this.nameId[this.$route.name];
                 params.formKey = formKey;
 
@@ -368,117 +230,35 @@
                         this.tbData.current = res.data.data.current;
                         this.tbData.size = res.data.data.size;
                         this.tbData.total = res.data.data.total;
-                    }
-                });
-            },
-            getPrevFormData: function(page = 1, pageSize = 10) {
-                let params = {
-                    formId:this.curId,
-                    pageCurrent: page,
-                    pageSize,
-                };
 
-                api.formPrevList(params).then((res) => {
-                    if(res.data.status === 200) {
-                        this.prevData.content = res.data.data.records;
-                        this.prevData.current = res.data.data.current;
-                        this.prevData.size = res.data.data.size;
-                        this.prevData.total = res.data.data.total;
-                    }
-                 });
-            },
-            getPrevFormData2: function(page = 1, pageSize = 10) {
-                let params = {
-                    pageCurrent: page,
-                    pageSize,
-                };
-
-                api.formList(params).then((res) => {
-                    if(res.data.status === 200) {
-                        this.prevData2.content = res.data.data.records;
-                        this.prevData2.current = res.data.data.current;
-                        this.prevData2.size = res.data.data.size;
-                        this.prevData2.total = res.data.data.total;
+                        // this.tbData.content =
+                        // [
+                        //     {
+                        //         "caseId": "",
+                        //         "createTime": "",
+                        //         "formId": 0,
+                        //         "formInfo": "[{\"attr_name\":\"单行输入框\",\"attr_value\":\"aaa\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058653788\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"多行输入框\",\"attr_value\":\"vvvv\",\"attr_placeholder\":\"请输入\",\"type\":\"textarea\",\"id\":\"module_1628058654786\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"计数器\",\"attr_value\":1,\"attr_min\":0,\"attr_max\":100,\"attr_input_width\":150,\"attr_placeholder\":\"请输入\",\"type\":\"inputNumber\",\"id\":\"module_1628058656088\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"下拉选择\",\"attr_input_width\":150,\"attr_data_list\":[{\"id\":1,\"name\":\"选项1\"},{\"id\":2,\"name\":\"选项2\"}],\"attr_placeholder\":\"请选择\",\"data_index\":1,\"data_value\":\"选项2\",\"type\":\"select\",\"id\":\"module_1628058657634\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"子表单\",\"type\":\"childForm\",\"id\":\"module_1628058684434\",\"label_width\":100,\"belongTo\":\"formBox\",\"arr\":[{\"attr_name\":\"单行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058703580\",\"label_width\":100,\"belongTo\":\"formItem\"},{\"attr_name\":\"单行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058706006\",\"label_width\":100,\"belongTo\":\"formItem\"},{\"attr_name\":\"单行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058707753\",\"label_width\":100,\"belongTo\":\"formItem\"}],\"dataList\":[]},{\"attr_name\":\"级联选择\",\"attr_input_width\":250,\"attr_data_link_list\":[{\"value\":\"选项1\",\"label\":\"选项1\",\"children\":[{\"value\":\"选项11\",\"label\":\"选项11\",\"children\":[{\"value\":\"选项111\",\"label\":\"选项111\"},{\"value\":\"选项112\",\"label\":\"选项112\"}]},{\"value\":\"选项12\",\"label\":\"选项12\",\"children\":[{\"value\":\"选项121\",\"label\":\"选项121\"},{\"value\":\"选项122\",\"label\":\"选项122\"}]}]}],\"attr_data_link_value\":[\"选项1\",\"选项11\",\"选项112\"],\"attr_placeholder\":\"请选择\",\"type\":\"linkSelect\",\"id\":\"module_1628058658963\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"单选框组\",\"attr_data_list\":[{\"id\":1,\"name\":\"选项1\"},{\"id\":2,\"name\":\"选项2\"}],\"data_index\":1,\"data_value\":\"选项2\",\"type\":\"radio\",\"attr_layer\":\"inline-block\",\"id\":\"module_1628058660643\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"多选框组\",\"attr_data_check_list\":[{\"id\":1,\"name\":\"选项1\",\"check\":true},{\"id\":2,\"name\":\"选项2\",\"check\":true}],\"data_value\":[\"选项1\",\"选项2\"],\"type\":\"check\",\"attr_layer\":\"inline-block\",\"id\":\"module_1628058663418\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"开关\",\"attr_boolean_value\":true,\"type\":\"switch\",\"id\":\"module_1628058668719\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"时间选择\",\"attr_time_value\":\"14:37:52\",\"attr_input_width\":150,\"type\":\"time\",\"id\":\"module_1628058671130\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"时间范围\",\"attr_time_range_value\":[\"08:00:00\",\"08:00:00\"],\"attr_input_width\":360,\"type\":\"timeRange\",\"id\":\"module_1628058673617\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"日期选择\",\"attr_date_value\":\"2021-08-03\",\"attr_input_width\":150,\"type\":\"date\",\"id\":\"module_1628058675607\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"日期范围\",\"attr_date_range_value\":[\"2021-09-14\",\"2021-09-15\"],\"attr_input_width\":360,\"type\":\"dateRange\",\"id\":\"module_1628058677544\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"上传\",\"type\":\"upload\",\"attr_url\":\"\",\"data_url\":\"\",\"id\":\"module_1628058680040\",\"label_width\":100,\"belongTo\":\"formBox\"}]",
+                        //         "id": 0,
+                        //         "updateTime": "",
+                        //         "userId": ""
+                        //     }
+                        // ]
                     }
                 });
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
             },
-            handlePaginationChange2: function(page) {
-                this.getPrevFormData(page);
-            },
-            handlePaginationChange3: function(page) {
-                this.getPrevFormData2(page);
-            },
             filterTableData: function(isFilter = true) {
                 let that = this;
                 that.getTableData(1);
-            },
-            create: function() {
-                // let that = this;
-                // if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
-                this.$router.push({path: `/forms/forms-forms`});
-            },
-            edit: function(row) {
-                this.$router.push({path: '/forms/forms-forms',query:{id:parseInt(row.id)}});
-            },
-            remove: function(row) {
-                // let that = this;
-                // if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
-
-                this.$confirm('确认要删除所选数据吗？', '确认信息', {
-                    distinguishCancelAndClose: true,
-                    confirmButtonText: '删除',
-                    cancelButtonText: '取消'
-                }).then(() => {
-                    api.formDel(row.id).then((res) => {
-                        if(res.data.status === 200) {
-                            this.$message.success('删除成功');
-                            this.getTableData(this.tbData.current);
-                        }
-                    });
-                }).catch();
-            },
-            removePrevForm:function(row){
-                this.$confirm('确认要删除所选数据吗？', '确认信息', {
-                    distinguishCancelAndClose: true,
-                    confirmButtonText: '删除',
-                    cancelButtonText: '取消'
-                }).then(() => {
-                    api.formPrevDel(row.id).then((res) => {
-                        if(res.data.status === 200) {
-                            this.$message.success('删除成功');
-                            this.getPrevFormData(this.prevData.current);
-                        }
-                    });
-                }).catch();
-            },
-            prevManage:function(row){
-                this.prevFormPop = true;
-                this.curId = row.id;
-                this.getPrevFormData();
-            },
-            versionManage: function(row) {
-                let that = this;
-                that.$router.push({path: `/forms/version-manage`,query:{id:row.id}});
-            },
-            processDesign: function(row) {
-                let that = this;
-                that.$router.push({path: `/forms/process-design`});
-            },
+            }
         }
     }
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
 
 

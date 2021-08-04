@@ -1,6 +1,15 @@
 import ajax from "@plugins/ajax";
 
 /**
+ * 获取表单结果
+ * @param formKey
+ * @returns {void|*}
+ */
+export function formStructInfo(formKey) {
+    return ajax.get(`userServer/customForm/findByKey/${formKey}`,null);
+}
+
+/**
  * 获取物资管理列表
  * @param params
  * @returns {void|*}

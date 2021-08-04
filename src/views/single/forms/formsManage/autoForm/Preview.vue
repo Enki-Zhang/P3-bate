@@ -568,13 +568,14 @@ export default {
     }
   }
   .footer{
-    height: 100px;
+    height: 60px;
   }
   .body{
     margin:20px;
     box-shadow: 0px 0px 10px #ddd;
     flex-grow: 1;
     height: 0;
+    overflow:auto;
   }
 }
 
