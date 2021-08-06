@@ -76,7 +76,7 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
+                    <el-table ref="multipleTable" :data="tbData.records" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row border>
                         <el-table-column label="文件编号" fixed="left" show-overflow-tooltip width="200">
@@ -90,8 +90,8 @@
                         </el-table-column>
                         <el-table-column label="发布状态" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-green">未发布</span>
-                                <span v-else-if="scope.row.status === 1" class="status-red">已发布</span>
+                                <span v-if="scope.row.status === 0" class="status-red">未发布</span>
+                                <span v-else-if="scope.row.status === 1" class="status-green">已发布</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="创建日期" show-overflow-tooltip min-width="90">
@@ -100,7 +100,7 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="140">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
-                                    <el-link type="primary" :underline="false" @click="versionManager(scope.row)" class="fs-12">设为主版本</el-link>
+                                    <el-link type="primary" :underline="false" @click="setAsMainVersion(scope.row)" class="fs-12">设为主版本</el-link>
                                     <el-row class="fg">|</el-row>
                                     <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
                                 </el-row>
@@ -110,7 +110,7 @@
                 </el-row>
 
                 <!-- 分页 -->
-                <el-row v-if="tbData.content.length" class="mg-t-20 mg-b-10 txt-c">
+                <el-row v-if="tbData.records.length" class="mg-t-20 mg-b-10 txt-c">
                     <el-pagination :total="tbData.totalElements" :current-page="tbData.number + 1" :page-size="10"
                                    layout="total, prev, pager, next, jumper"
                                    @current-change="handlePaginationChange"
@@ -128,6 +128,8 @@
 
 <script>
 
+    import api from "@api";
+
     const listRouteName = 'system-doc|management-manual';
 
     export default {
@@ -140,7 +142,7 @@
                     name: '',
                     createTime: [],
                 },
-                tbData: {content: []},
+                tbData: {records: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
 
@@ -148,14 +150,13 @@
         },
         beforeCreate() {
             // 更改当前路由面包屑 title
-            this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.params.pq));
+            if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
         mounted() {
-            this.tbFilter = this.$route.params._lpq !== undefined ? {
-                createTime: (this.$route.params._lpq.startDate && this.$route.params._lpq.endDate)
-                    ? [this.$route.params._lpq.startDate, this.$route.params._lpq.endDate]
-                    : [],
-                ...this.$route.params._lpq
+            let _lpq = this.$route.query._lpq !== undefined ? JSON.parse(this.$route.query._lpq) : false;
+            this.tbFilter = _lpq ? {
+                createTime: (_lpq.startDate && _lpq.endDate) ? [_lpq.startDate, _lpq.endDate] : [],
+                ..._lpq
             } : this.tbFilter;
             this.tbDataFilter = {...this.tbFilter};
             delete this.tbDataFilter.createTime;
@@ -168,23 +169,18 @@
 
                 let params = {
                     ...that.tbDataFilter,
+                    documentNO: that.$route.query.documentNo,
                     pageCurrent: page,
                     pageSize,
                 };
 
-                /*api.sysLogList(params).then((res) => {
+                api.systemDocumentVersions(params).then((res) => {
                     // console.log(res);
                     if(res.data.status === 200) {
                         that.tbData = {...res.data.data};
                     }
                     that.btnLoadingFilter = false;
-                });*/
-
-                that.tbData = {
-                    content: [
-                        {id: 1, name: '内测版', version: '1.0'}
-                    ],
-                };
+                });
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
@@ -206,17 +202,23 @@
                 that.getTableData(1);
             },
 
-            create: function() {
+            setAsMainVersion: function(row) {
                 let that = this;
-                if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                    that.$message.warning('您无权限进行此操作');
-                    return;
-                }
 
-                that.$router.push({path: `/sys/user/add/${JSON.stringify(that.tbDataFilter)}`});
-            },
-            edit: function(row) {
-
+                that.$confirm('确认要设其为主版本吗？', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '设为主版本',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    api.systemDocumentSetManVersion({
+                        id: row.id,
+                    }).then((res) => {
+                        if(res.data.status === 200) {
+                            that.$message.success('保存成功');
+                            that.getTableData();
+                        }
+                    });
+                }).catch();
             },
             remove: function(row) {
                 let that = this;
@@ -241,16 +243,7 @@
             handleSelectionChange: function(chooseArr) {
                 this.tbSelectedArr = chooseArr;
             },
-            batchDelete: function() {},
 
-            versionManager: function(row) {
-
-            },
-            processDesign: function(row) {
-                let that = this;
-
-
-            },
             cancel: function() {
                 let that = this;
 
@@ -259,7 +252,7 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.query._lpq)}});
                 }).catch();
             },
         }

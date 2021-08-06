@@ -42,34 +42,34 @@
                 <el-row class="block mg-t-10 mg-b-20">
                     <el-row type="flex" justify="space-between" align="middle" class="title">
                         <span>相关文件</span>
-                        <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">新增</el-button>
+<!--                        <el-button type="primary" icon="el-icon-plus" size="mini" @click="chooseRelatedFiles" class="btn">选择添加</el-button>-->
                     </el-row>
                     <!-- 列表 -->
-                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
-                              :min-height="460" size="small"
-                              highlight-current-row>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                    <el-table ref="multipleTable" :data="tbDataRelated.records"
+                              :min-height="460" size="small" tooltip-effect="dark"
+                              :show-header="true" highlight-current-row>
+                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
+                            <template slot-scope="scope">{{ scope.row.documentNo }}</template>
                         </el-table-column>
-                        <el-table-column label="程序文件名称" show-overflow-tooltip min-width="220">
+                        <el-table-column label="文件名称" fixed="left" show-overflow-tooltip min-width="220">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
                         </el-table-column>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
+                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
+                            <template slot-scope="scope">{{ scope.row.version }}</template>
                         </el-table-column>
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">查看</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
                     </el-table>
                     <!-- 分页 -->
-                    <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
-                        <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="5"
+                    <el-row v-if="tbDataRelated.total" class="mg-t-20 mg-b-10 txt-c">
+                        <el-pagination :total="tbDataRelated.total" :current-page="tbDataRelated.current" :page-size="5"
                                        layout="total, prev, pager, next, jumper"
-                                       @current-change="handlePaginationChange"
+                                       @current-change="handlePaginationChangeTableRelated"
                                        background>
                         </el-pagination>
                     </el-row>
@@ -79,34 +79,37 @@
                 <el-row class="block mg-t-10 mg-b-20">
                     <el-row type="flex" justify="space-between" align="middle" class="title">
                         <span>记录</span>
-                        <el-button type="primary" icon="el-icon-plus" size="mini" class="btn">新增</el-button>
+<!--                        <el-button type="primary" icon="el-icon-plus" size="mini" @click="chooseForms" class="btn">选择添加</el-button>-->
                     </el-row>
                     <!-- 列表 -->
-                    <el-table ref="multipleTable" :data="tbData.list" tooltip-effect="dark"
-                              :min-height="460" size="small"
-                              highlight-current-row>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
-                            <template slot-scope="scope">{{ scope.row.version }}</template>
+                    <el-table ref="multipleTable" :data="tbDataForms.records"
+                              :min-height="460" size="small" tooltip-effect="dark"
+                              :show-header="true" highlight-current-row>
+                        <el-table-column label="编号" fixed="left" show-overflow-tooltip min-width="60">
+                            <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                         </el-table-column>
-                        <el-table-column label="程序文件名称" show-overflow-tooltip min-width="220">
-                            <template slot-scope="scope">{{ scope.row.name }}</template>
+                        <el-table-column label="表单key" fixed="left" show-overflow-tooltip min-width="220">
+                            <template slot-scope="scope">{{ scope.row.formKey }}</template>
                         </el-table-column>
-                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip>
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
+                        <el-table-column label="表单名称" fixed="left" show-overflow-tooltip>
+                            <template slot-scope="scope">{{ scope.row.formName }}</template>
+                        </el-table-column>
+                        <el-table-column label="表单描述" show-overflow-tooltip>
+                            <template slot-scope="scope">{{ scope.row.description }}</template>
                         </el-table-column>
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-link type="primary" :underline="false" @click="showApplyForm(scope.row)" class="fs-12">申请</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
                     </el-table>
                     <!-- 分页 -->
-                    <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
-                        <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="5"
+                    <el-row v-if="tbDataForms.total" class="mg-t-20 mg-b-10 txt-c">
+                        <el-pagination :total="tbDataForms.total" :current-page="tbDataForms.current" :page-size="5"
                                        layout="total, prev, pager, next, jumper"
-                                       @current-change="handlePaginationChange"
+                                       @current-change="handlePaginationChangeTableForms"
                                        background>
                         </el-pagination>
                     </el-row>
@@ -114,12 +117,19 @@
                 <el-row class="hr"></el-row>
                 <el-row class="mg-t-25 mg-b-10">
                     <el-row type="flex" justify="center" align="middle">
-                        <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回页面</el-button>
-                        <el-button type="primary" size="small" icon="el-icon-finished" :loading="btnLoadingSave" @click="save" class="btn">保存修改</el-button>
+                        <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回列表</el-button>
+<!--                        <el-button type="primary" size="small" icon="el-icon-finished" :loading="btnLoadingSave" @click="save" class="btn">保存修改</el-button>-->
                     </el-row>
                 </el-row>
             </el-row>
         </el-row>
+
+        <!-- 组件：相关文件选择 -->
+        <dl-table-related v-model="dlTableRelatedVisible" :params="dlParams" @reloadTableData="getTableDataRelated()"></dl-table-related>
+        <!-- 组件：相关记录选择 -->
+        <dl-table-forms v-model="dlTableFormsVisible" :params="dlParams" @reloadTableData="getTableDataForms()"></dl-table-forms>
+        <!-- 组件：自定义表单填写 -->
+        <form-preview ref="formPreview" @success="applyForm"></form-preview>
     </el-row>
 
 </template>
@@ -128,20 +138,34 @@
 
     import dayjs from 'dayjs';
     import api from "@api";
-    let mammoth = require("mammoth");
+    // let mammoth = require("mammoth");
+    const listRouteName = 'system-doc|management-manual';
+    import dlTableRelated from "@views/single/systemDoc/managementManual/dlTableRelated";
+    import dlTableForms from "@views/single/systemDoc/managementManual/dlTableForms";
+    import formPreview from "@components/formPreview";
 
     export default {
         name: "detail",
+        components: {
+            dlTableRelated,
+            dlTableForms,
+            formPreview,
+        },
         data() {
             return {
                 dayjs,
+
+                dlParams: {},
+                dlTableRelatedVisible: false,
+                dlTableFormsVisible: false,
 
                 wordText: '',
                 previewSrc: 'public.ohyesido.cn/test.docx',
 
                 detail: {},
-
-                btnLoadingSave: false,
+                tbDataRelated: {list: []},
+                tbDataForms: {list: []},
+                applyFormItem: {},
             }
         },
         beforeCreate() {
@@ -150,24 +174,91 @@
         },
         created() {
             if(this.$route.query.id > 0) this.getDetail();
-            // this.getTableData();
         },
         methods: {
             getDetail: function() {
                 let that = this;
 
                 api.systemDocumentFindById(that.$route.query.id).then((res) => {
-                    // console.log(res);
                     if(res.data.status === 200) {
-                        // that.tbData = {...res.data.data};
+                        that.detail = {
+                            ...res.data.data,
+                        };
+                        this.getTableDataRelated();
+                        this.getTableDataForms();
                     }
-                    that.btnLoadingFilter = false;
                 });
             },
-            save: function() {
+            getTableDataRelated: function(page = 1, pageSize = 5) {
+                let that = this;
 
+                let params = {
+                    systemDocumentId: that.detail.id,
+                    pageCurrent: page,
+                    pageSize,
+                };
+                api.systemDocumentPageDocumentById(params).then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbDataRelated = {...res.data.data};
+                    }
+                });
+            },
+            handlePaginationChangeTableRelated: function(page) {
+                this.getTableDataRelated(page);
+            },
+            getTableDataForms: function(page = 1, pageSize = 5) {
+                let that = this;
+                // console.log(that.form.id);
+
+                let params = {
+                    systemDocumentId: that.detail.id,
+                    pageCurrent: page,
+                    pageSize,
+                };
+                api.systemDocumentPageFormById(params).then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbDataForms = {...res.data.data};
+                    }
+                });
+            },
+            handlePaginationChangeTableForms: function(page) {
+                this.getTableDataForms(page);
+            },
+            showApplyForm: function(row) {
+                let that = this;
+                // console.log(row);
+                that.applyFormItem = {...row};
+
+                that.$refs.formPreview.showFn(row.keyInfo);
+            },
+            applyForm: function(formInfo) {
+                let that = this;
+                // console.log(formInfo);
+
+                api.customFormInfoSave({
+                    formId: that.applyFormItem.id,
+                    formInfo: formInfo,
+                    uuid: that.man.fast.getUUID(),
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        that.$message.success('操作成功');
+                    }
+                });
             },
 
+
+            cancel: function() {
+                let that = this;
+
+                that.$confirm('是否返回列表', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '返回列表',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                }).catch();
+            },
+            // 插件方式 - 该方法暂时遗弃
             convertWordToText: function(wordURL) {
                 const xhr = new XMLHttpRequest();
                 xhr.open("get", wordURL, true);
@@ -184,35 +275,6 @@
                     }
                 };
                 xhr.send();
-            },
-            getTableData: function(page = 1, pageSize = 5) {
-                let that = this;
-
-
-            },
-            handlePaginationChange: function(page) {
-                this.getTableData(page);
-            },
-            filterTableData: function(isFilter = true) {
-                let that = this;
-
-                if(isFilter) {
-                    that.tbDataFilter = {
-                        ...that.tbFilter,
-                        startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
-                        endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
-                    };
-                    delete that.tbDataFilter.createTime;
-                } else {
-                    that.tbDataFilter = {};
-                }
-
-                that.getTableData(1);
-            },
-
-
-            cancel: function() {
-                this.$router.push({name: 'system-doc|management-manual'});
             },
         }
     }

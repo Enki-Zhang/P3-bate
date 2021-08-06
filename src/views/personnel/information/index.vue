@@ -72,10 +72,10 @@
 
                 <!-- 功能 -->
                 <el-row class="fn-btns">
-                    <!--<el-button type="primary" size="small" icon="el-icon-plus"
+                    <el-button type="primary" size="small" icon="el-icon-plus"
                                :disabled="tbDataFilter.type === 1"
                                @click="create"
-                               class="fn-btn">新增</el-button>-->
+                               class="fn-btn">新增</el-button>
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
                                class="fn-btn">批量删除</el-button>-->
@@ -140,6 +140,8 @@
             </el-row>
         </el-row>
 
+        <!-- 组件：创建账号 -->
+        <dl-add v-model="dlAddVisible" :params="dlParams" @closed="getTableData()"></dl-add>
         <!-- 组件：组别 -->
         <dl-role v-model="dlRoleVisible" :params="dlParams" @closed="getTableData()"></dl-role>
         <!-- 移动端：列表操作 -->
@@ -157,11 +159,13 @@
 
     import dayjs from 'dayjs';
     import api from "@api";
+    import dlAdd from "@views/personnel/information/dlAdd";
     import dlRole from "@views/personnel/information/dlRole";
 
     export default {
         name: "index",
         components: {
+            dlAdd,
             dlRole,
         },
         data() {
@@ -169,6 +173,7 @@
                 dayjs,
 
                 dlParams: {},
+                dlAddVisible: false,
                 dlRoleVisible: false,
 
                 asShow: false,
@@ -240,6 +245,11 @@
                 that.getTableData(1);
             },
 
+            create: function() {
+                let that = this;
+
+                that.dlAddVisible = true;
+            },
             detail: function() {
                 let that = this;
 

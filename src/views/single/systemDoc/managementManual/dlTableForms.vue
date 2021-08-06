@@ -4,32 +4,24 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" class="_root_page" append-to-body>
         <el-row>
-            <el-table ref="multipleTable" :data="tbData.records" tooltip-effect="dark"
-                      :min-height="460" size="small"
+            <el-table ref="tbForms" :data="tbData.records" tooltip-effect="dark"
+                      :max-height="460" size="small"
                       @selection-change="handleSelectionChange"
                       highlight-current-row class="dp-pc">
                 <el-table-column type="selection" width="45"></el-table-column>
                 <el-table-column label="id" fixed="left" show-overflow-tooltip min-width="60">
                     <template slot-scope="scope">{{ scope.row.id }}</template>
                 </el-table-column>
-                <el-table-column label="表单ID" fixed="left" show-overflow-tooltip min-width="200">
+                <el-table-column label="表单ID" fixed="left" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formId }}</template>
                 </el-table-column>
-                <el-table-column label="表单名称" show-overflow-tooltip min-width="200">
+                <el-table-column label="表单名称" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formName }}</template>
                 </el-table-column>
                 <el-table-column label="前置表格ID" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.frontTableId }}</template>
                 </el-table-column>
             </el-table>
-            <!-- 分页 -->
-            <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
-                <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="5"
-                               layout="total, prev, pager, next, jumper"
-                               @current-change="handlePaginationChange"
-                               background>
-                </el-pagination>
-            </el-row>
         </el-row>
         <el-row class="hr"></el-row>
         <el-row slot="footer" class="dialog-footer mg-b-10">
@@ -61,7 +53,7 @@
 
                 tbSelectedArr: [],
                 tbFilter: {},
-                tbData: {list: []},
+                tbData: {records: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
 
@@ -95,14 +87,18 @@
                 let params = {
                     // ...that.tbDataFilter,
                     // typeId: that.params.folderId,
-                    pageCurrent: page,
-                    pageSize,
+                    // pageCurrent: page,
+                    // pageSize,
                 };
 
-                api.customFormFrontTableList(params).then((res) => {
+                api.customFormList(params).then((res) => {
                     // console.log(res);
                     if(res.data.status === 200) {
-                        that.tbData = {...res.data.data};
+                        that.tbData.records = [...res.data.data];
+
+                        that.$nextTick(function() {
+                            that.generateTbSelectedArr(that.tbData.records, that.params.detail.linkedDocumentIds);
+                        });
                     }
                     that.btnLoadingFilter = false;
                 });
@@ -113,27 +109,30 @@
             handleSelectionChange: function(chooseArr) {
                 this.tbSelectedArr = chooseArr;
             },
+            generateTbSelectedArr: function(tableData = [], ids = '', needSplit = false) {
+                let that = this;
+                if(needSplit) ids = ids.split(',');
+
+                tableData.map((v, k) => {
+                    if(that.man.fast.inArray(v.id, ids)) {
+                        that.tbSelectedArr.push(v);
+                    }
+                })
+                that.handleRowDefaultSelection(that.tbSelectedArr);
+            },
+            handleRowDefaultSelection: function(rows = []) {
+                if(!!rows.length) {
+                    rows.map(row => {
+                        this.$refs.tbForms.toggleRowSelection(row, true);
+                    });
+                }
+            },
             save: function() {
                 let that = this;
 
-                let linkedTableIds = [];
-                that.tbSelectedArr.map((v, k) => {
-                    linkedTableIds.push(v.id);
-                });
-
-                api.systemDocumentUpdate({
-                    ...that.params.detail,
-                    linkedTableIds: linkedTableIds,
-                }).then((res) => {
-                    // console.log(res);
-                    that.btnLoadingSave = false;
-
-                    if(res.data.status === 200) {
-                        that.dialogVisible = false;
-                        that.$message.success('操作成功');
-                        that.$emit();
-                    }
-                });
+                that.dialogVisible = false;
+                // that.$message.success('操作成功');
+                that.$emit('changeTableData', that.tbSelectedArr);
             },
 
             beforeClose: function(done) {

@@ -32,6 +32,9 @@ export function sysUserFind(params) {
 export function sysRoleSelect(params) {
     return ajax.get(`userServer/sysRole/select`, params);
 }
+export function sysUserSave(data) {
+    return ajax.post(`userServer/sysUser/save`, data);
+}
 export function sysUserJurisdiction(data) {
     return ajax.post(`userServer/sysUser/jurisdiction`, data);
 }

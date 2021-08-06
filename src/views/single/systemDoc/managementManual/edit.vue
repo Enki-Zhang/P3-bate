@@ -102,7 +102,14 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">查看</el-link>
+                                    <el-popconfirm title="是否删除该选中项？"
+                                                   confirm-button-text='删除'
+                                                   cancel-button-text='取消'
+                                                   icon="el-icon-info"
+                                                   icon-color="red"
+                                                   @confirm="removeRelatedFiles(scope.row)">
+                                        <el-link type="primary"  slot="reference" :underline="false" class="fs-12">删除</el-link>
+                                    </el-popconfirm>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -142,7 +149,14 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">申请</el-link>
+                                    <el-popconfirm title="是否删除该选中项？"
+                                                   confirm-button-text='删除'
+                                                   cancel-button-text='取消'
+                                                   icon="el-icon-info"
+                                                   icon-color="red"
+                                                   @confirm="removeForms(scope.row)">
+                                        <el-link type="primary"  slot="reference" :underline="false" class="fs-12">删除</el-link>
+                                    </el-popconfirm>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -159,7 +173,7 @@
                 <el-row class="hr"></el-row>
                 <el-row class="mg-t-25 mg-b-10">
                     <el-row type="flex" justify="center" align="middle">
-                        <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回页面</el-button>
+                        <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回列表</el-button>
                         <el-button type="primary" size="small" icon="el-icon-finished" :loading="btnLoadingSave" @click="save" class="btn">保存修改</el-button>
                     </el-row>
                 </el-row>
@@ -167,9 +181,9 @@
         </el-row>
 
         <!-- 组件：相关文件选择 -->
-        <dl-table-related v-model="dlTableRelatedVisible" :params="dlParams" @reloadTableData="getTableDataRelated()"></dl-table-related>
+        <dl-table-related v-model="dlTableRelatedVisible" :params="dlParams" @changeTableData="changeTableDataRelatedFiles"></dl-table-related>
         <!-- 组件：相关记录选择 -->
-        <dl-table-forms v-model="dlTableFormsVisible" :params="dlParams" @reloadTableData="getTableDataForms()"></dl-table-forms>
+        <dl-table-forms v-model="dlTableFormsVisible" :params="dlParams" @changeTableData="changeTableDataForms"></dl-table-forms>
     </el-row>
 
 </template>
@@ -179,9 +193,10 @@
     import dayjs from 'dayjs';
     import api from "@api";
     import {validateAnnex,} from '@plugins/man/validate';
-    const listRouteName = 'system-doc|management-manual';
+    const listRoutePath = '/system-doc/management-manual';
     import dlTableRelated from "@views/single/systemDoc/managementManual/dlTableRelated";
     import dlTableForms from "@views/single/systemDoc/managementManual/dlTableForms";
+    import jsonTableData from "@mock/systemDocManagementManual.json";
 
     export default {
         name: "edit",
@@ -203,11 +218,15 @@
                     documentNo: this.man.fast.getUUID(),
                     files: [],
                     filePath: '',
+                    linkedDocumentIds: [],
+                    linkedTableIds: [],
                 },
                 btnLoadingSave: false,
 
-                tbDataRelated: {list: []},
-                tbDataForms: {list: []},
+                tbDataRelatedOrigin: [],
+                tbDataFormsOrigin: [],
+                tbDataRelated: {records: []},
+                tbDataForms: {records: []},
             }
         },
         beforeCreate() {
@@ -230,6 +249,8 @@
                                 fileUrl: res.data.data.filePath,
                             }]
                         };
+                        that.tbDataRelatedOrigin = [...res.data.data.systemDocumentList];
+                        that.tbDataFormsOrigin = [...res.data.data.customFormList];
                         // console.log(that.form);
                         this.getTableDataRelated();
                         this.getTableDataForms();
@@ -239,14 +260,15 @@
             getTableDataRelated: function(page = 1, pageSize = 5) {
                 let that = this;
 
-                let params = {
-                    systemDocumentId: that.form.id,
-                    pageCurrent: page,
-                    pageSize,
-                };
-                api.systemDocumentPageDocumentById(params).then((res) => {
-                    if(res.data.status === 200) {
-                        that.tbDataRelated = {...res.data.data};
+                that.tbDataRelated.total = that.tbDataRelatedOrigin.length;
+                that.tbDataRelated.records = [];
+
+                let limit = page > 1
+                    ? [(page - 1) * pageSize, page * pageSize]
+                    : [0, pageSize];
+                that.tbDataRelatedOrigin.map((v, k) => {
+                    if(k >= limit[0] && k < limit[1]) {
+                        that.tbDataRelated.records.push(v);
                     }
                 });
             },
@@ -257,14 +279,15 @@
                 let that = this;
                 // console.log(that.form.id);
 
-                let params = {
-                    systemDocumentId: that.form.id,
-                    pageCurrent: page,
-                    pageSize,
-                };
-                api.systemDocumentPageFormById(params).then((res) => {
-                    if(res.data.status === 200) {
-                        that.tbDataForms = {...res.data.data};
+                that.tbDataForms.total = that.tbDataFormsOrigin.length;
+                that.tbDataForms.records = [];
+
+                let limit = page > 1
+                    ? [(page - 1) * pageSize, page * pageSize]
+                    : [0, pageSize];
+                that.tbDataFormsOrigin.map((v, k) => {
+                    if(k >= limit[0] && k < limit[1]) {
+                        that.tbDataForms.records.push(v);
                     }
                 });
             },
@@ -343,21 +366,30 @@
 
                 let folderTitle =  JSON.parse(that.$route.query.folderTitle);
                 that.dlParams = {
-                    detail: {
-                        id: that.form.id,
-                        documentNo: that.form.documentNo,
-                        name: that.form.name,
-                        version: that.form.version,
-                        filePath: that.form.files[0].fileUrl,
-                        status: that.form.status,
-                        documentType: that.form.documentType,
-                        linkedDocumentIds: that.form.linkedDocumentIds,
-                        linkedTableIds: that.form.linkedTableIds,
-                        isMainVersion: that.form.isMainVersion,
-                    },
+                    detail: {...that.form,},
                     folderId: folderTitle.id,
                 };
                 that.dlTableRelatedVisible = true;
+            },
+            changeTableDataRelatedFiles: function(data) {
+                let that = this;
+
+                that.tbDataRelatedOrigin = [...data];
+                that.form.linkedDocumentIds = [];
+                data.map(v => {
+                    that.form.linkedDocumentIds.push(v.id);
+                });
+                that.getTableDataRelated();
+            },
+            removeRelatedFiles: function(row) {
+                let that = this;
+
+                that.tbDataRelatedOrigin.map((v, k) => {
+                    if(v.id === row.id) {
+                        that.tbDataRelatedOrigin.splice(k, 1);
+                    }
+                });
+                that.getTableDataRelated();
             },
             chooseForms: function() {
                 let that = this;
@@ -380,12 +412,42 @@
                 };
                 that.dlTableFormsVisible = true;
             },
+            changeTableDataForms: function(data) {
+                let that = this;
+
+                that.tbDataFormsOrigin = [...data];
+                that.form.linkedTableIds = [];
+                data.map(v => {
+                    that.form.linkedTableIds.push(v.id);
+                });
+                that.getTableDataForms();
+            },
+            removeForms: function(row) {
+                let that = this;
+
+                that.tbDataFormsOrigin.map((v, k) => {
+                    if(v.id === row.id) {
+                        that.tbDataFormsOrigin.splice(k, 1);
+                    }
+                });
+                that.getTableDataForms();
+            },
             save: function() {
                 let that = this;
 
                 that.$refs.fm.validate(valid => {
                     if(valid) {
                         that.btnLoadingSave = true;
+
+                        // 重计
+                        that.form.linkedDocumentIds = [];
+                        that.tbDataRelatedOrigin.map(v => {
+                            that.form.linkedDocumentIds.push(v.id);
+                        });
+                        that.form.linkedTableIds = [];
+                        that.tbDataFormsOrigin.map(v => {
+                            that.form.linkedTableIds.push(v.id);
+                        });
 
                         if(!!Number(that.$route.query.id)) {
                             api.systemDocumentUpdate({
@@ -396,6 +458,8 @@
                                 filePath: that.form.files[0].fileUrl,
                                 status: that.form.status,
                                 documentType: that.form.documentType,
+                                linkedDocumentIds: that.form.linkedDocumentIds,
+                                linkedTableIds: that.form.linkedTableIds,
                             }).then((res) => {
                                 // console.log(res);
                                 that.btnLoadingSave = false;
@@ -416,6 +480,8 @@
                                 filePath: that.form.files[0].fileUrl,
                                 status: that.form.status,
                                 documentType: folderDetail.id,
+                                linkedDocumentIds: that.form.linkedDocumentIds,
+                                linkedTableIds: that.form.linkedTableIds,
                             }).then((res) => {
                                 // console.log(res);
                                 that.btnLoadingSave = false;
@@ -439,7 +505,8 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                    console.log(that.$route.query._lpq);
+                    that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
                 }).catch();
             },
         }

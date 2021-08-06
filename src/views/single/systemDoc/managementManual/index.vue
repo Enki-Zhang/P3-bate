@@ -234,7 +234,7 @@
                 that.$router.push({
                     path: `/system-doc/management-manual/add`,
                     query: {
-                        lpq: JSON.stringify(that.tbDataFilter),
+                        _lpq: JSON.stringify(that.tbDataFilter),
                         folderTitle: that.$route.query.folderTitle,
                         id: 0,
                     }
@@ -246,8 +246,9 @@
                 that.$router.push({
                     path: `/system-doc/management-manual/version`,
                     query: {
-                        lpq: JSON.stringify(that.tbDataFilter),
+                        _lpq: JSON.stringify(that.tbDataFilter),
                         folderTitle: that.$route.query.folderTitle,
+                        documentNo: row.documentNo,
                     }
                 });
             },
@@ -257,7 +258,7 @@
                 that.$router.push({
                     path: `/system-doc/management-manual/detail`,
                     query: {
-                        lpq: JSON.stringify(that.tbDataFilter),
+                        _lpq: JSON.stringify(that.tbDataFilter),
                         folderTitle: that.$route.query.folderTitle,
                         id: row.id,
                     }
@@ -273,7 +274,7 @@
                 that.$router.push({
                     path: `/system-doc/management-manual/edit`,
                     query: {
-                        lpq: JSON.stringify(that.tbDataFilter),
+                        _lpq: JSON.stringify(that.tbDataFilter),
                         folderTitle: that.$route.query.folderTitle,
                         id: row.id,
                     }

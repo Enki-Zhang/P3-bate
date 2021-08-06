@@ -25,6 +25,9 @@ export function systemDocumentTypeDelete(data) {
 export function systemDocumentPage(params) {
     return ajax.get('backServer/systemDocument/page', params);
 }
+export function systemDocumentList(params) {
+    return ajax.get('backServer/systemDocument/list', params);
+}
 export function systemDocumentSave(data) {
     return ajax.post('backServer/systemDocument/save', data);
 }
@@ -37,8 +40,8 @@ export function systemDocumentPageDocumentById(params) {
 export function systemDocumentPageFormById(params) {
     return ajax.get('backServer/systemDocument/pageFormById', params);
 }
-export function customFormFrontTableList(params) {
-    return ajax.get('userServer/customFormFrontTable/list', params);
+export function customFormList(params) {
+    return ajax.get('userServer/customForm/list', params);
 }
 
 
@@ -47,11 +50,17 @@ export function customFormFrontTableList(params) {
 export function systemDocumentVersions(params) {
     return ajax.get(`backServer/systemDocument/versions`, params);
 }
+export function systemDocumentSetManVersion(data) {
+    return ajax.post('backServer/systemDocument/setMainVersion', data);
+}
 
 // 查阅
 
 export function systemDocumentFindById(params) {
     return ajax.get(`backServer/systemDocument/findById/${params}`);
+}
+export function customFormInfoSave(data) {
+    return ajax.post('userServer/customFormInfo/save', data);
 }
 
 // 删除
