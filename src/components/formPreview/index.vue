@@ -556,12 +556,11 @@ export default {
   bottom: 0;
   right: 0;
   z-index: 1000;
-  padding:2% 0;
   background:rgba(0,0,0,0.5);
   .p_box{
     background: #fff;
     height:100%;
-    width:700px;
+    width:100%;
     margin:0 auto;
     display: flex;
     flex-direction: column;
@@ -600,8 +599,6 @@ export default {
   }
     
 }
-
-
 
 #preview_dialog{
   overflow:auto;
@@ -762,6 +759,39 @@ export default {
   }
 }
 
+.fontFn (@px, @attr: font-size) {
+    @rem: (@px / 37.5);
+    @{attr}: ~"@{rem}rem";
+}
 
+@media screen and (max-width: 750px) {
+  .popBox{
+    .p_box{
+      .header{
+        height:60px;
+        p{
+          font-size:28px;
+          height:60px;
+          line-height:60px;
+        }
+        span{
+          height:60px;
+          line-height:60px;
+          font-size:24px;
+        }
+      }
+      .footer{
+        height:80px;
+        @{deep} button{
+          font-size:28px;
+          width:200px !important;
+        }
+      }
+    }
+  }
+  #preview_dialog{
+
+  }
+}
 
 </style>

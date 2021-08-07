@@ -111,7 +111,7 @@
                     <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row border>
-                        <el-table-column label="编号" fixed="left" show-overflow-tooltip width="280">
+                        <el-table-column label="编号" fixed="left" show-overflow-tooltip width="180">
                             <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                         </el-table-column>
                         <el-table-column label="名称" show-overflow-tooltip min-width="160">
@@ -129,7 +129,7 @@
                                 <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
                             </template>
                         </el-table-column>-->
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="280">
+                        <el-table-column label="操作" show-overflow-tooltip width="380">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
