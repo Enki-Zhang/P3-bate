@@ -118,15 +118,6 @@
         name: "index",
         data() {
             return {
-                nameId:{
-                    'supplies_organization':'0001',
-                    'supplies_consumables':'0002',
-                    'supplies_other-items':'0101',
-                    'supplies_service-items':'0002',
-                    'supplies_dormitory':'0002',
-                    'supplies_car':'0002',
-                    'supplies_logistics':'0002'
-                },
                 tbData: {
                     content: [],
                     total:0,
@@ -160,6 +151,7 @@
         },
         mounted() {
             //this.getTableData();
+            console.log(this.$route);
             this.getColumn();
         },
         methods: {
@@ -184,7 +176,7 @@
                     return obj[type];
                 }
 
-                let formKey = this.nameId[this.$route.name];
+                let formKey = this.$route.meta.formKey;
                 api.formStructInfo(formKey).then((res) => {
                     this.btnLoadingFilter = false;
                     if(res.data.status === 200) {
@@ -214,7 +206,7 @@
                     pageSize,
                 };
                 console.log(this.$route.name);
-                let formKey = this.nameId[this.$route.name];
+                let formKey = this.$route.meta.formKey;
                 params.formKey = formKey;
 
                 if(params.datetime != null){

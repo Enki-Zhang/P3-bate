@@ -19,10 +19,10 @@
                         <el-table-column label="名称" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.formName }}</template>
                         </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
+                        <el-table-column label="版本" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.versions }}</template>
                         </el-table-column>
-                        <el-table-column label="创建日期" show-overflow-tooltip min-width="90">
+                        <el-table-column label="创建日期" show-overflow-tooltip min-width="250">
                             <template slot-scope="scope">{{ (scope.row.updateTime == null ? scope.row.createTime : scope.row.updateTime) | dateStr}}</template>
                         </el-table-column>
                         <!--<el-table-column label="使用状态" show-overflow-tooltip min-width="80">
@@ -31,7 +31,7 @@
                                 <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
                             </template>
                         </el-table-column>-->
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="240">
+                        <el-table-column label="操作" show-overflow-tooltip width="240">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManager(scope.row)" class="fs-12">设为主版本</el-link>

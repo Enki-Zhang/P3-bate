@@ -98,10 +98,33 @@ let loadRoutes = async (isFullLoad) => {
         return routes;
     };
 
+    //物资管理根据是否绑定formKey进行过滤
+    const thingManageFilter = function(arr){
+        arr.forEach(route => {
+            //console.log(route);
+            if(route.name === "supplies"){
+                let lastChildren = [];
+                let children = route.children;
+                for(var i = 0;i < children.length;i++){
+                    if(!!children[i].formKey){
+                        children[i].meta.formKey = children[i].formKey;
+                        lastChildren.push(children[i]);
+                    }
+                }
+                route.children = lastChildren;
+            }
+        });
+        return arr;
+    }
+
     // 完整加载
     if(isFullLoad) {
-        if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) routes.inLayout.children = [...routes.inLayout.children.concat(userInfo.menus)];
-
+        if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) {
+            let userInfoMenu = JSON.parse(JSON.stringify(userInfo.menus));
+            userInfoMenu = thingManageFilter(userInfoMenu);
+            console.log(userInfoMenu);
+            routes.inLayout.children = [...routes.inLayout.children.concat(userInfoMenu)];
+        }
         router.addRoutes(mergeRoutesComponents([
             routes.inLayout,
             ...routes.outOfLayout,
