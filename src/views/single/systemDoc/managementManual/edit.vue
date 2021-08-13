@@ -415,6 +415,7 @@
             changeTableDataForms: function(data) {
                 let that = this;
 
+                console.log(data)
                 that.tbDataFormsOrigin = [...data];
                 that.form.linkedTableIds = [];
                 data.map(v => {

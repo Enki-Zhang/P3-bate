@@ -60,7 +60,7 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">查看</el-link>
+                                    <el-link type="primary" :underline="false" @click="lookDetail(scope.row)" class="fs-12">查看</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -100,7 +100,8 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link type="primary" :underline="false" @click="showApplyForm(scope.row)" class="fs-12">申请</el-link>
+                                    <el-link v-if="!!!scope.row.isApply" type="primary" :underline="false" @click="showApplyForm(scope.row)" class="fs-12">申请</el-link>
+                                    <el-link v-else type="success" :underline="false" disabled class="fs-12">已申请</el-link>
                                 </el-row>
                             </template>
                         </el-table-column>
@@ -211,11 +212,11 @@
                 // console.log(that.form.id);
 
                 let params = {
-                    systemDocumentId: that.detail.id,
+                    documentId: that.detail.id,
                     pageCurrent: page,
                     pageSize,
                 };
-                api.systemDocumentPageFormById(params).then((res) => {
+                api.customFormListByDocumentId(params).then((res) => {
                     if(res.data.status === 200) {
                         that.tbDataForms = {...res.data.data};
                     }
@@ -223,6 +224,18 @@
             },
             handlePaginationChangeTableForms: function(page) {
                 this.getTableDataForms(page);
+            },
+            lookDetail: function(row) {
+                let that = this;
+
+                that.$router.push({
+                    path: `/system-doc/management-manual/detail`,
+                    query: {
+                        _lpq: JSON.stringify(that.tbDataFilter),
+                        folderTitle: that.$route.query.folderTitle,
+                        id: row.id,
+                    }
+                });
             },
             showApplyForm: function(row) {
                 let that = this;
@@ -236,9 +249,10 @@
                 // console.log(formInfo);
 
                 api.customFormInfoSave({
+                    documentId: that.detail.id,
                     formId: that.applyFormItem.id,
                     formInfo: formInfo,
-                    uuid: that.man.fast.getUUID(),
+                    // uuid: that.man.fast.getUUID(),
                 }).then((res) => {
                     if(res.data.status === 200) {
                         that.$message.success('操作成功');

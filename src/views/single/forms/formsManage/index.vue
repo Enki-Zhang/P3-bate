@@ -467,7 +467,15 @@
             },
             processDesign: function(row) {
                 let that = this;
-                that.$router.push({path: `/forms/process-design`});
+                // console.log(row);
+
+                that.$router.push({
+                    path: `/forms/process-design`,
+                    query: {
+                        id: row.id,
+                        processDefinitionId: row.activitiId,
+                    }
+                });
             },
         }
     }

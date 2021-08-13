@@ -77,7 +77,6 @@
                 let that = this;
 
                 that.getTableData();
-                that.tbSelectedArr = [...that.params.detail.linkedDocumentIds];
             },
 
             getTableData: function(page = 1, pageSize = 5) {
@@ -91,13 +90,13 @@
                     // pageSize,
                 };
 
-                api.customFormList(params).then((res) => {
+                api.customFormAll(params).then((res) => {
                     // console.log(res);
                     if(res.data.status === 200) {
                         that.tbData.records = [...res.data.data];
 
                         that.$nextTick(function() {
-                            that.generateTbSelectedArr(that.tbData.records, that.params.detail.linkedDocumentIds);
+                            that.generateTbSelectedArr(that.tbData.records, that.params.detail.linkedTableIds);
                         });
                     }
                     that.btnLoadingFilter = false;

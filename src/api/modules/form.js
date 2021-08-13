@@ -116,3 +116,13 @@ export function formAdd(data) {
 export function formEdit(data) {
     return ajax.post('userServer/customForm/edit', data);
 }
+
+
+// 流程图
+
+export function camundaFindByProcessDefinitionById(params) {
+    return ajax.get(`backServer/camunda/findByProcessDefinitionById/${params}`);
+}
+export function camundaDeploy(data) {
+    return ajax.post('backServer/camunda/deploy', data);
+}

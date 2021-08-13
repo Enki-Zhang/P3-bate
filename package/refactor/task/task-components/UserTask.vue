@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="候选分组">
             <el-select v-model="userTaskForm.candidateGroups" multiple @change="updateElementTask('candidateGroups')">
-                <el-option v-for="(v, k) in mockFZ" :key="`group-${k}`" :label="v.name" :value="v.uid"/>
+                <el-option v-for="(v, k) in seloptsUserGroup" :key="`group-${k}`" :label="v.role" :value="v.id"/>
             </el-select>
             <!--  collapse-tags -->
         </el-form-item>
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+
+    import api from "@api";
 
     export default {
         name: "UserTask",
@@ -60,10 +62,13 @@
                     {uid: 2, name: '刘七'},
                     {uid: 3, name: '苏八'},
                 ],
-                mockFZ: [
 
-                ],
+                seloptsUser: [],
+                seloptsUserGroup: [],
             };
+        },
+        created() {
+            this.getUserGroup();
         },
         watch: {
             id: {
@@ -94,7 +99,18 @@
                     taskAttr[key] = this.userTaskForm[key] || null;
                 }
                 window.bpmnInstances.modeling.updateProperties(this.bpmnElement, taskAttr);
-            }
+            },
+
+
+            getUserGroup: function() {
+                let that = this;
+
+                api.sysRoleSelect().then((res) => {
+                    if(res.data.status === 200) {
+                        that.seloptsUserGroup = [...res.data.data];
+                    }
+                });
+            },
         },
         beforeDestroy() {
             this.bpmnElement = null;

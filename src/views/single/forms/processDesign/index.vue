@@ -49,6 +49,8 @@
     import DefaultEmptyXML from "~package/process-designer/plugins/defaultEmpty";
     // 模拟流转流程
     import tokenSimulation from "bpmn-js-token-simulation";
+    import api from "@api";
+    const listRoutePath = '/forms/forms-manage';
 
     export default {
         name: "index",
@@ -76,24 +78,71 @@
                 btnLoadingSave: false,
             }
         },
-        created() {},
         methods: {
             initModeler(modeler) {
-                this.$nextTick(function() {
-                    this.modeler = modeler;
-                    console.log(this.modeler);
+                let that = this;
+
+                that.$nextTick(function() {
+                    that.modeler = modeler;
+                    // console.log(that.modeler);
+
+                    that.getBpmnContent();
                 });
             },
             elementClick(element) {
                 this.element = element;
             },
 
-            save: function() {
+            save: async function() {
+                let that = this;
 
+                try {
+                    const {err, xml} = await that.modeler.saveXML();
+                    // 读取异常时抛出异常
+                    if (err) {console.error(`[Process Designer Warn ]: ${err.message || err}`);}
+                    api.camundaDeploy({
+                        id: that.$route.query.id,
+                        data: xml,
+                    }).then((res) => {
+                        if(res.data.status === 200) {
+                            that.$message.success('操作成功');
+                            that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                        }
+                    });
+                } catch (e) {console.error(`[Process Designer Warn ]: ${e.message || e}`);}
             },
             cancel: function() {
 
             },
+
+
+            getBpmnContent: function() {
+                let that = this;
+                // console.log(that.$route.query);
+
+                api.camundaFindByProcessDefinitionById(that.$route.query.processDefinitionId).then((res) => {
+                    // console.log(res);
+                    if(res.data.status === 200) {
+                        that.$toast.loading({
+                            message: '解析并渲染',
+                            forbidClick: true,
+                            loadingType: 'spinner',
+                        });
+
+                        setTimeout(function() {
+                            // console.log(res.data.data);
+                            that.createNewDiagram(res.data.data.data);
+
+                            that.$toast.success({
+                                message: '渲染完成',
+                                duration: 888
+                            });
+                        }, 1288);
+                    }
+                });
+            },
+
+
             asAndConsole: async function(type) {
                 let that = this;
 
@@ -161,6 +210,7 @@
                 that.simulationStatus = !that.simulationStatus;
                 that.modeler.get("toggleMode").toggleMode();
             },
+
 
             /**
              * 根据所需类型进行转码并返回下载地址

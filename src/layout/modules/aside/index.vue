@@ -18,40 +18,48 @@
                  text-color="#EEEEEE"
                  active-text-color="#FFF">
                 <!-- unique-opened -->
-                <el-submenu v-for="(v, k) in menus" :key="k"
-                            v-if="!v.hidden && v.meta && !v.meta.isSinglePage && v.children && v.children.length"
-                            :index="v.name">
-                    <template v-if="v.meta.isLoggedInfo">
-                        <template slot="title">
-                            <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
-                            <span>{{ userInfo.user.realName || userInfo.user.username }}</span>
-                        </template>
-                        <div v-for="(vv, kk) in v.children" :key="kk"
-                             v-if="!vv.hidden">
-                            <el-menu-item :index="vv.name" @click="nav(vv.name)">
-                                <span slot="title">{{ vv.meta.title }}</span>
+                <template v-for="v in menus">
+                    <template v-if="!v.hidden && !!v.meta">
+                        <template v-if="v.meta.isSinglePage">
+                            <el-menu-item :index="v.name" @click="nav(v.name)">
+                                <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
+                                <span slot="title">{{ v.meta.title }}</span>
                             </el-menu-item>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <template slot="title">
-                            <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
-                            <span>{{ v.meta.title }}</span>
                         </template>
-                        <div v-for="(vv, kk) in v.children" :key="kk"
-                             v-if="!vv.hidden">
-                            <el-menu-item :index="vv.name" @click="nav(vv.name)">
-                                <span slot="title">{{ vv.meta.title }}</span>
-                            </el-menu-item>
-                        </div>
+                        <template v-else>
+                            <template v-if="v.meta.isLoggedInfo">
+                                <el-submenu :index="v.name">
+                                    <template slot="title">
+                                        <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
+                                        <span>{{ userInfo.user.realName || userInfo.user.username }}</span>
+                                    </template>
+                                    <template v-for="vv in v.children">
+                                        <template v-if="!vv.hidden">
+                                            <el-menu-item :index="vv.name" @click="nav(vv.name)">
+                                                <span slot="title">{{ vv.meta.title }}</span>
+                                            </el-menu-item>
+                                        </template>
+                                    </template>
+                                </el-submenu>
+                            </template>
+                            <template v-else>
+                                <el-submenu :index="v.name">
+                                    <template slot="title">
+                                        <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
+                                        <span>{{ v.meta.title }}</span>
+                                    </template>
+                                    <template v-for="vv in v.children">
+                                        <template v-if="!vv.hidden">
+                                            <el-menu-item :index="vv.name" @click="nav(vv.name)">
+                                                <span slot="title">{{ vv.meta.title }}</span>
+                                            </el-menu-item>
+                                        </template>
+                                    </template>
+                                </el-submenu>
+                            </template>
+                        </template>
                     </template>
-                </el-submenu>
-                <el-menu-item v-else-if="!v.hidden"
-                              :index="v.name"
-                              @click="nav(v.name)">
-                    <img :src="v.icon ? require(`../../../assets/image/aside/${v.icon}.png`) : ''" class="aside-icon">
-                    <span slot="title">{{ v.meta.title }}</span>
-                </el-menu-item>
+                </template>
             </el-menu>
         </el-scrollbar>
     </el-aside>

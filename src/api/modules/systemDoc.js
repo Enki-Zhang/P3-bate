@@ -37,11 +37,11 @@ export function systemDocumentUpdate(data) {
 export function systemDocumentPageDocumentById(params) {
     return ajax.get('backServer/systemDocument/pageDocumentById', params);
 }
-export function systemDocumentPageFormById(params) {
-    return ajax.get('backServer/systemDocument/pageFormById', params);
+export function customFormListByDocumentId(params) {
+    return ajax.get('userServer/customForm/listByDocumentId', params);
 }
-export function customFormList(params) {
-    return ajax.get('userServer/customForm/list', params);
+export function customFormAll(params) {
+    return ajax.get('userServer/customForm/all', params);
 }
 
 
