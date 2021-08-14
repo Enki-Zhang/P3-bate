@@ -64,7 +64,7 @@
                     <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row border>
-                        <el-table-column label="编号" fixed="left" show-overflow-tooltip width="40">
+                        <el-table-column label="表单id" fixed="left" show-overflow-tooltip width="60">
                             <template slot-scope="scope">{{ scope.row.formId }}</template>
                         </el-table-column>
                         <el-table-column v-for = "v,index in tbColumn" :key = "index" :label="v.name" show-overflow-tooltip >
