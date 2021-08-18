@@ -170,6 +170,7 @@
             }
         },
         beforeCreate() {
+            // console.log(JSON.parse(this.$route.query.folderTitle));
             // 更改当前路由面包屑 title
             if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
@@ -248,6 +249,7 @@
                     query: {
                         _lpq: JSON.stringify(that.tbDataFilter),
                         folderTitle: that.$route.query.folderTitle,
+                        // virtualParent: JSON.stringify(that.$route.meta.virtualParent),
                         documentNo: row.documentNo,
                     }
                 });

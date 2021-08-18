@@ -10,27 +10,54 @@
             <el-scrollbar class="main-scrollbar">
                 <el-main class="layout-main">
                     <!-- 面包屑 -->
-                    <el-row v-if="isShowBreadcrumb" class="my-breadcrumb">
-                        <template v-if="!$route.meta.isSinglePage">
+                    <!--<el-row v-if="isShowBreadcrumb" class="my-breadcrumb">
+                        <template v-if="$route.meta.isSinglePage === 0">
                             <el-row class="breadcrumb">
                                 <el-breadcrumb v-if="breadcrumbParents.length > 0">
                                     <el-breadcrumb-item v-for="(v, k) in breadcrumbParents" :key="k"
                                                         v-if="v.meta && !v.meta.isSinglePage">
-                                        {{ v.meta.title }}
+                                        &lt;!&ndash;                                        {{ v.meta.title }}&ndash;&gt;
                                     </el-breadcrumb-item>
-                                    <el-breadcrumb-item v-else-if="!!v.toPath" :to="{path: v.path, query: v.query}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
+                                    &lt;!&ndash;                                    <el-breadcrumb-item v-else-if="!!v.toPath" :to="{path: v.path, query: v.query}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>&ndash;&gt;
                                     <el-breadcrumb-item v-else :to="{name: v.name}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
                                     <el-breadcrumb-item class="breadcrumb-current">{{ $route.meta.title }}</el-breadcrumb-item>
                                 </el-breadcrumb>
                             </el-row>
-<!--                            <el-row v-if="$route.meta.isNeedVirtualParent" class="breadcrumb-title">{{ pageTitle }}</el-row>-->
-<!--                            <el-row class="breadcrumb-title">{{ $route.meta.title }}</el-row>-->
+                            &lt;!&ndash;                            <el-row v-if="$route.meta.isNeedVirtualParent" class="breadcrumb-title">{{ pageTitle }}</el-row>&ndash;&gt;
+                            &lt;!&ndash;                            <el-row class="breadcrumb-title">{{ $route.meta.title }}</el-row>&ndash;&gt;
                         </template>
                         <template v-else>
-                            <el-row class="breadcrumb-single">{{ $route.meta.title }}</el-row>
+                            &lt;!&ndash;                            <el-row class="breadcrumb-single">{{ $route.meta.title }}</el-row>&ndash;&gt;
                         </template>
                         <el-row class="breadcrumb-hr"></el-row>
+                    </el-row>-->
+
+                    <el-row v-if="isShowBreadcrumb" class="my-breadcrumb">
+                        <el-row class="breadcrumb">
+                            <el-breadcrumb v-if="breadcrumbParents.length > 0">
+                                <template v-for="(v, k) in breadcrumbParents">
+                                    <template v-if="!!v.meta.isSinglePage">
+<!--                                        <el-breadcrumb-item v-if="" :to="{path: v.path, query: v.query}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>-->
+                                        <template v-if="k > 0"><!--  v-if="k > 0" -->
+                                            <template v-if="!!v.meta.toPath">
+                                                <el-breadcrumb-item :to="{name: v.name, query: v.meta.query}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
+                                            </template>
+                                            <el-breadcrumb-item v-else :to="{name: v.name}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
+                                        </template>
+                                    </template>
+                                    <el-breadcrumb-item v-else>{{ v.meta.title }}</el-breadcrumb-item>
+                                </template>
+                                <el-breadcrumb-item class="breadcrumb-current">{{ $route.meta.title }}</el-breadcrumb-item>
+                            </el-breadcrumb>
+                            <el-breadcrumb v-else>
+                                <el-breadcrumb-item class="breadcrumb-current">{{ $route.meta.title }}</el-breadcrumb-item>
+                            </el-breadcrumb>
+                        </el-row>
+                        <el-row class="breadcrumb-hr"></el-row>
                     </el-row>
+
+
+
                     <!-- 页面内容 -->
                     <router-view :key="routerKey"></router-view>
                 </el-main>
@@ -62,11 +89,17 @@
             // 监听 - 改变当前页面面包屑标题
             that.man.bus.$on('changeCurrentRouteMetaTitle', function(data) {
                 that.$route.meta.title = data.title;
+                // console.log(that.$route.meta);
                 that.$forceUpdate();
             });
             // 监听 - 改变当前页面虚拟父类面包屑标题
             that.man.bus.$on('changeCurrentRouteVirtualParentMetaTitle', function(data) {
                 that.$route.meta.virtualParent.meta.title = data.title;
+                that.$route.meta.virtualParent.meta.toPath = true;
+                that.$route.meta.virtualParent.meta.query = {
+                    folderTitle: JSON.stringify(data),
+                };
+                // console.log(that.$route.meta);
                 that.$forceUpdate();
             });
         },
@@ -86,8 +119,15 @@
                     this.$route.matched.map((v, k) => {
                         if(k > 0 && k < this.$route.matched.length - 1) res.push(v);
                     });
-                    if(this.$route.meta.isNeedVirtualParent) res.push(this.$route.meta.virtualParent);
+                    if(this.$route.meta.isNeedVirtualParent) {
+                        if (this.$route.meta.virtualParent.meta.isNeedVirtualParent) {
+                            // console.log(this.$route.meta.virtualParent);
+                            res.push(this.$route.meta.virtualParent.meta.virtualParent);
+                        }
+                        res.push(this.$route.meta.virtualParent);
+                    }
                 }
+                // console.log(res);
                 return res;
             },
         }

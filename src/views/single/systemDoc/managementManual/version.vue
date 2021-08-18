@@ -149,6 +149,7 @@
             }
         },
         beforeCreate() {
+            // console.log(JSON.parse(this.$route.query.virtualParent));
             // 更改当前路由面包屑 title
             if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
