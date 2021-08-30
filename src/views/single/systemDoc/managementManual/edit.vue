@@ -215,7 +215,8 @@
 
                 editId: 0,
                 form: {
-                    documentNo: this.man.fast.getUUID(),
+                    // documentNo: this.man.fast.getUUID(),
+                    documentNo: '',
                     files: [],
                     filePath: '',
                     linkedDocumentIds: [],
@@ -415,7 +416,6 @@
             changeTableDataForms: function(data) {
                 let that = this;
 
-                console.log(data)
                 that.tbDataFormsOrigin = [...data];
                 that.form.linkedTableIds = [];
                 data.map(v => {
@@ -468,7 +468,7 @@
                                 if(res.data.status === 200) {
                                     that.dialogVisible = false;
                                     that.$message.success('操作成功');
-                                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                                    that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                                 }
                             });
                         } else {
@@ -490,7 +490,7 @@
                                 if(res.data.status === 200) {
                                     that.dialogVisible = false;
                                     that.$message.success('操作成功');
-                                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                                    that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                                 }
                             });
                         }
@@ -506,8 +506,7 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    console.log(that.$route.query._lpq);
-                    that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                    that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                 }).catch();
             },
         }

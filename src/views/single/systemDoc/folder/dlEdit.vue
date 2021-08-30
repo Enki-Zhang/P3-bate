@@ -96,7 +96,7 @@
             save: function() {
                 let that = this;
                 that.form.icon = this.choosedIcon;
-                console.log(that.form);
+                // console.log(that.form);
 
                 that.$refs.fm.validate(valid => {
                     if(valid) {

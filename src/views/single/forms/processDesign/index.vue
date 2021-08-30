@@ -120,26 +120,28 @@
                 let that = this;
                 // console.log(that.$route.query);
 
-                api.camundaFindByProcessDefinitionById(that.$route.query.processDefinitionId).then((res) => {
-                    // console.log(res);
-                    if(res.data.status === 200) {
-                        that.$toast.loading({
-                            message: '解析并渲染',
-                            forbidClick: true,
-                            loadingType: 'spinner',
-                        });
-
-                        setTimeout(function() {
-                            // console.log(res.data.data);
-                            that.createNewDiagram(res.data.data.data);
-
-                            that.$toast.success({
-                                message: '渲染完成',
-                                duration: 888
+                if(!!that.$route.query.processDefinitionId) {
+                    api.camundaFindByProcessDefinitionById(that.$route.query.processDefinitionId).then((res) => {
+                        // console.log(res);
+                        if(res.data.status === 200) {
+                            that.$toast.loading({
+                                message: '解析并渲染',
+                                forbidClick: true,
+                                loadingType: 'spinner',
                             });
-                        }, 1288);
-                    }
-                });
+
+                            setTimeout(function() {
+                                // console.log(res.data.data);
+                                that.createNewDiagram(res.data.data.data);
+
+                                that.$toast.success({
+                                    message: '渲染完成',
+                                    duration: 888
+                                });
+                            }, 1288);
+                        }
+                    });
+                }
             },
 
 

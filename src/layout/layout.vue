@@ -45,7 +45,12 @@
                                             <el-breadcrumb-item v-else :to="{name: v.name}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
                                         </template>
                                     </template>
-                                    <el-breadcrumb-item v-else>{{ v.meta.title }}</el-breadcrumb-item>
+                                    <template v-else>
+                                        <template v-if="k > 0">
+                                            <el-breadcrumb-item :to="{name: v.name}" :replace="true">{{ v.meta.title }}</el-breadcrumb-item>
+                                        </template>
+                                        <el-breadcrumb-item v-else>{{ v.meta.title }}</el-breadcrumb-item>
+                                    </template>
                                 </template>
                                 <el-breadcrumb-item class="breadcrumb-current">{{ $route.meta.title }}</el-breadcrumb-item>
                             </el-breadcrumb>

@@ -181,7 +181,9 @@
                     return;
                 }*/
 
-                that.$router.push({path: `/personnel/organization/add/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({
+                    path: `/personnel/organization/add`,
+                });
             },
             edit: function(row) {
                 let that = this;
@@ -190,7 +192,13 @@
                     return;
                 }*/
 
-                that.$router.push({path: `/personnel/organization/edit/${row.id}/${JSON.stringify(that.tbDataFilter)}`});
+                that.$router.push({
+                    path: `/personnel/organization/edit`,
+                    query: {
+                        id: row.id,
+                        _lpq: JSON.stringify(that.tbDataFilter),
+                    }
+                });
             },
             remove: function(row) {
                 let that = this;

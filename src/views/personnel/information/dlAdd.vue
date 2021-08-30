@@ -33,7 +33,7 @@
                         <el-input v-model="form.phone" placeholder="手机号码" clearable></el-input>
                     </el-form-item>
                 </el-row>
-                <el-row>
+                <!--<el-row>
                     <el-form-item prop="roleIdArr" label="组别" :rules="[
                             {required: true, message: '请选择组别'},
                             {type: 'array', min: 1, message: '请选择组别'},
@@ -44,7 +44,7 @@
                                        :label="v.role" :value="v.id"></el-option>
                         </el-select>
                     </el-form-item>
-                </el-row>
+                </el-row>-->
             </el-form>
         </el-row>
         <el-row slot="footer" class="dialog-footer">
@@ -86,7 +86,7 @@
                     username: '',
                     password: '123456',
                     phone: '',
-                    roleIdArr: [],
+                    // roleIdArr: [],
                 },
                 btnLoadingSave: false,
             }
@@ -130,7 +130,7 @@
 
                         api.sysUserSave({
                             ...that.form,
-                            roleIds: that.form.roleIdArr.join(',')
+                            // roleIds: that.form.roleIdArr.join(',')
                         }).then((res) => {
                             // console.log(res);
                             that.btnLoadingSave = false;

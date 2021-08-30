@@ -102,7 +102,8 @@
                 let that = this;
 
                 that.dlParams = {
-                    mode: 'create'
+                    mode: 'create',
+                    detail: {id: 0}
                 };
                 that.dlEditVisible = true;
             },

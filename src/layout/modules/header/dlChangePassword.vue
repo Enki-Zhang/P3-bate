@@ -52,7 +52,6 @@
         name: "edit",
         props: {
             value: Boolean,
-            operationType: String,
         },
         data() {
             return {
@@ -98,6 +97,7 @@
                             if(res.data.status === 200) {
                                 that.btnLoadingSave = false;
                                 that.dialogVisible = false;
+
                                 that.$message.success('登录密码修改成功');
                             } else {that.btnLoadingSave = false;}
                         });

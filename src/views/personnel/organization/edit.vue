@@ -103,10 +103,9 @@
             this.$toast.loading('正在加载');
         },
         created() {
-            this.$store.commit('setPageTitle', `${this.$route.params.id ? '编辑' : '新增'}权限`);
+            this.$store.commit('setPageTitle', `${this.$route.query.id ? '编辑' : '新增'}权限`);
 
-            // this.form.id = this.man.fast.getUUID();
-            if(this.$route.params.id) this.getDetail(this.$route.params.id);
+            if(this.$route.query.id) this.getDetail(this.$route.query.id);
             this.getAllPermissions();
             // this.testTbData();
         },

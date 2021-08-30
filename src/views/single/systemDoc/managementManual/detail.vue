@@ -21,7 +21,7 @@
                     <el-row type="flex" justify="space-between" align="middle" class="preview-info">
                         <el-row>文件名称：<span class="status-blue">{{ detail.name }}</span></el-row>
                         <el-row>文件编号：<span class="status-blue">{{ detail.documentNo }}</span></el-row>
-                        <el-row>第 <span class="status-blue">1</span> 版 <span class="status-blue">0</span> 次修订</el-row>
+                        <el-row>第 <span class="status-blue">{{ detail.version }}</span> 版 <span class="status-blue">{{ detail.updateCount }}</span> 次修订</el-row>
                     </el-row>
                     <!-- mammoth 插件方式 -->
                     <!--<el-scrollbar class="elsb-preview">
@@ -30,12 +30,28 @@
                         </el-row>
                     </el-scrollbar>-->
                     <!-- 微软方式 -->
-                    <iframe id="iframename" name="iframename"
+                    <!--<iframe v-if="previewSrc"
+                            id="iframename" name="iframename"
                             :src="`https://view.officeapps.live.com/op/embed.aspx?src=${previewSrc}`"
                             width="100%" height="500"
                             frameborder="0" scrolling="auto"
                             class="mg-tb-10">
                     </iframe>
+                    <el-row v-else type="flex" justify="center">
+                        <span class="status-red txt-i unable-select" style="line-height: 150px;">无相关文档文件，无法预览</span>
+                    </el-row>-->
+                    <!-- officeWeb365 方式 -->
+<!--                    :src="`http://ow365.cn/?i=25507&ssl=1&furl=${previewSrc}`"-->
+                    <!--<iframe v-if="previewSrc"
+                            id="iframename" name="iframename"
+                            :src="`http://ow365.cn/?i=25516&furl=${previewSrc}`"
+                            width="100%" height="500"
+                            frameborder="0" scrolling="auto"
+                            class="mg-tb-10">
+                    </iframe>
+                    <el-row v-else type="flex" justify="center">
+                        <span class="status-red txt-i unable-select" style="line-height: 150px;">无相关文档文件，无法预览</span>
+                    </el-row>-->
                 </el-row>
                 <el-row class="hr"></el-row>
                 <!-- 相关文件列表 -->
@@ -140,7 +156,7 @@
     import dayjs from 'dayjs';
     import api from "@api";
     // let mammoth = require("mammoth");
-    const listRouteName = 'system-doc|management-manual';
+    const listRoutePath = '/system-doc/management-manual';
     import dlTableRelated from "@views/single/systemDoc/managementManual/dlTableRelated";
     import dlTableForms from "@views/single/systemDoc/managementManual/dlTableForms";
     import formPreview from "@components/formPreview";
@@ -161,7 +177,7 @@
                 dlTableFormsVisible: false,
 
                 wordText: '',
-                previewSrc: 'public.ohyesido.cn/test.docx',
+                previewSrc: 'https://public.ohyesido.cn/test.docx',
 
                 detail: {},
                 tbDataRelated: {list: []},
@@ -185,6 +201,7 @@
                         that.detail = {
                             ...res.data.data,
                         };
+                        that.previewSrc = !!res.data.data.filePath ? res.data.data.filePath : false;
                         this.getTableDataRelated();
                         this.getTableDataForms();
                     }
@@ -269,7 +286,7 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                    that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                 }).catch();
             },
             // 插件方式 - 该方法暂时遗弃

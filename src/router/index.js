@@ -122,7 +122,7 @@ let loadRoutes = async (isFullLoad) => {
         if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) {
             let userInfoMenu = JSON.parse(JSON.stringify(userInfo.menus));
             userInfoMenu = thingManageFilter(userInfoMenu);
-            console.log(userInfoMenu);
+            // console.log(userInfoMenu);
             routes.inLayout.children = [...routes.inLayout.children.concat(userInfoMenu)];
         }
         router.addRoutes(mergeRoutesComponents([

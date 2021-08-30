@@ -19,6 +19,15 @@ export function securityTokenAdmin(data) {
 }
 
 /**
+ * 修改密码
+ * @param data
+ * @returns {*}
+ */
+export function updatePwdAdmin(data) {
+    return ajax.post('userServer/updatePwdAdmin', data);
+}
+
+/**
  * 退出登录
  * @param data
  * @returns {*}

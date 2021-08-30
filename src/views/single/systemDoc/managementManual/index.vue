@@ -89,14 +89,23 @@
                         <el-table-column label="版本" show-overflow-tooltip min-width="60">
                             <template slot-scope="scope">{{ scope.row.version }}</template>
                         </el-table-column>
+                        <el-table-column label="修订次数" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.updateCount }}</template>
+                        </el-table-column>
                         <el-table-column label="发布状态" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.status === 0" class="status-red">待发布</span>
                                 <span v-else-if="scope.row.status === 1" class="status-green">已发布</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="更新时间" show-overflow-tooltip min-width="80">
+                        <el-table-column label="创建时间" show-overflow-tooltip min-width="90">
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="更新时间" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="创建者" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.createUser }}</template>
                         </el-table-column>
                         <el-table-column label="操作人" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.updateUser }}</template>

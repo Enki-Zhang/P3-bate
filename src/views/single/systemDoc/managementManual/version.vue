@@ -129,13 +129,15 @@
 <script>
 
     import api from "@api";
+    import dayjs from 'dayjs';
 
-    const listRouteName = 'system-doc|management-manual';
+    const listRoutePath = '/system-doc/management-manual';
 
     export default {
         name: "index",
         data() {
             return {
+                dayjs,
 
                 tbSelectedArr: [],
                 tbFilter: {
@@ -253,7 +255,7 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                    that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                 }).catch();
             },
         }
