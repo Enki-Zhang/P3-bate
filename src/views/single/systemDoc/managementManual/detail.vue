@@ -30,7 +30,7 @@
                         </el-row>
                     </el-scrollbar>-->
                     <!-- 微软方式 -->
-                    <!--<iframe v-if="previewSrc"
+                    <iframe v-if="previewSrc"
                             id="iframename" name="iframename"
                             :src="`https://view.officeapps.live.com/op/embed.aspx?src=${previewSrc}`"
                             width="100%" height="500"
@@ -39,7 +39,7 @@
                     </iframe>
                     <el-row v-else type="flex" justify="center">
                         <span class="status-red txt-i unable-select" style="line-height: 150px;">无相关文档文件，无法预览</span>
-                    </el-row>-->
+                    </el-row>
                     <!-- officeWeb365 方式 -->
 <!--                    :src="`http://ow365.cn/?i=25507&ssl=1&furl=${previewSrc}`"-->
                     <!--<iframe v-if="previewSrc"

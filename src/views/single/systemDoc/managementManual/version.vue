@@ -80,7 +80,7 @@
                               :min-height="460" size="small"
                               highlight-current-row border>
                         <el-table-column label="文件编号" fixed="left" show-overflow-tooltip width="200">
-                            <template slot-scope="scope">{{ scope.row.id }}</template>
+                            <template slot-scope="scope">{{ scope.row.documentNo }}</template>
                         </el-table-column>
                         <el-table-column label="文件名称" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
