@@ -17,7 +17,9 @@
                                   :show-header="false" highlight-current-row border>
                             <!--  default-expand-all -->
                             <el-table-column fixed="left" show-overflow-tooltip min-width="120">
-                                <template slot-scope="scope">{{ scope.row.title }}</template>
+                                <template slot-scope="scope">
+                                    <span :class = "{btnStyle:scope.row.isBtn}">{{ scope.row.title }}</span>
+                                </template>
                             </el-table-column>
                         </el-table>
                     </el-scrollbar>
@@ -25,13 +27,13 @@
                 <!-- 编辑 -->
                 <el-row class="block-has-title edit">
                     <el-row type="flex" justify="space-between" class="title">
-                        <span>菜单详情 / 编辑</span>
+                        <span>{{form.isBtn ? '按钮' : '菜单'}}详情 / 编辑</span>
                     </el-row>
                     <el-row class="hr mg-t-10 mg-b-15 mg-lr--10"></el-row>
                     <el-row class="fm">
                         <el-form ref="fm" :model="form" size="small" label-position="right" label-width="90px">
                             <el-row>
-                                <el-form-item prop="title" label="菜单标题" :rules="[
+                                <el-form-item prop="title" :label="(form.isBtn ? '按钮' : '菜单') + '标题'" :rules="[
                                           {required: true, message: '请填写菜单标题'},
                                           {type: 'string', min: 1, max: 50, message: '长度为 50 个字符'},
                                           // {validator: validateAllSpace, message: '请填写角色编号'}
@@ -46,7 +48,8 @@
                                           // {validator: validateAllSpace, message: '请填写角色编号'}
                                       ]">
 <!--                                    <el-input v-model="form.formKey" placeholder="form key" :disabled="!!!Object.keys(rowBeforeEdit).length" clearable></el-input>-->
-                                    <el-input v-model="form.formKey" placeholder="" :disabled="!!!form.editable" clearable></el-input>
+                                    <!-- <el-input v-model="form.formKey" placeholder="" :disabled="!!!form.editable" clearable></el-input> -->
+                                    <el-input v-model="form.formKey" placeholder="" clearable></el-input>
                                 </el-form-item>
                             </el-row>
                             <el-row type="flex" justify="center" align="middle" class="page-default-pd-bgc-white edit-page-options-btn mg-t-5">
@@ -232,4 +235,10 @@
         .mg-lr--10 {margin-left: -10px; margin-right: -10px;}
     }
 
+    .btnStyle{
+        background:#1890FF;
+        color:#fff;
+        border-radius:4px;
+        padding:2px 6px;
+    }
 </style>

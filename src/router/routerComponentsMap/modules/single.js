@@ -17,6 +17,10 @@ export default {
     'system-doc|management-manual|edit': _import('single/systemDoc/managementManual/edit'), // 编辑
     'system-doc|management-manual|detail': _import('single/systemDoc/managementManual/detail'), // 查阅
 
+    // 表格管理
+    'activity': _import('single/activity'),
+    'activity|bsl': _import('single/activity/bsl'),
+
     // 物资管理
     'supplies':_import('single/supplies'),
     'supplies_organization':_import('single/supplies/device'),
