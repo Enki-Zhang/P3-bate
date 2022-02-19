@@ -6,10 +6,10 @@
                 <div class = "header">
                     <div class = "h_l">
                         <div class = "dateBox">
-                            <em class = "prev"></em>
-                            <span>2022</span>
-                            <span class = "month">2月</span>
-                            <em class = "next"></em>
+                            <em @click = "prevMonth" class = "prev"></em>
+                            <span>{{year}}</span>
+                            <span class = "month">{{month}}月</span>
+                            <em @click = "nextMonth" class = "next"></em>
                         </div>
                     </div>
                     <div class = "h_r">
@@ -22,6 +22,8 @@
                     </div>
                     <el-button style = "width:84px;" type = "primary" size = "mini">预约申请</el-button>
                 </div>
+
+                <compDate ref = "compDate"/>                
             </el-row>
         </el-row>
     </el-row>
@@ -31,7 +33,7 @@
 <script>
 
     import api from "@api";
-
+    import compDate from './compDate'
     export default {
         name: "index",
         data() {
@@ -45,11 +47,17 @@
                 tbDataFilter: {
                     formName:'',
                     formNumber:''
-                }
+                },
+                year:2022,
+                month:2
             }
+        },
+        components:{
+            compDate
         },
         mounted() {
             this.getTableData();
+
         },
         filters:{
             dateStr(str){
@@ -70,6 +78,26 @@
             }
         },
         methods: {
+            prevMonth(){
+                if(this.month - 1 == 0){
+                    this.year --;
+                    this.month = 12;
+                }
+                else{
+                    this.month --;
+                }
+                this.$refs.compDate.initTable(this.year,this.month);
+            },
+            nextMonth(){
+                if(this.month + 1 > 12){
+                    this.year ++;
+                    this.month = 1;
+                }
+                else{
+                    this.month ++;
+                }
+                this.$refs.compDate.initTable(this.year,this.month);
+            },
             getTableData: function(page = 1, pageSize = 10) {
                 let params = {
                     formId:this.$route.query.id,
@@ -98,6 +126,7 @@
 .header{
     display:flex;
     align-items:center;
+    margin-bottom:20px;
     .h_l{
         flex-grow:1;
         width:0;
@@ -109,6 +138,13 @@
                 cursor:pointer;
                 width:20px;
                 height:20px;
+                moz-user-select: -moz-none;
+                -moz-user-select: none;
+                -o-user-select:none;
+                -khtml-user-select:none;
+                -webkit-user-select:none;
+                -ms-user-select:none;
+                user-select:none;
                 &::after{
                     position:absolute;
                     content:'';
@@ -165,5 +201,34 @@
     }
 }
 
-
+.dateBox{
+    .d_box{
+        border-top:1px solid #E2E8F4;
+        border-left:1px solid #E2E8F4;
+        .d_row{
+            &>div{
+                width:14.28%;
+                display:inline-block;
+                vertical-align:top;
+                border-right:1px solid #E2E8F4;
+                border-bottom:1px solid #E2E8F4;
+            }
+        }
+        .d_header{
+            &>div{
+                height:48px;
+                text-align:center;
+                line-height:48px;
+                font-size:14px;
+                color:#707070;
+                font-weight:bolder;
+            }
+        }
+        .d_content{
+            &>div{
+                height:248px;
+            }
+        }
+    }
+}
 </style>
