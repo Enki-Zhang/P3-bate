@@ -17,37 +17,48 @@
                 <div :class = "{todayOn:v == today}" v-for = "v,index in curMonthList" :key = "'day_' + index">
                     <div class = "dc_box">
                         <div class = "dc_info">
-                            <span class = "index">{{v}}</span>
+                            <span class = "index">{{v.date}}</span>
                             <span class = "blank"></span>
-                            <span class = "name">张</span>
-                            <span class = "name">李</span>
-                            <img class = "sign" :src = "require('@/assets/image/activity/icon_disinfect.png')" />
-                            <img class = "sign" :src = "require('@/assets/image/activity/icon_disinfect_on.png')" />
-                            <img class = "sign2" :src = "require('@/assets/image/activity/icon_fix.png')" />
+                            <template 
+                                v-for = "v2,index2 in v.sub" 
+                                >
+                                <img 
+                                    v-if = "v2.name == 'disinfect'" 
+                                    class = "sign" 
+                                    :key = "'user_' + index + '_' + index2"
+                                    :src = "require('@/assets/image/activity/icon_disinfect.png')" />
+                                <img 
+                                    v-else-if = "v2.name == 'done'"
+                                    class = "sign" 
+                                    :key = "'user_' + index + '_' + index2"
+                                    :src = "require('@/assets/image/activity/icon_disinfect_on.png')" />
+                                <img 
+                                    v-else-if = "v2.name == 'fix'" 
+                                    class = "sign2" 
+                                    :key = "'user_' + index + '_' + index2"
+                                    :src = "require('@/assets/image/activity/icon_fix.png')" />
+                                <span 
+                                    :key = "'user_' + index + '_' + index2"
+                                    v-else
+                                    :class = "{name2:index2 == 1}"
+                                    class = "name">{{v2.name | nameStr}}</span>
+                            </template>
                         </div>
                     </div>
                     <ul class = "dc_list">
-                        <li>
-                            <div class = "name">张三三</div>
+                        <li :class = "{dc_color2:index2 == 1,dc_color3:v2.name == 'fix'}" v-for = "v2,index2 in v.event" :key = "'event_' + index + '_' + index2">
+                            <div class = "name" v-if = "v2.name != 'fix'">{{v2.name}}</div>
                             <div class = "info">
                                 <div class = "title">
-                                    <span title = "冰原微生物名字啊啊啊啊啊啊啊冰原微生物名字">冰原微生物名字啊啊啊啊啊啊啊冰原微生物名字</span>
+                                    <img v-if = "v2.name == 'fix'" :src = "require('@/assets/image/activity/icon_fix.png')" />
+                                    <span :title = "v2.title">{{v2.title}}</span>
                                 </div>
-                                <div class = "dateRange">1日8:00-1日12:00</div>
-                            </div>
-                        </li>
-                        <li class = "dc_color3">
-                            <div class = "info">
-                                <div class = "title">
-                                    <img :src = "require('@/assets/image/activity/icon_fix.png')" />
-                                    <span>计划停用检修</span>
-                                </div>
-                                <div class = "dateRange">1日8:00-1日12:00</div>
+                                <div class = "dateRange">{{v2.startDate | dateStr}}-{{v2.endDate | dateStr}}</div>
                             </div>
                         </li>
                     </ul>
                     <div class = 'dc_tip'>
-                        <p>共2个预约</p>
+                        <p v-show = "v.sub.length > 0">共{{v.sub.length}}个预约</p>
                     </div>
                 </div>
                 <div v-for = "v,index in nextMonthList" :key = "'nextMonthList_' + index">
@@ -87,17 +98,75 @@
 
                 if(str == null || str == '')
                     return '';
-                let d = new Date(parseInt(str));
+                let d = new Date(parseInt(str) * 1000);
                 let year = d.getFullYear();
                 let month = formal(d.getMonth() + 1);
-                let date = formal(d.getDate());
+                let date = d.getDate();
                 let hour = formal(d.getHours());
                 let minute = formal(d.getMinutes());
                 let second = formal(d.getSeconds());
-                return `${year}-${month}-${date} ${hour}:${minute}:${second}`;   
+                //return `${year}-${month}-${date} ${hour}:${minute}:${second}`;   
+                return `${date}日${hour}:${minute}`;   
+                //1日8:00
+            },
+            nameStr(str){
+                return str[0];
             }
         },
         methods: {
+            loadData(){
+                let eventList = [
+                    {
+                        name:'张三',
+                        title:'申请生物实验',
+                        startDate:1646186065,
+                        endDate:1646376865
+                    },
+                    {
+                        name:'李四',
+                        title:'申请生物实验222',
+                        startDate:1646186065,
+                        endDate:1646376865
+                    },
+                    {
+                        name:'fix',
+                        title:'计划停用检修',
+                        startDate:1646726827,
+                        endDate:1647245227
+                    },
+                    {
+                        name:'disinfect',
+                        title:'',
+                        startDate:1647331627,
+                        endDate:1647331627
+                    },
+                    {
+                        name:'done',
+                        title:'',
+                        startDate:1646122027,
+                        endDate:1646122027
+                    }
+                ];
+                let curMonthList = JSON.parse(JSON.stringify(this.curMonthList));
+                function getDay(str){
+                    //console.log(new Date(str * 1000));
+                    let d = new Date(str * 1000);
+                    let day = d.getDate();
+                    return day;
+                }
+
+                eventList.forEach(e => {
+                    let start = getDay(e.startDate);
+                    let end = getDay(e.endDate);
+                    for(let i = start;i <= end;i++){
+                        curMonthList[i].sub.push(e);
+                        if(e.name != 'disinfect' && e.name != 'done' && i == start){
+                            curMonthList[i].event.push(e);
+                        }
+                    }
+                });
+                this.curMonthList = curMonthList;
+            },
             initTable(year,month){
                 let prevMonthList = [];
                 let curStartDate = year + '-' + month + '-1';
@@ -111,7 +180,7 @@
                 let curLastDate = this.getLastDay(year,month);
                 let curMonthList = [];
                 for(let i = 1;i <= curLastDate;i++){
-                    curMonthList.push(i);
+                    curMonthList.push({date:i,event:[],sub:[]});
                 }
 
                 let nextMonthList = [];
@@ -131,6 +200,8 @@
                 this.prevMonthList = prevMonthList;
                 this.curMonthList = curMonthList;
                 this.nextMonthList = nextMonthList;
+
+                this.loadData();
             },
             getPrevYearMonth(year,month){
                 if(month - 1 == 0){
@@ -255,12 +326,15 @@ $colorLight3: rgba(255, 229, 229, 0.39);
                             margin-left:6px;
                             color:#fff;
                             font-size:12px;
-                            background:#5C70D3;
+                            background:#1890FF;
                             width:20px;
                             height:20px;
                             line-height:20px;
                             text-align:center;
                             border-radius:20px;
+                            &.name2{
+                                background:#5C70D3;
+                            }
                         }
                         .sign{
                             margin-left:6px;
