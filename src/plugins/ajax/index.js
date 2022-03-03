@@ -11,6 +11,7 @@ const cfg = {
     withCredentials: false,
 };
 const instance = axios.create(cfg);
+instance.all = axios.all;
 
 // 请求拦截器
 instance.interceptors.request.use(config => {
