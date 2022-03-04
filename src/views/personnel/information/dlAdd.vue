@@ -1,38 +1,103 @@
 <template>
 
-    <el-dialog top="20vh" width="588px" :title="'新建账号'" :visible.sync="dialogVisible"
+    <el-dialog top="22vh" width="688px" :title="'新建账号'" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body class="_root_page">
         <el-row>
-            <el-form ref="fm" :model="form" size="small" label-position="right" label-width="120px">
-                <el-row>
-                    <el-form-item prop="username" label="登录账号" :rules="[
-                            {required: true, message: '请填写登录账号'},
-                            {type: 'string', min: 1, max: 20, message: '长度为 1 ~ 20 个字符'},
-                            {validator: validateAllSpace, message: '请填写登录账号'}
-                        ]">
-                        <el-input v-model="form.username" placeholder="登录账号" clearable></el-input>
-                    </el-form-item>
+            <el-form ref="fm" :model="form" size="small" label-position="right" label-width="100px">
+                <el-row type="flex">
+                    <el-row>
+                        <el-form-item prop="username" label="登录账号"
+                                      :rules="[
+                                          {required: true, message: '请填写登录账号'},
+                                          {type: 'string', min: 1, max: 20, message: '长度为 1 ~ 20 个字符'},
+                                          {validator: validateAllSpace, message: '请填写登录账号'}
+                                      ]">
+                            <el-input v-model="form.username" placeholder="登录账号" clearable></el-input>
+                        </el-form-item>
+                    </el-row>
+                    <el-row>
+                        <el-form-item prop="password" label="初始密码">
+                            <el-input v-model="form.password" placeholder="初始密码" disabled clearable></el-input>
+                        </el-form-item>
+                    </el-row>
                 </el-row>
-                <el-row>
-                    <el-form-item prop="password" label="初始密码">
-                        <el-input v-model="form.password" placeholder="初始密码" disabled clearable></el-input>
-                    </el-form-item>
+                <el-row type="flex">
+                    <el-row>
+                        <el-form-item prop="phone" label="手机号码"
+                                      :rules="[
+                                          {required: true, message: '请填写手机号码'},
+                                          {type: 'string', min: 11, max: 11, message: '长度为 11 个字符'},
+                                          {validator: validatePhone, message: '请填写手机号码'}
+                                      ]">
+                            <el-input v-model="form.phone" placeholder="手机号码" clearable></el-input>
+                        </el-form-item>
+                    </el-row>
+                    <el-row>
+                        <el-form-item prop="employeeCategory" label="员工类别"
+                                      :rules="[
+                                          // {required: false, message: '请填写员工类别'},
+                                          // {type: 'string', min: 1,  message: '请填写员工类别'},
+                                          // {validator: validateAllSpace, message: '请填写员工类别'}
+                                      ]">
+                            <el-input v-model="form.employeeCategory" placeholder="员工类别" clearable></el-input>
+                        </el-form-item>
+                    </el-row>
+                </el-row>
+                <el-row type="flex">
+                    <el-row>
+                        <el-form-item prop="position" label="职位"
+                                      :rules="[
+                                          // {required: false, message: '请填写职位'},
+                                          // {type: 'string', min: 1,  message: '请填写职位'},
+                                          // {validator: validateAllSpace, message: '请填写职位'}
+                                      ]">
+                            <el-input v-model="form.position" placeholder="职位" clearable></el-input>
+                        </el-form-item>
+                    </el-row>
+                    <el-row>
+                        <el-form-item prop="wageScale" label="工资级别"
+                                      :rules="[
+                                          // {required: false, message: '请填写工资级别'},
+                                          // {type: 'string', min: 1,  message: '请填写工资级别'},
+                                          // {validator: validateAllSpace, message: '请填写工资级别'}
+                                      ]">
+                            <el-input v-model="form.wageScale" placeholder="工资级别" clearable></el-input>
+                        </el-form-item>
+                    </el-row>
+                </el-row>
+                <el-row type="flex">
+                    <el-row>
+                        <el-form-item prop="gradingTime" label="定级时间"
+                                      :rules="[
+                                          {required: false, message: '请选择日期'},
+                                          {type: 'string', len: 10, message: '请选择日期'},
+                                      ]">
+                            <el-date-picker v-model="form.gradingTime"
+                                            placeholder="选择日期"
+                                            type="date"
+                                            format="yyyy-MM-dd"
+                                            value-format="yyyy-MM-dd"
+                                            style="width: 215px !important;"
+                            ></el-date-picker>
+                        </el-form-item>
+                    </el-row>
+                    <el-row>
+                        <el-form-item prop="socialSecurityAndMedicalInsurance" label="社保医保"
+                                      :rules="[
+                                          // {required: true, message: '请填写最高学历'},
+                                          // {type: 'string', min: 1,  message: '长度为 2 ~ 200 个字符'},
+                                          // {validator: validateAllSpace, message: '请填写最高学历'}
+                                      ]">
+                            <el-input v-model="form.socialSecurityAndMedicalInsurance" placeholder="社保医保" clearable></el-input>
+                        </el-form-item>
+                    </el-row>
                 </el-row>
                 <!--<el-row>
                     <el-form-item prop="username" label="姓名">
                         <el-input v-model="form.username" placeholder="姓名" disabled clearable></el-input>
                     </el-form-item>
                 </el-row>-->
-                <el-row>
-                    <el-form-item prop="phone" label="手机号码" :rules="[
-                            {required: true, message: '请填写手机号码'},
-                            {type: 'string', min: 11, max: 11, message: '长度为 11 个字符'},
-                            {validator: validatePhone, message: '请填写手机号码'}
-                        ]">
-                        <el-input v-model="form.phone" placeholder="手机号码" clearable></el-input>
-                    </el-form-item>
-                </el-row>
                 <!--<el-row>
                     <el-form-item prop="roleIdArr" label="组别" :rules="[
                             {required: true, message: '请选择组别'},
@@ -86,6 +151,11 @@
                     username: '',
                     password: '123456',
                     phone: '',
+                    employeeCategory: '',
+                    position: '',
+                    wageScale: '',
+                    gradingTime: '',
+                    socialSecurityAndMedicalInsurance: '',
                     // roleIdArr: [],
                 },
                 btnLoadingSave: false,
@@ -106,7 +176,7 @@
             opened: function() {
                 let that = this;
 
-                that.getAllRole();
+                // that.getAllRole();
             },
 
             getAllRole: function() {
@@ -128,7 +198,7 @@
                     if(valid) {
                         that.btnLoadingSave = true;
 
-                        api.sysUserSave({
+                        api.sysUserInfoSave({
                             ...that.form,
                             // roleIds: that.form.roleIdArr.join(',')
                         }).then((res) => {
@@ -138,7 +208,7 @@
                             if(res.data.status === 200) {
                                 that.dialogVisible = false;
                                 that.$message.success('操作成功');
-                                that.$emit('closed', 'success');
+                                that.$emit('done', 'success');
                             }
                         });
                     } else {return false;}
