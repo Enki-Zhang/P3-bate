@@ -74,13 +74,24 @@
             opened: function() {
                 let that = this;
 
-                that.getAllRole();
+                // console.log(that.params);
+                that.seloptsRole = [...that.params.seloptsRole];
                 that.form = {
-                    ...that.params,
-                    roleIdArr: that.params.roleId.length ? that.params.roleId.split(',') : []
+                    ...that.params.detail,
+                    roleIdArr: that.params.detail.roleIds.length ? that.params.detail.roleIds.split(',') : []
                 };
             },
+            getDetail: function(id) {
+                let that = this;
 
+                api.sysUserInfoFind(id).then((res) => {
+                    // console.log(res.data);
+
+                    if(res.data.status === 200) {
+                        that.detail = {...res.data.data};
+                    }
+                });
+            },
             getAllRole: function() {
                 let that = this;
 
@@ -100,7 +111,7 @@
                     if(valid) {
                         that.btnLoadingSave = true;
 
-                        api.sysUserJurisdiction({
+                        api.sysUserInfoGroup({
                             id: that.form.id,
                             roleIds: that.form.roleIdArr.join(',')
                         }).then((res) => {
@@ -110,7 +121,7 @@
                             if(res.data.status === 200) {
                                 that.dialogVisible = false;
                                 that.$message.success('操作成功');
-                                that.$emit('closed', 'success');
+                                that.$emit('done', 'success');
                             }
                         });
                     } else {return false;}

@@ -6,16 +6,22 @@
                 <!-- 筛选 -->
                 <el-form ref="fmTbFilter" :model="tbFilter" size="small">
                     <el-row class="filters">
-                        <el-form-item prop="username">
+                        <el-form-item prop="name">
                             <el-row class="item">
-                                <el-row class="lb lb-unmgl">名字查询</el-row>
-                                <el-row><el-input v-model="tbFilter.username" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
+                                <el-row class="lb lb-unmgl">姓名查询</el-row>
+                                <el-row><el-input v-model="tbFilter.name" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
-                        <el-form-item prop="phone">
+                        <el-form-item prop="tutor">
+                            <el-row class="item">
+                                <el-row class="lb">导师查询</el-row>
+                                <el-row><el-input v-model="tbFilter.tutor" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item prop="studyForADegree">
                             <el-row class="item mg-l-10">
-                                <el-row class="lb lb-unmgl">手机号查询</el-row>
-                                <el-row><el-input v-model="tbFilter.phone" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
+                                <el-row class="lb lb-unmgl">攻读学位</el-row>
+                                <el-row><el-input v-model="tbFilter.studyForADegree" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
                         <!--<el-form-item prop="type">
@@ -42,19 +48,34 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>-->
-                        <!--<el-form-item prop="createTime">
+                        <el-form-item prop="createTime">
                             <el-row class="item">
-                                <el-row class="lb">创建时间</el-row>
+                                <el-row class="lb">入学时间</el-row>
                                 <el-row>
                                     <el-date-picker v-model="tbFilter.createTime"
-                                                    type="daterange" size="small"
-                                                    start-placeholder="开始日期" range-separator="至" end-placeholder="结束日期"
-                                                    format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-                                                    style="width: 230px !important;">
+                                                    type="date" size="small"
+                                                    placeholder="选择日期"
+                                                    format="yyyy-MM-dd"
+                                                    value-format="yyyy-MM-dd"
+                                                    style="width: 140px !important;">
                                     </el-date-picker>
                                 </el-row>
                             </el-row>
-                        </el-form-item>-->
+                        </el-form-item>
+                        <el-form-item prop="createTime">
+                            <el-row class="item">
+                                <el-row class="lb">毕业时间</el-row>
+                                <el-row>
+                                    <el-date-picker v-model="tbFilter.createTime"
+                                                    type="date" size="small"
+                                                    placeholder="选择日期"
+                                                    format="yyyy-MM-dd"
+                                                    value-format="yyyy-MM-dd"
+                                                    style="width: 140px !important;">
+                                    </el-date-picker>
+                                </el-row>
+                            </el-row>
+                        </el-form-item>
                         <el-form-item>
                             <el-row class="item mg-l-10">
                                 <el-row class="btn">
@@ -76,10 +97,10 @@
                                :disabled="tbDataFilter.type === 1"
                                @click="create"
                                class="fn-btn">新增</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-delete"
+                    <el-button type="primary" size="small" icon="el-icon-printer"
                                :disabled="!isSelectedItem"
                                @click="remove"
-                               class="fn-btn">删除</el-button>
+                               class="fn-btn">打印</el-button>
                     <el-button type="primary" size="small" icon="el-icon-view"
                                :disabled="!isChosenRow"
                                @click="detail"
@@ -88,22 +109,30 @@
                                :disabled="false"
                                @click="download"
                                class="fn-btn">下载</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-key"
+                    <!--<el-button type="primary" size="small" icon="el-icon-key"
                                :disabled="!isChosenRow"
                                @click="resetPassword"
-                               class="fn-btn">重置密码</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-user"
+                               class="fn-btn">重置密码</el-button>-->
+                    <!--<el-button type="primary" size="small" icon="el-icon-user"
                                :disabled="!isChosenRow"
                                @click="showDlRole"
-                               class="fn-btn">组别</el-button>
+                               class="fn-btn">组别</el-button>-->
                     <el-button type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
                                @click="create"
                                class="fn-btn">入职培训记录</el-button>
+                    <el-button type="primary" size="small" icon="el-icon-document"
+                               :disabled="!isChosenRow"
+                               @click="create"
+                               class="fn-btn">课题开展记录</el-button>
                     <el-button type="primary" size="small" icon="el-icon-edit-outline"
                                :disabled="!isChosenRow"
                                @click="create"
-                               class="fn-btn">退职手续办理</el-button>
+                               class="fn-btn">毕业手续办理</el-button>
+                    <el-button type="primary" size="small" icon="el-icon-takeaway-box"
+                               :disabled="!isChosenRow"
+                               @click="create"
+                               class="fn-btn">毕业证书留档</el-button>
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
                                class="fn-btn">批量删除</el-button>-->
@@ -118,44 +147,53 @@
                               tooltip-effect="dark" class="dp-pc"
                               highlight-current-row>
                         <el-table-column type="selection"></el-table-column>
-                        <el-table-column label="序号" fixed="left" show-overflow-tooltip min-width="60">
+                        <!--<el-table-column label="序号" fixed="left" show-overflow-tooltip min-width="60">
                             <template slot-scope="scope">{{ scope.row.id }}</template>
-                        </el-table-column>
-                        <el-table-column label="用户名" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.username }}</template>
-                        </el-table-column>
+                        </el-table-column>-->
                         <el-table-column label="姓名" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
                         </el-table-column>
-                        <el-table-column label="性别" show-overflow-tooltip min-width="60">
-                            <template slot-scope="scope">{{ scope.row.sex ? '男' : '女' }}</template>
+                        <el-table-column label="导师" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.tutor }}</template>
                         </el-table-column>
-                        <el-table-column label="出生日期" show-overflow-tooltip min-width="100">
-                            <template slot-scope="scope">{{ scope.row.birthday ? dayjs(scope.row.birthday).format('YYYY-MM-DD') : '' }}</template>
+                        <el-table-column label="攻读学位" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.studyForADegree }}</template>
                         </el-table-column>
-                        <!--<el-table-column label="电子邮箱" show-overflow-tooltip min-width="80">
-                            <template slot-scope="scope">{{ scope.row.email }}</template>
-                        </el-table-column>-->
-                        <el-table-column label="手机号码" show-overflow-tooltip min-width="100">
-                            <template slot-scope="scope">{{ scope.row.phoneNumber }}</template>
+                        <el-table-column label="学号" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.studentNumber }}</template>
                         </el-table-column>
-                        <el-table-column label="家庭住址" show-overflow-tooltip min-width="180">
-                            <template slot-scope="scope">{{ scope.row.homeAddress }}</template>
+                        <el-table-column label="一卡通号" show-overflow-tooltip min-width="100">
+                            <template slot-scope="scope">{{ scope.row.allInOneCardNumber }}</template>
                         </el-table-column>
                         <el-table-column label="身份证号" show-overflow-tooltip min-width="100">
                             <template slot-scope="scope">{{ scope.row.idNumber }}</template>
                         </el-table-column>
-                        <el-table-column label="最高学历" show-overflow-tooltip min-width="100">
+                        <el-table-column label="中行卡号" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.bocCardNo }}</template>
+                        </el-table-column>
+                        <el-table-column label="最高学历" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.highestEducation }}</template>
                         </el-table-column>
-                        <el-table-column label="毕业院校" show-overflow-tooltip min-width="100">
-                            <template slot-scope="scope">{{ scope.row.graduateInstitutions }}</template>
+                        <el-table-column label="本科毕业学校及专业" show-overflow-tooltip min-width="150">
+                            <template slot-scope="scope">{{ scope.row.graduateSchoolAndMajor }}</template>
                         </el-table-column>
-                        <el-table-column label="毕业专业" show-overflow-tooltip min-width="100">
-                            <template slot-scope="scope">{{ scope.row.graduationMajor }}</template>
+                        <el-table-column label="邮箱" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">{{ scope.row.email }}</template>
                         </el-table-column>
-                        <el-table-column label="组别" show-overflow-tooltip min-width="100">
-                            <template slot-scope="scope">{{ scope.row.groups }}</template>
+                        <el-table-column label="手机号码" show-overflow-tooltip min-width="100">
+                            <template slot-scope="scope">{{ scope.row.contactNumber }}</template>
+                        </el-table-column>
+                        <el-table-column label="家庭住址" show-overflow-tooltip min-width="180">
+                            <template slot-scope="scope">{{ scope.row.homeAddress }}</template>
+                        </el-table-column>
+                        <el-table-column label="紧急联系人及电话" show-overflow-tooltip min-width="140">
+                            <template slot-scope="scope">{{ scope.row.familyEmergencyContactNumber }}</template>
+                        </el-table-column>
+                        <el-table-column label="入学时间" show-overflow-tooltip min-width="100">
+                            <template slot-scope="scope">{{ scope.row.admissionTime ? dayjs(scope.row.admissionTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="毕业时间" show-overflow-tooltip min-width="100">
+                            <template slot-scope="scope">{{ scope.row.graduationTime ? dayjs(scope.row.graduationTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
                     </el-table>
                 </el-row>
@@ -172,9 +210,9 @@
         </el-row>
 
         <!-- 组件：创建账号 -->
-        <dl-add v-model="dlAddVisible" :params="dlParams" @done="getTableData()"></dl-add>
+<!--        <dl-add v-model="dlAddVisible" :params="dlParams" @done="getTableData()"></dl-add>-->
         <!-- 组件：组别 -->
-        <dl-role v-model="dlRoleVisible" :params="dlParams" @done="getTableData()"></dl-role>
+<!--        <dl-role v-model="dlRoleVisible" :params="dlParams" @done="getTableData()"></dl-role>-->
         <!-- 移动端：列表操作 -->
         <van-action-sheet v-model="asShow"
                           :description="asOptions.description"
@@ -191,14 +229,14 @@
     import ajax from "@plugins/ajax";
     import dayjs from 'dayjs';
     import api from "@api";
-    import dlAdd from "@views/personnel/information/dlAdd";
-    import dlRole from "@views/personnel/information/dlRole";
+    // import dlAdd from "@views/personnel/information/dlAdd";
+    // import dlRole from "@views/personnel/information/dlRole";
 
     export default {
         name: "index",
         components: {
-            dlAdd,
-            dlRole,
+            // dlAdd,
+            // dlRole,
         },
         data() {
             return {
@@ -219,9 +257,10 @@
                 tbChosenRow: {},
                 tbSelectedArr: [],
                 tbFilter: {
-                    username: '',
-                    phone: '',
-                    createTime: [],
+                    name: '',
+                    tutor: '',
+                    studyForADegree: '',
+                    createTime: '',
                 },
                 tbData: {list: []},
                 tbDataFilter: {...this.tbFilter},
@@ -258,7 +297,7 @@
                     pageSize,
                 };
 
-                api.sysUserInfoList(params).then((res) => {
+                api.sysYjsInfoList(params).then((res) => {
                     // console.log(res.data.data);
                     if(res.data.status === 200) {
                         that.tbData = {...res.data.data};
@@ -295,7 +334,13 @@
             create: function() {
                 let that = this;
 
-                that.dlAddVisible = true;
+                that.$router.push({
+                    path: `/personnel/graduate/add`,
+                    query: {
+                        id: '',
+                        _lpq: JSON.stringify(that.tbDataFilter),
+                    }
+                });
             },
             remove: function() {
                 let that = this;
@@ -311,7 +356,7 @@
                 }).then(() => {
                     let idArr = [];
                     that.tbSelectedArr.map(v => {idArr.push(v.id);});
-                    api.sysUserInfoDel(idArr.join(',')).then((res) => {
+                    api.sysYjsInfoDel(idArr.join(',')).then((res) => {
                         if(res.data.status === 200) {
                             that.$message.success('操作成功');
                             that.getTableData();
@@ -338,7 +383,7 @@
                     confirmButtonText: '导出 excel',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    api.sysUserInfoExport({
+                    api.sysYjsInfoExport({
                         name: that.tbDataFilter.name,
                         phoneNumber: that.tbDataFilter.phoneNumber,
                     }).then((res) => {
@@ -360,7 +405,7 @@
                     confirmButtonText: '重置密码',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    api.sysUserInfoPwd({
+                    api.sysYjsInfoPwd({
                         userId: that.tbChosenRow.id,
                         pwd: '123456',
                     }).then((res) => {
@@ -375,7 +420,7 @@
                 let that = this;
 
                 ajax.all([
-                    api.sysUserInfoFind(that.tbChosenRow.id),
+                    api.sysYjsInfoFind(that.tbChosenRow.id),
                     api.sysRoleSelect(),
                 ]).then((res) => {
                     if(res[0].data.status === 200 && res[1].data.status === 200) {

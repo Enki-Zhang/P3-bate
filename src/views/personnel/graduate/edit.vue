@@ -3,10 +3,10 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white-default-h">
-                <el-row style="margin-bottom: 40px; font-size: 16px; font-weight: 600;">编辑人员档案</el-row>
+                <el-row style="margin-bottom: 40px; font-size: 16px; font-weight: 600;">{{ $route.query.id.length ? '编辑' : '新增' }}研究生档案</el-row>
                 <el-row class="fm fm-max-w">
                     <el-form ref="fm" :model="form" label-position="right" size="small" label-width="140px">
-                        <template v-if="isMySelf">
+                        <template>
                             <el-row>
                                 <el-form-item prop="name" label="姓名"
                                               :rules="[
@@ -14,7 +14,7 @@
                                                   {type: 'string', min: 1, message: '请填写姓名'},
                                                   {validator: validateAllSpace, message: '请填写姓名'}
                                               ]">
-                                    <el-input v-model="form.name" placeholder="用户姓名" :readonly="!isMySelf" clearable></el-input>
+                                    <el-input v-model="form.name" placeholder="用户姓名" clearable></el-input>
                                 </el-form-item>
                             </el-row>
                             <el-row type="flex">
@@ -187,122 +187,8 @@
                                 </el-row>
                             </el-row>
                         </template>
-                        <template v-else>
-                            <el-row>
-                                <el-form-item prop="name" label="姓名">
-                                    <el-input v-model="form.name" placeholder="用户姓名" disabled></el-input>
-                                </el-form-item>
-                            </el-row>
-                            <el-row type="flex">
-                                <el-row>
-                                    <el-form-item prop="sex" label="性别">
-                                        <el-select v-model="form.sex" placeholder="请选择性别" disabled>
-                                            <el-option label="男" :value="1"></el-option>
-                                            <el-option label="女" :value="0"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="birthday" label="出生日期">
-                                        <el-date-picker v-model="form.birthday"
-                                                        placeholder="选择日期"
-                                                        type="date"
-                                                        format="yyyy-MM-dd"
-                                                        value-format="yyyy-MM-dd"
-                                                        disabled>
-                                        </el-date-picker>
-                                    </el-form-item>
-                                </el-row>
-                            </el-row>
-                            <el-row type="flex">
-                                <el-row>
-                                    <el-form-item prop="maritalStatus" label="婚姻状态">
-                                        <el-select v-model="form.maritalStatus" placeholder="请选择婚姻状态" disabled>
-                                            <el-option label="未婚" value="未婚"></el-option>
-                                            <el-option label="已婚" value="已婚"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="idNumber" label="身份证号">
-                                        <el-input v-model="form.idNumber" placeholder="身份证号" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                            </el-row>
-                            <el-row type="flex">
-                                <el-row>
-                                    <el-form-item prop="phoneNumber" label="手机号码">
-                                        <el-input v-model="form.phoneNumber" placeholder="手机号码" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="email" label="邮箱">
-                                        <el-input v-model="form.email" placeholder="邮箱" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                            </el-row>
-                            <el-row>
-                                <el-form-item prop="homeAddress" label="家庭住址">
-                                    <el-input v-model="form.homeAddress" type="textarea" placeholder="家庭住址"
-                                              :autosize="{minRows: 2, maxRows: 2}" resize="none"
-                                              style="width: 580px;" disabled></el-input>
-                                </el-form-item>
-                            </el-row>
-                            <el-row>
-                                <el-form-item prop="familyEmergencyContactNumber" label="家庭紧急联系电话">
-                                    <el-input v-model="form.familyEmergencyContactNumber" placeholder="家庭紧急联系电话" disabled></el-input>
-                                </el-form-item>
-                            </el-row>
-                            <el-row type="flex">
-                                <el-row>
-                                    <el-form-item prop="highestEducation" label="最高学历">
-                                        <el-input v-model="form.highestEducation" placeholder="最高学历" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="graduateInstitutions" label="毕业院校">
-                                        <el-input v-model="form.graduateInstitutions" placeholder="毕业院校" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="graduationMajor" label="毕业专业">
-                                        <el-input v-model="form.graduationMajor" placeholder="毕业专业" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                            </el-row>
-                            <el-row type="flex">
-                                <el-row>
-                                    <el-form-item prop="entryTime" label="入职时间">
-                                        <el-date-picker v-model="form.entryTime"
-                                                        placeholder="选择日期"
-                                                        type="date"
-                                                        format="yyyy-MM-dd"
-                                                        value-format="yyyy-MM-dd"
-                                                        disabled>
-                                        </el-date-picker>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="title" label="职称">
-                                        <el-input v-model="form.title" placeholder="职称" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                            </el-row>
-                            <el-row type="flex">
-                                <el-row>
-                                    <el-form-item prop="allInOneCardNumber" label="一卡通号">
-                                        <el-input v-model="form.allInOneCardNumber" placeholder="一卡通号" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                                <el-row>
-                                    <el-form-item prop="salaryCardNo" label="工资卡号">
-                                        <el-input v-model="form.salaryCardNo" placeholder="工资卡号" disabled></el-input>
-                                    </el-form-item>
-                                </el-row>
-                            </el-row>
-                        </template>
                         <!-- 部门编辑 -->
-                        <template v-if="!isMySelf">
+                        <template>
                             <el-row class="_hr"></el-row>
                             <el-row type="flex">
                                 <el-row>
@@ -389,7 +275,7 @@
         validateAllSpace,
         validateNullArray,
     } from '@plugins/man/validate';
-    const listRoutePath = '/personnel/information/detail';
+    const listRoutePath = '/personnel/graduate/detail';
 
     export default {
         name: "edit",
@@ -407,20 +293,18 @@
             }
         },
         created() {
-            this.$store.commit('setPageTitle', `${this.$route.query.id ? '编辑' : '新增'}人员档案`);
+            this.$store.commit('setPageTitle', `${this.$route.query.id ? '编辑' : '新增'}研究生档案`);
 
             if(this.$route.query.id.length > 0) this.getDetail(this.$route.query.id);
         },
         computed: {
             ...mapState(['userInfo',]),
-
-            isMySelf: function() {return this.userInfo.user.userId === this.$route.query.id;},
         },
         methods: {
             getDetail: function(id) {
                 let that = this;
 
-                api.sysUserInfoFind(id).then((res) => {
+                api.sysYjsInfoFind(id).then((res) => {
                     // console.log(res.data);
 
                     if(res.data.status === 200) {
@@ -440,7 +324,7 @@
                         that.btnLoadingSave = true;
 
                         if(!that.isMySelf) {
-                            api.sysUserInfoEdit({
+                            api.sysYjsInfoEdit({
                                 id: that.form.id,
                                 employeeCategory: that.form.employeeCategory,
                                 position: that.form.position,
@@ -456,7 +340,7 @@
                                 }
                             });
                         } else {
-                            api.sysUserInfoEditSelf({
+                            api.sysYjsInfoEditSelf({
                                 id: that.detail.id,
                                 ...that.form,
                             }).then((res) => {

@@ -14,8 +14,8 @@ export function menuFindMenuFormConfigById(params) {
 export function customFormSelect(params) {
     return ajax.get(`userServer/customForm/select`, params);
 }
-export function customFormFind(params) {
-    return ajax.get(`userServer/customForm/find/${params}`);
+export function customFormFindList(params) {
+    return ajax.get(`userServer/customForm/findList/${params}`);
 }
 export function menuEdit(data) {
     return ajax.post('userServer/menu/edit', data);

@@ -59,15 +59,15 @@
                                 </el-form-item>
                             </el-row>
                             <el-row>
-                                <el-form-item prop="formId" label="form key" :rules="[
+                                <el-form-item prop="formIds" label="form key" :rules="[
                                           // {required: false, message: '请选择 form key'},
                                           // {type: 'string', min: 1, message: '请选择 form key'},
                                           // {validator: validateAllSpace, message: '请填写角色编号'}
                                       ]">
-                                    <el-select v-model="form.formId" placeholder="请选择 form key"
-                                               @change="handleChangeFormKey"
-                                               style="width: 280px;">
-                                        <el-option label="不需要 form key" :value="0"></el-option>
+                                    <el-select v-model="form.formIds" placeholder="请选择 form key"
+                                               @visible-change="handleChangeFormKey"
+                                               style="width: 280px;" multiple>
+                                        <el-option label="-- 无 form key --" :value="0"></el-option>
                                         <el-option v-for="v in seloptsFormKey" :key="v.id"
                                                    :label="v.formName" :value="v.id"></el-option>
                                     </el-select>
@@ -149,7 +149,9 @@
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
 
-                form: {},
+                form: {
+                    formIds: [],
+                },
                 rowBeforeEdit: {},
                 fieldData: [],
                 fieldDataOrigin: [],
@@ -225,7 +227,7 @@
                             ...res.data.data,
                             type: res.data.data.isBtn,
                         };
-                        if(res.data.data.formId > 0) that.handleChangeFormKey(res.data.data.formId, true);
+                        if(res.data.data.formIds.length > 0) that.handleChangeFormKey(false, true);
                     }
                 });
                 api.menuFindMenuFormConfigById(currentRow.id).then((res) => {
@@ -237,19 +239,24 @@
             },
             handleChangeFormKey: function(val, isInit = false) {
                 let that = this;
-                // console.log(val);
+                // console.log(that.form.formIds);return;
 
-                if(!isInit) {
-                    that.fieldData = [];
-                    that.chosenFormItemIdArr = [];
-                }
-
-                if(val > 0) {
-                    api.customFormFind(val).then((res) => {
-                        if(res.data.status === 200) {
-                            that.seloptsFormItem = res.data.data.keyInfo.length > 0 ? JSON.parse(res.data.data.keyInfo) : [];
-                        }
-                    });
+                if(val === false) {
+                    that.seloptsFormItem = [];
+                    if(!isInit) {
+                        that.fieldData = [];
+                        that.chosenFormItemIdArr = [];
+                    }
+                    if(that.form.formIds.length > 0) {
+                        api.customFormFindList(that.form.formIds.join(',')).then((res) => {
+                            if(res.data.status === 200) {
+                                res.data.data.map(v => {
+                                    if(v.keyInfo.length > 0) that.seloptsFormItem = that.seloptsFormItem.concat(JSON.parse(v.keyInfo));
+                                });
+                                // console.log(that.seloptsFormItem);
+                            }
+                        });
+                    }
                 }
             },
             generateFormItemChosen: function() {
@@ -301,7 +308,7 @@
                             id: that.form.id,
                             title: that.form.title,
                             type: that.form.type,
-                            formId: that.form.formId,
+                            formIds: that.form.formIds,
                             menuFormConfigForms: [...that.fieldData],
                         }).then((res) => {
                             // console.log(res);

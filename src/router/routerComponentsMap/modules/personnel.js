@@ -11,10 +11,18 @@ export default {
     'personnel_organization|add': _import('personnel/organization/edit'),
     'personnel_organization|edit': _import('personnel/organization/edit'),
 
-    // 人事资料
+    // 人事信息管理
     'personnel_information': _import('personnel/information'),
-    'personnel_information|add': _import('personnel/information/edit'),
+    // 'personnel_information|add': _import('personnel/information/edit'),
     'personnel_information|edit': _import('personnel/information/edit'),
+    'personnel_information|detail': _import('personnel/information/detail'),
+
+    // 研究生信息管理
+    'personnel_graduate': _import('personnel/graduate'),
+    'personnel_graduate|add': _import('personnel/graduate/edit'),
+    'personnel_graduate|edit': _import('personnel/graduate/edit'),
+    'personnel_graduate|detail': _import('personnel/graduate/detail'),
+
 
     // 考勤一览表
     'personnel_attendance-overview': _import('personnel/attendanceOverview'),
