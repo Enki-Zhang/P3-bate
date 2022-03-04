@@ -66,12 +66,15 @@
                 </div>
             </div>
         </div>
+
+
     </div>
 </template>
 
 <script>
 
     import api from "@api";
+    
 
     export default {
         name: "compDate",
@@ -98,7 +101,7 @@
 
                 if(str == null || str == '')
                     return '';
-                let d = new Date(parseInt(str) * 1000);
+                let d = new Date(str);
                 let year = d.getFullYear();
                 let month = formal(d.getMonth() + 1);
                 let date = d.getDate();
@@ -114,58 +117,73 @@
             }
         },
         methods: {
-            loadData(){
-                let eventList = [
-                    {
-                        name:'张三',
-                        title:'申请生物实验',
-                        startDate:1646186065,
-                        endDate:1646376865
-                    },
-                    {
-                        name:'李四',
-                        title:'申请生物实验222',
-                        startDate:1646186065,
-                        endDate:1646376865
-                    },
-                    {
-                        name:'fix',
-                        title:'计划停用检修',
-                        startDate:1646726827,
-                        endDate:1647245227
-                    },
-                    {
-                        name:'disinfect',
-                        title:'',
-                        startDate:1647331627,
-                        endDate:1647331627
-                    },
-                    {
-                        name:'done',
-                        title:'',
-                        startDate:1646122027,
-                        endDate:1646122027
-                    }
-                ];
-                let curMonthList = JSON.parse(JSON.stringify(this.curMonthList));
+            loadData(year,month){
                 function getDay(str){
                     //console.log(new Date(str * 1000));
-                    let d = new Date(str * 1000);
+                    let d = new Date(str);
                     let day = d.getDate();
                     return day;
                 }
 
-                eventList.forEach(e => {
-                    let start = getDay(e.startDate);
-                    let end = getDay(e.endDate);
-                    for(let i = start;i <= end;i++){
-                        curMonthList[i].sub.push(e);
-                        if(e.name != 'disinfect' && e.name != 'done' && i == start){
-                            curMonthList[i].event.push(e);
-                        }
+                api.getFormRecord({
+                    //documentId: that.detail.id,
+                    menuId:"411",
+                    pageCurrent:1,
+                    pageSize:50,
+                    year,
+                    month
+                    // uuid: that.man.fast.getUUID(),
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        let eventList = res.data.data.data.records;
+                        let curMonthList = JSON.parse(JSON.stringify(this.curMonthList));
+
+                        eventList.forEach(e => {
+                            let start = getDay(e.startDate);
+                            let end = getDay(e.endDate);
+                            for(let i = start;i <= end;i++){
+                                curMonthList[i].sub.push(e);
+                                if(e.name != 'disinfect' && e.name != 'done' && i == start){
+                                    curMonthList[i].event.push(e);
+                                }
+                            }
+                        });
+                        this.curMonthList = curMonthList;
                     }
                 });
-                this.curMonthList = curMonthList;
+
+                // let eventList = [
+                //     {
+                //         name:'张三',
+                //         title:'申请生物实验',
+                //         startDate:1646186065,
+                //         endDate:1646376865
+                //     },
+                //     {
+                //         name:'李四',
+                //         title:'申请生物实验222',
+                //         startDate:1646186065,
+                //         endDate:1646376865
+                //     },
+                //     {
+                //         name:'fix',
+                //         title:'计划停用检修',
+                //         startDate:1646726827,
+                //         endDate:1647245227
+                //     },
+                //     {
+                //         name:'disinfect',
+                //         title:'',
+                //         startDate:1647331627,
+                //         endDate:1647331627
+                //     },
+                //     {
+                //         name:'done',
+                //         title:'',
+                //         startDate:1646122027,
+                //         endDate:1646122027
+                //     }
+                // ];  
             },
             initTable(year,month){
                 let prevMonthList = [];
@@ -201,7 +219,7 @@
                 this.curMonthList = curMonthList;
                 this.nextMonthList = nextMonthList;
 
-                this.loadData();
+                this.loadData(year,month);
             },
             getPrevYearMonth(year,month){
                 if(month - 1 == 0){

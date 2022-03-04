@@ -51,3 +51,31 @@ export function testAjaxSleep(params) {
             return ajax.post('test/ajax/sleep', params);
     }
 }
+
+
+/**
+ * 获取菜单下级按钮
+ * @param name
+ * @returns {void|*}
+ */
+export function getMenuBtn(name) {
+    return ajax.get(`userServer/menu/btn/${name}`,null);
+}
+
+/**
+ * 获取表单信息
+ * @param id
+ * @returns {void|*}
+ */
+export function getFormInfo(id) {
+    return ajax.get(`userServer/customForm/find/${id}`,null);
+}
+
+/**
+ * 获取已填写表单记录
+ * @param menuId,pageCurrent,pageSize
+ * @returns {void|*}
+ */
+export function getFormRecord(params) {
+    return ajax.post(`userServer/dynamicForm/showTable`,params);
+}

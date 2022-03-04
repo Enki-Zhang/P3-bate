@@ -20,12 +20,14 @@
                             <span>计划消毒日期</span>
                         </span>
                     </div>
-                    <el-button style = "width:84px;" type = "primary" size = "mini">预约申请</el-button>
+                    <el-button @click = "toPre" v-show = "btnSet.pre.sh" style = "width:84px;" type = "primary" size = "mini">预约申请</el-button>
                 </div>
 
                 <compDate ref = "compDate"/>                
             </el-row>
         </el-row>
+
+        <compForm ref = "compForm" @success = "submitForm"/>
     </el-row>
 
 </template>
@@ -33,7 +35,9 @@
 <script>
 
     import api from "@api";
-    import compDate from './compDate'
+    import compDate from './compDate';
+    import compForm from "@/components/formPreview";
+
     export default {
         name: "index",
         data() {
@@ -49,14 +53,22 @@
                     formNumber:''
                 },
                 year:2022,
-                month:2
+                month:2,
+                btnSet:{
+                    pre:{
+                        formId:'',
+                        formKey:'',
+                        sh:false
+                    }
+                }
             }
         },
         components:{
-            compDate
+            compDate,
+            compForm
         },
         mounted() {
-            this.getTableData();
+            this.initBtn();
 
         },
         filters:{
@@ -78,6 +90,29 @@
             }
         },
         methods: {
+            submitForm(data){
+                //console.log(data);
+                // let formInfo = JSON.stringify(data);
+                api.customFormInfoSave({
+                    //documentId: that.detail.id,
+                    formId:this.btnSet.pre.formId,
+                    formInfo:data
+                    // uuid: that.man.fast.getUUID(),
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$message.success('提交成功');
+                    }
+                });
+            },
+            toPre(){
+                let formId = this.btnSet.pre.formId;
+                console.log(formId);
+                api.getFormInfo(formId).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$refs.compForm.showFn(res.data.data.keyInfo);
+                    }
+                });
+            },
             prevMonth(){
                 if(this.month - 1 == 0){
                     this.year --;
@@ -98,24 +133,21 @@
                 }
                 this.$refs.compDate.initTable(this.year,this.month);
             },
-            getTableData: function(page = 1, pageSize = 10) {
-                let params = {
-                    formId:this.$route.query.id,
-                    pageCurrent: page,
-                    pageSize,
-                };
-
-                api.formHistoryList(params).then((res) => {
+            initBtn: function() {
+                api.getMenuBtn('activity|bsl').then((res) => {
                     if(res.data.status === 200) {
-                        this.tbData.content = res.data.data.records;
-                        this.tbData.current = res.data.data.current;
-                        this.tbData.size = res.data.data.size;
-                        this.tbData.total = res.data.data.total;
+                        let list = res.data.data;
+                        let btnSet = JSON.parse(JSON.stringify(this.btnSet));
+                        list.forEach(e => {
+                            if(e.name == 'activity|bsl|pre'){
+                                btnSet.pre.formId = e.formIds.length == 0 ? '' : e.formIds[0];
+                                btnSet.pre.formKey = e.formKeys.length == 0 ? '' : e.formKeys[0];
+                                btnSet.pre.sh = true;
+                            }
+                        });
+                        this.btnSet = btnSet;
                     }
-                 });
-            },
-            handlePaginationChange: function(page) {
-                this.getTableData(page);
+                });
             }
         }
     }
