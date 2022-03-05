@@ -98,7 +98,7 @@ let loadRoutes = async (isFullLoad) => {
         return routes;
     };
 
-    //物资管理根据是否绑定formKey进行过滤
+    /*//物资管理根据是否绑定formKey进行过滤
     const thingManageFilter = function(arr){
         arr.forEach(route => {
             //console.log(route);
@@ -115,13 +115,13 @@ let loadRoutes = async (isFullLoad) => {
             }
         });
         return arr;
-    }
+    }*/
 
     // 完整加载
     if(isFullLoad) {
         if(!!userInfo && !!userInfo.menus && !!userInfo.menus.length) {
             let userInfoMenu = JSON.parse(JSON.stringify(userInfo.menus));
-            userInfoMenu = thingManageFilter(userInfoMenu);
+            // userInfoMenu = thingManageFilter(userInfoMenu);
             // console.log(userInfoMenu);
             routes.inLayout.children = [...routes.inLayout.children.concat(userInfoMenu)];
         }
