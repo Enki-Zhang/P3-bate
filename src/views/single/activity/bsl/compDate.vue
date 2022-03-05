@@ -83,15 +83,14 @@
                 prevMonthList:[],
                 curMonthList:[],
                 nextMonthList:[],
-                today:0
+                today:0,
+                formFieldId:''
             }
         },
         mounted() {
-            let date = new Date();
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
+            
 
-            this.initTable(year,month);
+            this.getFormFieldId();
         },
         filters:{
             dateStr(str){
@@ -117,6 +116,21 @@
             }
         },
         methods: {
+            getFormFieldId(){
+                api.getFormHead('411').then((res) => {
+                    if(res.data.status === 200) {
+                        let list = res.data.data;
+                        let formFieldId = list.find(e => e.key == 'startDate').formFieldId;
+                        this.formFieldId = formFieldId;
+                        
+                        let date = new Date();
+                        let year = date.getFullYear();
+                        let month = date.getMonth() + 1;
+
+                        this.initTable(year,month);
+                    }
+                });       
+            },
             loadData(year,month){
                 function getDay(str){
                     //console.log(new Date(str * 1000));
@@ -125,13 +139,21 @@
                     return day;
                 }
 
+                let start = `${year}-${month < 10 ? '0' + month : month}-01`;
+                let end = `${year}-${month < 10 ? '0' + month : month}-${this.getLastDay(year,month)}`;
+                // console.log(start);
+                // console.log(end);
+
                 api.getFormRecord({
                     //documentId: that.detail.id,
                     menuId:"411",
                     pageCurrent:1,
                     pageSize:50,
-                    year,
-                    month
+                    searchForms:[{
+                        formFieldId:this.formFieldId,
+                        logic:'between',
+                        betweenValues:[start,end]
+                    }]
                     // uuid: that.man.fast.getUUID(),
                 }).then((res) => {
                     if(res.data.status === 200) {

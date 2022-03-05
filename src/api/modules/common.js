@@ -72,6 +72,15 @@ export function getFormInfo(id) {
 }
 
 /**
+ * 获取表单表头
+ * @param menuId
+ * @returns {void|*}
+ */
+export function getFormHead(menuId) {
+    return ajax.get(`userServer/dynamicForm/getTableHeads/${menuId}`,null);
+}
+
+/**
  * 获取已填写表单记录
  * @param menuId,pageCurrent,pageSize
  * @returns {void|*}

@@ -52,8 +52,8 @@
                     formName:'',
                     formNumber:''
                 },
-                year:2022,
-                month:2,
+                year:'',
+                month:'',
                 btnSet:{
                     pre:{
                         formId:'',
@@ -68,8 +68,8 @@
             compForm
         },
         mounted() {
+            this.initYearMonth();
             this.initBtn();
-
         },
         filters:{
             dateStr(str){
@@ -90,6 +90,13 @@
             }
         },
         methods: {
+            initYearMonth(){
+                let date = new Date();
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                this.year = year;
+                this.month = month;
+            },
             submitForm(data){
                 //console.log(data);
                 // let formInfo = JSON.stringify(data);
