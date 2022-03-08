@@ -64,8 +64,10 @@
                     <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row border>
-                        <el-table-column label="表单id" fixed="left" show-overflow-tooltip width="60">
+                        <el-table-column v-if = "tbColumn.length > 0" label="表单id" fixed="left" show-overflow-tooltip width="60">
                             <template slot-scope="scope">{{ scope.row.formId }}</template>
+                        </el-table-column>
+                        <el-table-column v-else label="未绑定表单" show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column v-for = "v,index in tbColumn" :key = "index" :label="v.name" show-overflow-tooltip >
                             <template slot-scope="scope">
@@ -128,7 +130,8 @@
                     datetime:null
                 },
                 tbColumn:[],
-                btnLoadingFilter: false
+                btnLoadingFilter: false,
+                key:null
             }
         },
         filters:{
@@ -150,11 +153,37 @@
             }
         },
         mounted() {
-            //this.getTableData();
-            console.log(this.$route);
-            this.getColumn();
+            this.getRouterInfo();
+            //this.getColumn();
         },
         methods: {
+            getRouterInfo: function() {
+                let menu = JSON.parse(localStorage.getItem('stu-p3lab')).session.userInfo.menus;
+                // console.log(menu);
+                // console.log(this.$route.name);
+
+                function findRouterObj(arr,name){
+                    for(let i = 0;i < arr.length;i++){
+                        if(arr[i].name == name){
+                            return arr[i];
+                        }
+                        if(arr[i].children.length > 0){
+                            let obj = findRouterObj(arr[i].children,name);
+                            if(obj != null)
+                                return obj;
+                        }
+                    }
+                    return null;
+                }
+
+                let obj = findRouterObj(menu,this.$route.name);
+                // console.log(obj);
+                if(obj != null && obj.formKeys.length > 0){
+                    let key = obj.formKeys[0];
+                    this.key = key;
+                    this.getColumn();
+                }
+            },
             getColumn:function(){
 
                 function getValueName(type){
@@ -176,7 +205,7 @@
                     return obj[type];
                 }
 
-                let formKey = this.$route.meta.formKey;
+                let formKey = this.key;
                 api.formStructInfo(formKey).then((res) => {
                     this.btnLoadingFilter = false;
                     if(res.data.status === 200) {
@@ -198,6 +227,7 @@
                 });
             },
             getTableData: function(page = 1, pageSize = 10) {
+                if(this.key == null)return;
                 this.btnLoadingFilter = true;
 
                 let params = {
@@ -206,7 +236,7 @@
                     pageSize,
                 };
                 console.log(this.$route.name);
-                let formKey = this.$route.meta.formKey;
+                let formKey = this.key;
                 params.formKey = formKey;
 
                 if(params.datetime != null){

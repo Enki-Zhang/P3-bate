@@ -22,14 +22,14 @@ export default {
     'activity|bsl': _import('single/activity/bsl'),
 
     // 物资管理
-    'supplies':_import('single/supplies'),
-    'supplies_organization':_import('single/supplies/device'),
-    'supplies_consumables':_import('single/supplies/device'),
-    'supplies_other-items':_import('single/supplies/device'),
-    'supplies_service-items':_import('single/supplies/device'),
-    'supplies_dormitory':_import('single/supplies/device'),
-    'supplies_car':_import('single/supplies/device'),
-    'supplies_logistics':_import('single/supplies/device'),
+    'assets':_import('single/supplies'),
+    'assets_equipment':_import('single/supplies/device'),
+    'assets_consumables':_import('single/supplies/device'),
+    'assets_sample-reagents':_import('single/supplies/device'),
+    'assets_administrative-materials':_import('single/supplies/device'),
+    'assets_other-materials':_import('single/supplies/device'),
+    'assets_car':_import('single/supplies/device'),
+    'assets_dormitory':_import('single/supplies/device'),
 
     // 表格管理
     'forms': _import('single/forms'),
