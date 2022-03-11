@@ -32,7 +32,7 @@
                                 <el-row class="user-name cursor-pointer">{{ userInfo.user.realName || userInfo.user.username }}</el-row>
                             </el-row>
                             <el-dropdown-menu slot="dropdown">
-                                <!--                                    <el-dropdown-item command="changePassword">个人资料</el-dropdown-item>-->
+                                <el-dropdown-item command="changeSelfInfo">个人资料</el-dropdown-item>
                                 <el-dropdown-item command="changePassword">修改密码</el-dropdown-item>
                                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                             </el-dropdown-menu>
@@ -96,6 +96,17 @@
             },
             handelDropdownUser: function(cmd) {
                 switch (cmd) {
+                    case 'changeSelfInfo':
+                        let path = this.man.fast.inArray('graduate_student', this.userInfo.roles)
+                            ? '/personnel/graduate/edit'
+                            : '/personnel/information/edit';
+                        this.$router.push({
+                            path: path,
+                            query: {
+                                id: this.userInfo.user.userId,
+                            }
+                        });
+                        break;
                     case 'changePassword':
                         this.dlChangePasswordVisible = true;
                         break;

@@ -10,7 +10,7 @@
                     </el-row>
                 </el-row>
                 <el-row class="_table mg-t-15 pd-lr-15">
-                    <el-row class="name">张珊珊</el-row>
+                    <el-row class="name">{{ detail.name }}</el-row>
                     <el-row type="flex">
                         <el-row type="flex">
                             <el-row class="_title">性别</el-row>

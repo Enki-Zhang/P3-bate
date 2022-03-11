@@ -76,7 +76,7 @@
                             <el-table :data="tbDataPending.list" size="small">
                                 <el-table-column label="事项">
                                     <template slot-scope="scope">
-                                        {{ `${scope.row.sponsorName} ${scope.row.matter}` }}
+                                        {{ scope.row.name }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="时间" sortable>
@@ -194,6 +194,7 @@
 
     import dayjs from 'dayjs';
     import ICountUp from 'vue-countup-v2';
+    import api from '@api';
 
     import jsonTbDataPending from '@mock/tbDataPending.json';
     import jsonTbDataUpdating from '@mock/tbDataUpdating.json';
@@ -254,15 +255,10 @@
         methods: {
             getTableDataPending: function(pageSize = 5) {
                 let that = this;
-                that.tbDataPending.list = [];
 
-                jsonTbDataPending.filter(v => {
-                    return v.sponsor !== 1;
-                }).sort((a, b) => {
-                    return a.createTime - b.createTime;
-                }).map(v => {
-                    if(that.tbDataPending.list.length <= pageSize) {
-                        that.tbDataPending.list.push(v);
+                api.camundaTaskCandidateUser().then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbDataPending.list = [...res.data.data];
                     }
                 });
             },
@@ -282,26 +278,18 @@
             getTableDataProcessing: function(pageSize = 5) {
                 let that = this;
 
-                jsonTbDataProcessing.filter(v => {
-                    return v.sponsor === 1;
-                }).sort((a, b) => {
-                    return a.createTime - b.createTime;
-                }).map(v => {
-                    if(that.tbDataProcessing.list.length <= pageSize) {
-                        that.tbDataProcessing.list.push(v);
+                api.camundaProcessInstanceStartedByUserId().then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbDataProcessing.list = [...res.data.data];
                     }
                 });
             },
             getTableDataApply: function(pageSize = 5) {
                 let that = this;
 
-                jsonTbDataApply.filter(v => {
-                    return v.process === 1;
-                }).sort((a, b) => {
-                    return a.createTime - b.createTime;
-                }).map(v => {
-                    if(that.tbDataApply.list.length <= pageSize) {
-                        that.tbDataApply.list.push(v);
+                api.camundaHistoryStartedByUserId().then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbDataApply.list = [...res.data.data];
                     }
                 });
             },

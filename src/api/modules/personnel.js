@@ -65,9 +65,6 @@ export function sysYjsInfoFind(params) {
 export function sysYjsInfoSave(data) {
     return ajax.post(`userServer/sys/yjs/info/save`, data);
 }
-export function sysYjsInfoEditSelf(data) {
-    return ajax.post(`userServer/sys/yjs/info/editSelf`, data);
-}
 export function sysYjsInfoEdit(data) {
     return ajax.post(`userServer/sys/yjs/info/edit`, data);
 }

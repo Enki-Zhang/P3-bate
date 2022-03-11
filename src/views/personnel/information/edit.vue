@@ -96,17 +96,17 @@
                                               style="width: 580px;" clearable></el-input>
                                 </el-form-item>
                             </el-row>
-                            <el-row>
-                                <el-form-item prop="familyEmergencyContactNumber" label="家庭紧急联系电话"
-                                              :rules="[
+                            <el-row type="flex">
+                                <el-row>
+                                    <el-form-item prop="familyEmergencyContactNumber" label="家庭紧急联系电话"
+                                                  :rules="[
                                               // {required: true, message: '请填写家庭紧急联系电话'},
                                               // {type: 'string', len: 11, message: '长度为 11 个字符'},
                                               // {validator: validatePhone, message: '请填写家庭紧急联系电话'}
                                           ]">
-                                    <el-input v-model="form.familyEmergencyContactNumber" placeholder="家庭紧急联系电话" clearable></el-input>
-                                </el-form-item>
-                            </el-row>
-                            <el-row type="flex">
+                                        <el-input v-model="form.familyEmergencyContactNumber" placeholder="家庭紧急联系电话" clearable></el-input>
+                                    </el-form-item>
+                                </el-row>
                                 <el-row>
                                     <el-form-item prop="highestEducation" label="最高学历"
                                                   :rules="[
@@ -117,6 +117,8 @@
                                         <el-input v-model="form.highestEducation" placeholder="最高学历" clearable></el-input>
                                     </el-form-item>
                                 </el-row>
+                            </el-row>
+                            <el-row type="flex">
                                 <el-row>
                                     <el-form-item prop="graduateInstitutions" label="毕业院校"
                                                   :rules="[
@@ -248,17 +250,19 @@
                                               style="width: 580px;" disabled></el-input>
                                 </el-form-item>
                             </el-row>
-                            <el-row>
-                                <el-form-item prop="familyEmergencyContactNumber" label="家庭紧急联系电话">
-                                    <el-input v-model="form.familyEmergencyContactNumber" placeholder="家庭紧急联系电话" disabled></el-input>
-                                </el-form-item>
-                            </el-row>
                             <el-row type="flex">
+                                <el-row>
+                                    <el-form-item prop="familyEmergencyContactNumber" label="家庭紧急联系电话">
+                                        <el-input v-model="form.familyEmergencyContactNumber" placeholder="家庭紧急联系电话" disabled></el-input>
+                                    </el-form-item>
+                                </el-row>
                                 <el-row>
                                     <el-form-item prop="highestEducation" label="最高学历">
                                         <el-input v-model="form.highestEducation" placeholder="最高学历" disabled></el-input>
                                     </el-form-item>
                                 </el-row>
+                            </el-row>
+                            <el-row type="flex">
                                 <el-row>
                                     <el-form-item prop="graduateInstitutions" label="毕业院校">
                                         <el-input v-model="form.graduateInstitutions" placeholder="毕业院校" disabled></el-input>
@@ -453,6 +457,12 @@
 
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
+                                    that.$router.push({
+                                        path: `/personnel/information/edit`,
+                                        query: {
+                                            id: that.form.id,
+                                        }
+                                    });
                                 }
                             });
                         } else {
@@ -465,6 +475,12 @@
 
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
+                                    that.$router.push({
+                                        path: `/personnel/information/edit`,
+                                        query: {
+                                            id: that.detail.id,
+                                        }
+                                    });
                                 }
                             });
                         }

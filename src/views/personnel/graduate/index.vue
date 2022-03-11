@@ -210,7 +210,7 @@
         </el-row>
 
         <!-- 组件：创建账号 -->
-<!--        <dl-add v-model="dlAddVisible" :params="dlParams" @done="getTableData()"></dl-add>-->
+        <dl-add v-model="dlAddVisible" :params="dlParams" @done="getTableData()"></dl-add>
         <!-- 组件：组别 -->
 <!--        <dl-role v-model="dlRoleVisible" :params="dlParams" @done="getTableData()"></dl-role>-->
         <!-- 移动端：列表操作 -->
@@ -229,13 +229,13 @@
     import ajax from "@plugins/ajax";
     import dayjs from 'dayjs';
     import api from "@api";
-    // import dlAdd from "@views/personnel/information/dlAdd";
+    import dlAdd from "@views/personnel/graduate/dlAdd";
     // import dlRole from "@views/personnel/information/dlRole";
 
     export default {
         name: "index",
         components: {
-            // dlAdd,
+            dlAdd,
             // dlRole,
         },
         data() {
@@ -334,13 +334,7 @@
             create: function() {
                 let that = this;
 
-                that.$router.push({
-                    path: `/personnel/graduate/add`,
-                    query: {
-                        id: '',
-                        _lpq: JSON.stringify(that.tbDataFilter),
-                    }
-                });
+                that.dlAddVisible = true;
             },
             remove: function() {
                 let that = this;
@@ -368,7 +362,7 @@
                 let that = this;
 
                 that.$router.push({
-                    path: `/personnel/information/detail`,
+                    path: `/personnel/graduate/detail`,
                     query: {
                         id: that.tbChosenRow.id,
                         _lpq: JSON.stringify(that.tbDataFilter),

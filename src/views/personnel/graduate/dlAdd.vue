@@ -97,8 +97,6 @@
                 validateNullArray,
                 dialogVisible: false,
 
-                seloptsRole: [],
-
                 form: {
                     name: '',
                     username: '',
@@ -138,7 +136,7 @@
                     if(valid) {
                         that.btnLoadingSave = true;
 
-                        api.sysUserInfoSave({
+                        api.sysYjsInfoSave({
                             ...that.form,
                             // roleIds: that.form.roleIdArr.join(',')
                         }).then((res) => {
@@ -152,19 +150,6 @@
                             }
                         });
                     } else {return false;}
-                });
-            },
-
-            getAllRole: function() {
-                let that = this;
-
-                api.sysRoleSelect().then((res) => {
-                    if(res.data.status === 200) {
-                        that.seloptsRole = [...res.data.data];
-                    } else {
-                        that.$message.error('组别加载失败');
-                        that.closed();
-                    }
                 });
             },
 
