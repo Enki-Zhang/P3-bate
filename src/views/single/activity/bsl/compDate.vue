@@ -40,20 +40,37 @@
                                 <span 
                                     :key = "'user_' + index + '_' + index2"
                                     v-else
-                                    :class = "{name2:index2 == 1}"
+                                    :style = "{background:'rgb(' + v2.color + ')'}"
                                     class = "name">{{v2.name | nameStr}}</span>
                             </template>
                         </div>
                     </div>
                     <ul class = "dc_list">
-                        <li :class = "{dc_color2:index2 == 1,dc_color3:v2.name == 'fix'}" v-for = "v2,index2 in v.event" :key = "'event_' + index + '_' + index2">
-                            <div class = "name" v-if = "v2.name != 'fix'">{{v2.name}}</div>
-                            <div class = "info">
+                        <li 
+                            v-for = "v2,index2 in v.event" 
+                            :key = "'event_' + index + '_' + index2">
+                            <div 
+                                :style = "{color:'rgb(' + v2.color + ')'}"
+                                class = "name" 
+                                v-if = "v2.name != 'fix'">
+                                {{v2.name}}
+                            </div>
+                            <div class = "info" :style = "{background:'rgba(' + v2.color + ',0.1)',borderLeftColor:'rgb(' + v2.color + ')'}">
                                 <div class = "title">
-                                    <img v-if = "v2.name == 'fix'" :src = "require('@/assets/image/activity/icon_fix.png')" />
-                                    <span :title = "v2.title">{{v2.title}}</span>
+                                    <img 
+                                        v-if = "v2.name == 'fix'" 
+                                        :src = "require('@/assets/image/activity/icon_fix.png')" />
+                                    <span 
+                                        :style = "{color:'rgb(' + v2.color + ')'}" 
+                                        :title = "v2.title">
+                                        {{v2.title}}
+                                    </span>
                                 </div>
-                                <div class = "dateRange">{{v2.startDate | dateStr}}-{{v2.endDate | dateStr}}</div>
+                                <div 
+                                    :style = "{color:'rgb(' + v2.color + ')'}"
+                                    class = "dateRange">
+                                    {{v2.startDate | dateStr}}-{{v2.endDate | dateStr}}
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -88,8 +105,6 @@
             }
         },
         mounted() {
-            
-
             this.getFormFieldId();
         },
         filters:{
@@ -160,17 +175,27 @@
                         let eventList = res.data.data.data.records;
                         let curMonthList = JSON.parse(JSON.stringify(this.curMonthList));
 
+                        let colorArr = ['92,112,211','24,144,255','206,151,0','255,115,41','122,144,200','11,56,1','88,44,123','123,44,77','86,190,198','244,20,201'];
+                        let colorIndex = 0;
+                        let colorFix = '255, 60, 60';
+
                         eventList.forEach(e => {
                             let start = getDay(e.startDate);
                             let end = getDay(e.endDate);
-                            for(let i = start;i <= end;i++){
+                            e.color = e.name == 'fix' ? colorFix : colorArr[colorIndex];
+                            if(e.name != 'fix' && colorIndex < colorArr.length)
+                                colorIndex++;
+                            //console.log(start + ':' + end);
+                            for(let i = start - 1;i < end;i++){
+                                //console.log(i);
                                 curMonthList[i].sub.push(e);
-                                if(e.name != 'disinfect' && e.name != 'done' && i == start){
+                                if(e.name != 'disinfect' && e.name != 'done' && i == start - 1){
                                     curMonthList[i].event.push(e);
                                 }
                             }
                         });
                         this.curMonthList = curMonthList;
+                        //console.log(curMonthList);
                     }
                 });
 
@@ -421,21 +446,6 @@ $colorLight3: rgba(255, 229, 229, 0.39);
                                 overflow:hidden;
                                 text-overflow:ellipsis;
                                 white-space:nowrap;
-                            }
-                        }
-
-                        &.dc_color2{
-                            color:$colorDeep2;
-                            .info{
-                                border-left:2px solid $colorDeep2;
-                                background:$colorLight2;
-                            }
-                        }
-                        &.dc_color3{
-                            color:$colorDeep3;
-                            .info{
-                                border-left:2px solid $colorDeep3;
-                                background:$colorLight3;
                             }
                         }
                     }

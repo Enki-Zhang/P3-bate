@@ -108,6 +108,7 @@
                 }).then((res) => {
                     if(res.data.status === 200) {
                         this.$message.success('提交成功');
+                        this.$refs.compDate.initTable(this.year,this.month);
                     }
                 });
             },
