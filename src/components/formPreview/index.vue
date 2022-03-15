@@ -143,7 +143,7 @@ export default {
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     :placeholder="data[${i}].attr_placeholder">
                     <el-option
-                      v-for="v,index in data[${i}].attr_data_list"
+                      v-for="v,index in (data[${i}].attr_data_source == 'default' ? data[${i}].attr_data_list : data[${i}].bind_list)"
                       :key="index"
                       :label="v.name"
                       :value="v.name">

@@ -596,7 +596,12 @@
                             <span class = "btn" @click = "resetFormBox">重置</span>
                         </div>
                         <div class = "attrBox" v-if = "selectingId != -1">
-                          <div class = "row" v-for = "v,k in attrObj" :key = "k" v-if = "k.indexOf('attr_') > -1">
+                          <div 
+                            class = "row" 
+                            v-for = "v,k in attrObj" 
+                            :key = "'attr_' + k" 
+                            v-show = "judgeFn(k)"
+                            v-if = "k.indexOf('attr_') > -1">
                             <p>{{attrNameObj[k]}}</p>
                             <template>
                               <div v-if = "k == 'attr_label_align' || k == 'attr_input_align'">
@@ -618,6 +623,12 @@
                                   <option :value = "false">关</option>
                                 </select>
                               </div>
+                              <div v-else-if = "k == 'attr_data_source'">
+                                <select v-model = "attrObj[k]">
+                                  <option value = "default">默认</option>
+                                  <option value = "bind">绑定</option>
+                                </select>
+                              </div>
                               <div v-else-if = "k == 'attr_data_list'">
                                 <table class = "selectList">
                                   <tr>
@@ -635,6 +646,14 @@
                                 <div>
                                   <a @click = "selectAdd" class = "btn2" href = "javascript:void(0);">添加</a>
                                 </div>
+                              </div>
+                              <div v-else-if = "k == 'attr_data_bind'">
+                                <select @change = "getSourceSelectList(k)" v-model = "attrObj[k]" placeholder = "请选择数据源">
+                                  <option 
+                                    :key = "'dataSource_' + index2"
+                                    v-for = "v2,index2 in dataSourceList" 
+                                    :value = "v2.id">{{v2.description}}</option>
+                                </select>
                               </div>
                               <div v-else-if = "k == 'attr_data_check_list'">
                                 <table class = "selectList">
@@ -748,7 +767,7 @@
                   </div>
                 </div>
 
-                <el-row style = "padding-bottom:20px;padding-left:10px;">
+                <el-row style = "padding-bottom:20px;padding-left:10px;text-align:center">
                   <el-button 
                       type="primary" 
                       size="small" 
@@ -785,7 +804,7 @@
                   keyInfo: '',
                   versions: 1
                 },
-
+                dataSourceList:[],
                 linkSelectPop:false,
                 attrNameObj:componentObj.attr,
                 componentInputBox: componentObj.inputList,
@@ -804,10 +823,61 @@
         },
         mounted() {
             this.getInfo();
+            this.getSourceList();
         },
         methods: {
+            getSourceSelectList(e){
+              //console.log(this.attrObj[e]);
+              api.formSourceSelectList(this.attrObj[e]).then((res) => {
+                  if(res.data.status === 200) {
+                      let reArr = res.data.data;
+                      let arr = [];
+                      for(let i = 0;i < reArr.length;i++){
+                          arr.push({id:i + 1,name:reArr[i]});
+                      }
+                      this.attrObj.bind_list = arr;
+                      //console.log(arr);
+                  }
+               });
+            },
+            judgeFn(k){
+                if(k == 'attr_data_list'){
+                    if(this.attrObj.hasOwnProperty('attr_data_source')){
+                        if(this.attrObj.attr_data_source == 'default')
+                            return true;
+                        else
+                            return false;
+                    }
+                    else{
+                        return true;
+                    }
+                }
+                else if(k == 'attr_data_bind'){
+                    if(this.attrObj.hasOwnProperty('attr_data_source')){
+                        if(this.attrObj.attr_data_source == 'bind')
+                            return true;
+                        else
+                            return false;
+                    }
+                    else{
+                        return true;
+                    }
+                }
+                else{
+                    return true;
+                }
+            },
             resetFormBox(){
               this.formBox = JSON.parse(this.dataForm.keyInfo);
+            },
+            getSourceList(){
+              api.formSourceList().then((res) => {
+                  if(res.data.status === 200) {
+                    //console.log(res.data.data);
+                    this.dataSourceList = res.data.data;
+
+                  }
+               });
             },
             getInfo(){
               if(!this.$route.query.hasOwnProperty('id'))return;
@@ -835,6 +905,9 @@
                     params['id'] = this.$route.query.id;
                     fnName = 'formEdit';
                   }
+
+                  // console.log(JSON.parse(params.keyInfo));
+                  // return;
 
                   api[fnName](params).then((res) => {
                       this.btnLoadingFilter = false;
@@ -1173,16 +1246,20 @@
                   const index = this.selectingIndex[0];
                   let arr = JSON.parse(JSON.stringify(this.formBox));
                   arr.splice(index,1);
-                  if(arr.length == 0){
-                    this.selectingId = -1;
-                    this.selectingIndex = [];
-                  }
-                  else{
-                    if(this.selectingIndex[0] > arr.length - 1){
-                      this.selectingIndex[0]--;
-                    }
-                    this.selectingId = arr[this.selectingIndex[0]].id;
-                  }
+
+                  this.selectingId = -1;
+                  this.selectingIndex = [];
+                  this.attrObj = {};
+                  // if(arr.length == 0){
+                  //   this.selectingId = -1;
+                  //   this.selectingIndex = [];
+                  // }
+                  // else{
+                  //   if(this.selectingIndex[0] > arr.length - 1){
+                  //     this.selectingIndex[0]--;
+                  //   }
+                  //   this.selectingId = arr[this.selectingIndex[0]].id;
+                  // }
                   this.formBox = arr;
                 }
                 else if(this.selectingIndex.length == 2){
@@ -1192,15 +1269,18 @@
                   obj.arr.splice(index2,1);
                   obj.dataList = [];
 
-                  if(obj.arr.length == 0){
-                    this.selectingIndex = [index];
-                    this.selectingId = obj.id;
-                  }
-                  else{
-                    if(this.selectingIndex[1] > obj.arr.length - 1)
-                      this.selectingIndex[1] --;
-                    this.selectingId = obj.arr[this.selectingIndex[1]].id;
-                  }
+                  this.selectingId = -1;
+                  this.selectingIndex = [];
+                  this.attrObj = {};
+                  // if(obj.arr.length == 0){
+                  //   this.selectingIndex = [index];
+                  //   this.selectingId = obj.id;
+                  // }
+                  // else{
+                  //   if(this.selectingIndex[1] > obj.arr.length - 1)
+                  //     this.selectingIndex[1] --;
+                  //   this.selectingId = obj.arr[this.selectingIndex[1]].id;
+                  // }
 
                   this.$set(this.formBox,index,obj);
                 }
@@ -1214,7 +1294,12 @@
                   let obj = this.formBox[index];
                   this.selectingId = obj.id;
                   this.selectingIndex = [index];
+
+                  // if(obj.hasOwnProperty('attr_data_bind') && obj.attr_data_bind == ''){
+                  //     obj.attr_data_bind = this.dataSourceList.length > 0 ? this.dataSourceList[0].id : '';
+                  // }
                   this.attrObj = obj;
+                  console.log(this.attrObj);
                 }
                 else if(arguments.length == 2){
                   const index = arguments[0];

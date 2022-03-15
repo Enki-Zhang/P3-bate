@@ -117,6 +117,24 @@ export function formEdit(data) {
     return ajax.post('userServer/customForm/edit', data);
 }
 
+/**
+ * 获取绑定数据源列表
+ * @param data
+ * @returns {*}
+ */
+export function formSourceList() {
+    return ajax.get('userServer/customForm/dynamicSelect/select', null);
+}
+
+/**
+ * 获取数据源下拉列表
+ * @param data
+ * @returns {*}
+ */
+export function formSourceSelectList(id) {
+    return ajax.get(`userServer/customForm/dynamicSelect/findById/${id}`, null);
+}
+
 
 // 流程图
 
