@@ -240,147 +240,150 @@ export default {
     },
     getBox(i){
       return `<div class = "previewRow formBox">
-                <table class = "">
-                  <tr class = "header">
-                    <td class = "col0">#</td>
-                    <td v-for = "v2,index2 in data[${i}].arr" :key = "'childFormListTh' + index2">{{v2.attr_name}}</td>
-                  </tr>
-                  <tr v-for = "v,index in data[${i}].dataList" :key = "'childFormList' + index">
-                    <td class = "col0" @click = "delRow(${i},index)">{{index+1}}</td>
-                    <td v-for = "v2,index2 in data[${i}].arr" :key = "'childFormListTd' + index2">
-                      <el-input 
-                        v-if = "v2.type == 'input'" 
-                        size = "small" 
-                        :placeholder="v2.attr_placeholder"
-                        v-model = "v[index2]">
-                      </el-input>
+                <div class = "formBoxList">
+                  <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <table class = "">
+                    <tr class = "header">
+                      <td class = "col0">#</td>
+                      <td v-for = "v2,index2 in data[${i}].arr" :key = "'childFormListTh' + index2">{{v2.attr_name}}</td>
+                    </tr>
+                    <tr v-for = "v,index in data[${i}].dataList" :key = "'childFormList' + index">
+                      <td class = "col0" @click = "delRow(${i},index)">{{index+1}}</td>
+                      <td v-for = "v2,index2 in data[${i}].arr" :key = "'childFormListTd' + index2">
+                        <el-input 
+                          v-if = "v2.type == 'input'" 
+                          size = "small" 
+                          :placeholder="v2.attr_placeholder"
+                          v-model = "v[index2]">
+                        </el-input>
 
-                      <el-input-number 
-                        v-else-if = "v2.type == 'inputNumber'" 
-                        v-model = "v[index2]"
-                        :min = "v2.attr_min" 
-                        :max = "v2.attr_max" 
-                        :placeholder="v2.attr_placeholder" 
-                        size = "small">
-                      </el-input-number>
+                        <el-input-number 
+                          v-else-if = "v2.type == 'inputNumber'" 
+                          v-model = "v[index2]"
+                          :min = "v2.attr_min" 
+                          :max = "v2.attr_max" 
+                          :placeholder="v2.attr_placeholder" 
+                          size = "small">
+                        </el-input-number>
 
-                      <el-input 
-                        v-else-if = "v2.type == 'textarea'"
-                        class = "formTextarea" 
-                        resize = "none" 
-                        type="textarea"  
-                        :rows = "5" 
-                        :placeholder="v2.attr_placeholder"
-                        v-model = "v[index2]">
-                      </el-input>
+                        <el-input 
+                          v-else-if = "v2.type == 'textarea'"
+                          class = "formTextarea" 
+                          resize = "none" 
+                          type="textarea"  
+                          :rows = "5" 
+                          :placeholder="v2.attr_placeholder"
+                          v-model = "v[index2]">
+                        </el-input>
 
-                      <el-select 
-                        v-else-if = "v2.type == 'select'"
-                        size = "small" 
-                        v-model="v[index2]" 
-                        :placeholder="v2.attr_placeholder">
-                        <el-option
-                          v-for="v3,index3 in v2.attr_data_list"
-                          :key="index3"
-                          :label="v3.name"
-                          :value="v3.name">
-                        </el-option>
-                      </el-select>
-
-                      <el-cascader
-                        size="small"
-                        clearable
-                        v-else-if = "v2.type == 'linkSelect'"
-                        :placeholder="v2.attr_placeholder"
-                        v-model="v2.attr_data_link_value"
-                        :options="v2.attr_data_link_list">
-                      </el-cascader>
-
-                      <div v-else-if = "v2.type == 'radio'" style = "text-align:left">
-                        <el-radio 
-                          :style = "{display:v2.attr_layer,textAlign:'left'}"
-                          v-for = "v3,index3 in v2.attr_data_list" 
-                          :key = "index3"
+                        <el-select 
+                          v-else-if = "v2.type == 'select'"
+                          size = "small" 
                           v-model="v[index2]" 
-                          :label="v3.name">
-                          {{v3.name}}
-                        </el-radio>
-                      </div>
+                          :placeholder="v2.attr_placeholder">
+                          <el-option
+                            v-for="v3,index3 in v2.attr_data_list"
+                            :key="index3"
+                            :label="v3.name"
+                            :value="v3.name">
+                          </el-option>
+                        </el-select>
 
-                      <el-date-picker
-                        v-else-if = "v2.type == 'date'"
-                        size="small"
-                        value-format="yyyy-MM-dd"
-                        v-model="v[index2]"
-                        type="date">
-                      </el-date-picker>
+                        <el-cascader
+                          size="small"
+                          clearable
+                          v-else-if = "v2.type == 'linkSelect'"
+                          :placeholder="v2.attr_placeholder"
+                          v-model="v2.attr_data_link_value"
+                          :options="v2.attr_data_link_list">
+                        </el-cascader>
 
-                      <el-date-picker
-                        v-else-if = "v2.type == 'dateRange'"
-                        size="small"
-                        value-format="yyyy-MM-dd"
-                        v-model="v[index2]"
-                        type="daterange"
-                        range-separator="-">
-                      </el-date-picker>
+                        <div v-else-if = "v2.type == 'radio'" style = "text-align:left">
+                          <el-radio 
+                            :style = "{display:v2.attr_layer,textAlign:'left'}"
+                            v-for = "v3,index3 in v2.attr_data_list" 
+                            :key = "index3"
+                            v-model="v[index2]" 
+                            :label="v3.name">
+                            {{v3.name}}
+                          </el-radio>
+                        </div>
 
-                      <el-time-picker
-                        v-else-if = "v2.type == 'time'"
-                        size="small"
-                        value-format="HH:mm:ss"
-                        v-model="v[index2]"
-                        :picker-options="{
-                          selectableRange: '00:00:00 - 23:59:59'
-                        }">
-                      </el-time-picker>
+                        <el-date-picker
+                          v-else-if = "v2.type == 'date'"
+                          size="small"
+                          value-format="yyyy-MM-dd"
+                          v-model="v[index2]"
+                          type="date">
+                        </el-date-picker>
 
-                      <el-time-picker
-                        v-else-if = "v2.type == 'timeRange'"
-                        is-range
-                        v-model="v[index2]"
-                        value-format="HH:mm:ss"
-                        range-separator="-"
-                      >
-                      </el-time-picker>
+                        <el-date-picker
+                          v-else-if = "v2.type == 'dateRange'"
+                          size="small"
+                          value-format="yyyy-MM-dd"
+                          v-model="v[index2]"
+                          type="daterange"
+                          range-separator="-">
+                        </el-date-picker>
 
-                      <el-checkbox-group
-                        style = "text-align:left"
-                        v-else-if = "v2.type == 'check'"
-                        v-model = "v[index2]">
-                        <el-checkbox
-                          :style = "{display:v2.attr_layer,textAlign:'left'}"
-                          v-for = "v3,index3 in v2.attr_data_check_list"
-                          :key = "index3" 
-                          :label="v3.name">
-                        </el-checkbox>
-                      </el-checkbox-group>
+                        <el-time-picker
+                          v-else-if = "v2.type == 'time'"
+                          size="small"
+                          value-format="HH:mm:ss"
+                          v-model="v[index2]"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59'
+                          }">
+                        </el-time-picker>
 
-                      <el-switch
-                        v-else-if = "v2.type == 'switch'"
-                        v-model="v[index2]">
-                      </el-switch>
+                        <el-time-picker
+                          v-else-if = "v2.type == 'timeRange'"
+                          is-range
+                          v-model="v[index2]"
+                          value-format="HH:mm:ss"
+                          range-separator="-"
+                        >
+                        </el-time-picker>
 
-                      <el-upload
-                        v-else-if = "v2.type == 'upload'"
-                        class="avatar-uploader"
-                        :action="v2.attr_url"
-                        :show-file-list="false"
-                       >
-                        <img 
-                          v-if="v[index2]" 
-                          :src="v[index2]" 
-                          class="avatar" />
-                        <i 
-                          v-else 
-                          class="el-icon-plus avatar-uploader-icon">
-                        </i>
-                      </el-upload>
+                        <el-checkbox-group
+                          style = "text-align:left"
+                          v-else-if = "v2.type == 'check'"
+                          v-model = "v[index2]">
+                          <el-checkbox
+                            :style = "{display:v2.attr_layer,textAlign:'left'}"
+                            v-for = "v3,index3 in v2.attr_data_check_list"
+                            :key = "index3" 
+                            :label="v3.name">
+                          </el-checkbox>
+                        </el-checkbox-group>
 
-                      <div v-else>{{v[index2]}}</div>
-                    </td>
-                  </tr>
-                </table>
-                <div class = "formBoxBtn">
+                        <el-switch
+                          v-else-if = "v2.type == 'switch'"
+                          v-model="v[index2]">
+                        </el-switch>
+
+                        <el-upload
+                          v-else-if = "v2.type == 'upload'"
+                          class="avatar-uploader"
+                          :action="v2.attr_url"
+                          :show-file-list="false"
+                         >
+                          <img 
+                            v-if="v[index2]" 
+                            :src="v[index2]" 
+                            class="avatar" />
+                          <i 
+                            v-else 
+                            class="el-icon-plus avatar-uploader-icon">
+                          </i>
+                        </el-upload>
+
+                        <div v-else>{{v[index2]}}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class = "formBoxBtn" :style = "{paddingLeft:calWidth(data[${i}].label_width)}">
                   <span @click = "addChildFormRow(${i})">+ 添加</span>
                 </div>
               </div>`;
@@ -654,72 +657,82 @@ export default {
       }
     }
     .formBox{
-      table{
-        border-top:1px solid @borderColor;
-        border-left:1px solid @borderColor;
-        border-right:1px solid @borderColor;
-        width:100%;
-        border-collapse: collapse;
-        tr{
-          height:50px;
-          border-bottom:1px solid @borderColor;
-          td{
-            padding:0 10px;
-            border-right:1px solid @borderColor;
-            .formInput{
-              width:98%;
-              height:@inputHeight;
-              border:none;
-              outline:none;
-              font-size:@fontSize;
-              color:@valueColor;
-            }
-            .formTextarea{
-              padding:@defaultPadding 0;
-              width:98%;
-              border:none;
-              outline:none;
-              font-size:@fontSize;
-              color:@valueColor;
-              resize:none;
-            }
-          }
-          td:last-child{
-            border-right:none;
-          }
-          .col0{
-            width:30px;
-            cursor:pointer;
-            position:relative;
-            &:after{
-              position:absolute;
-              width:100%;
-              height:100%;
-              line-height:@inputHeight;
-              content:'';
-              background:#fff url('../../assets/image/form/icon_del2.png') no-repeat center center;
-              background-size:18px;
-              top:0;
-              left:0;
-              color:@blueColor;
-              display:none;
-              cursor:pointer;
-            }
-            &:hover:after{
-              display:block;
-            }
-          }
+      .formBoxList{
+        display:flex;
+        .labelTextarea{
+          padding: 10px;
+          font-size: 14px;
+          color: #333;
         }
-        tr.header{
-          background:#f5f7fa;
-          .col0{
-            cursor:auto;
-            &:hover:after{
-              display:none;
+        table{
+          border-top:1px solid @borderColor;
+          border-left:1px solid @borderColor;
+          border-right:1px solid @borderColor;
+          width:0;
+          flex-grow:1;
+          border-collapse: collapse;
+          tr{
+            height:50px;
+            border-bottom:1px solid @borderColor;
+            td{
+              padding:0 10px;
+              border-right:1px solid @borderColor;
+              .formInput{
+                width:98%;
+                height:@inputHeight;
+                border:none;
+                outline:none;
+                font-size:@fontSize;
+                color:@valueColor;
+              }
+              .formTextarea{
+                padding:@defaultPadding 0;
+                width:98%;
+                border:none;
+                outline:none;
+                font-size:@fontSize;
+                color:@valueColor;
+                resize:none;
+              }
+            }
+            td:last-child{
+              border-right:none;
+            }
+            .col0{
+              width:30px;
+              cursor:pointer;
+              position:relative;
+              &:after{
+                position:absolute;
+                width:100%;
+                height:100%;
+                line-height:@inputHeight;
+                content:'';
+                background:#fff url('../../../../../assets/image/form/icon_del2.png') no-repeat center center;
+                background-size:18px;
+                top:0;
+                left:0;
+                color:@blueColor;
+                display:none;
+                cursor:pointer;
+              }
+              &:hover:after{
+                display:block;
+              }
+            }
+          }
+          tr.header{
+            background:#f5f7fa;
+            .col0{
+              cursor:auto;
+              &:hover:after{
+                display:none;
+              }
             }
           }
         }
       }
+      
       .formBoxBtn{
         height:40px;
         span{

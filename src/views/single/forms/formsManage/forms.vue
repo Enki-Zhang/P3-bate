@@ -125,7 +125,7 @@
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
-                                <div class = "label">子表单</div>
+                                <div class = "label">{{item.attr_name}}</div>
                                 <div class = "area">
                                   <draggable 
                                     class="childAreaBox"
