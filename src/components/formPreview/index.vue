@@ -708,7 +708,7 @@ export default {
                 height:100%;
                 line-height:@inputHeight;
                 content:'';
-                background:#fff url('../../../../../assets/image/form/icon_del2.png') no-repeat center center;
+                background:#fff url('../../assets/image/form/icon_del2.png') no-repeat center center;
                 background-size:18px;
                 top:0;
                 left:0;
@@ -732,7 +732,7 @@ export default {
           }
         }
       }
-      
+
       .formBoxBtn{
         height:40px;
         span{
