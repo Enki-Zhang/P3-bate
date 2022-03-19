@@ -11,7 +11,7 @@
                         </el-row>
                         <el-row type="flex" justify="center" align="middle" class="bg-count-up">
                             <i-count-up :delay="countUpOpt.delay"
-                                        :endVal="tbDataPending.list.length"
+                                        :endVal="tbDataPending.total"
                                         :options="countUpOpt"
                                         class="count-up yellow">
                             </i-count-up>
@@ -26,7 +26,7 @@
                         </el-row>
                         <el-row type="flex" justify="center" align="middle" class="bg-count-up">
                             <i-count-up :delay="countUpOpt.delay"
-                                        :endVal="tbDataUpdating.list.length"
+                                        :endVal="tbDataUpdating.total"
                                         :options="countUpOpt"
                                         class="count-up purple">
                             </i-count-up>
@@ -41,7 +41,7 @@
                         </el-row>
                         <el-row type="flex" justify="center" align="middle" class="bg-count-up">
                             <i-count-up :delay="countUpOpt.delay"
-                                        :endVal="tbDataPending.list.length"
+                                        :endVal="tbDataPending.total"
                                         :options="countUpOpt"
                                         class="count-up green">
                             </i-count-up>
@@ -68,7 +68,7 @@
                 <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
-                            <span>待我审批 (<span class="yellow">{{ tbDataPending.list.length }}</span>)</span>
+                            <span>待我审批 (<span class="yellow">{{ tbDataPending.total }}</span>)</span>
                             <span @click="showDLTablePending" class="more">更多</span>
                         </el-row>
                         <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
@@ -76,7 +76,7 @@
                             <el-table :data="tbDataPending.list" size="small">
                                 <el-table-column label="事项">
                                     <template slot-scope="scope">
-                                        {{ scope.row.name }}
+                                        {{ scope.row.processDefinitionName }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="时间" sortable>
@@ -94,12 +94,12 @@
                 <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
-                            <span>更新信息 (<span class="purple">{{ tbDataUpdating.list.length }}</span>)</span>
+                            <span>更新信息 (<span class="purple">{{ tbDataUpdating.records.length }}</span>)</span>
                             <span @click="showDLTableUpdating" class="more">更多</span>
                         </el-row>
                         <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                         <el-row class="pd-lr-5">
-                            <el-table :data="tbDataUpdating.list" size="small"
+                            <el-table :data="tbDataUpdating.records" size="small"
                                       :show-header="true">
                                 <el-table-column label="事项">
                                     <template slot-scope="scope">
@@ -121,7 +121,7 @@
             </el-row>
             <el-row class="table-has-title mg-t-20">
                 <el-row type="flex" justify="space-between" class="title">
-                    <span>办理中 (<span class="green">{{ tbDataProcessing.list.length }}</span>)</span>
+                    <span>办理中 (<span class="green">{{ tbDataProcessing.total }}</span>)</span>
                     <span @click="showDLTableProcessing" class="more">更多</span>
                 </el-row>
                 <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
@@ -129,7 +129,7 @@
                     <el-table :data="tbDataProcessing.list" size="small">
                         <el-table-column label="事项">
                             <template slot-scope="scope">
-                                {{ `${scope.row.matter}` }}
+                                {{ `${scope.row.processDefinitionName}` }}
                             </template>
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
@@ -145,12 +145,12 @@
             </el-row>
             <el-row class="table-has-title mg-t-20">
                 <el-row type="flex" justify="space-between" class="title">
-                    <span>申请历史记录 (<span class="bule">5</span>)</span>
+                    <span>申请历史记录 (<span class="bule">{{ tbDataApply.total }}</span>)</span>
                     <span @click="showDLTableApply" class="more">更多</span>
                 </el-row>
                 <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                 <el-row class="pd-lr-5">
-                    <el-table :data="tbDataApply.list" size="small">
+                    <el-table :data="tbDataApply.records" size="small">
                         <el-table-column prop="sponsorName" label="发起人" width="100"></el-table-column>
                         <el-table-column prop="matter" label="事项"></el-table-column>
                         <el-table-column prop="createTime" label="申请时间" sortable>
@@ -238,10 +238,10 @@
                     suffix: ''
                 },
 
-                tbDataPending: {list: []},
-                tbDataUpdating: {list: []},
-                tbDataProcessing: {list: []},
-                tbDataApply: {list: []},
+                tbDataPending: {records: [], total: 0,},
+                tbDataUpdating: {records: [], total: 0,},
+                tbDataProcessing: {records: [], total: 0,},
+                tbDataApply: {records: [], total: 0,},
             }
         },
         created() {
@@ -256,40 +256,60 @@
             getTableDataPending: function(pageSize = 5) {
                 let that = this;
 
-                api.camundaTaskCandidateUser().then((res) => {
+                let params = {
+                    page: 1,
+                    pageSize,
+                };
+
+                api.camundaTaskWaitForMyAuditPage(params).then((res) => {
                     if(res.data.status === 200) {
-                        that.tbDataPending.list = [...res.data.data];
+                        that.tbDataPending = {...res.data.data};
                     }
                 });
             },
             getTableDataUpdating: function(pageSize = 5) {
                 let that = this;
 
+                let params = {
+                    page: 1,
+                    pageSize,
+                };
+
                 jsonTbDataUpdating.filter(v => {
                     return v.updateTime > 0;
                 }).sort((a, b) => {
                     return b.updateTime - a.updateTime;
                 }).map(v => {
-                    if(that.tbDataUpdating.list.length <= pageSize) {
-                        that.tbDataUpdating.list.push(v);
+                    if(that.tbDataUpdating.records.length <= pageSize) {
+                        that.tbDataUpdating.records.push(v);
                     }
                 });
             },
             getTableDataProcessing: function(pageSize = 5) {
                 let that = this;
 
-                api.camundaProcessInstanceStartedByUserId().then((res) => {
+                let params = {
+                    page: 1,
+                    pageSize,
+                };
+
+                api.camundaTaskStartedByMePage(params).then((res) => {
                     if(res.data.status === 200) {
-                        that.tbDataProcessing.list = [...res.data.data];
+                        that.tbDataProcessing = {...res.data.data};
                     }
                 });
             },
             getTableDataApply: function(pageSize = 5) {
                 let that = this;
 
-                api.camundaHistoryStartedByUserId().then((res) => {
+                let params = {
+                    page: 1,
+                    pageSize,
+                };
+
+                api.camundaHistoryStartedByMePage(params).then((res) => {
                     if(res.data.status === 200) {
-                        that.tbDataApply.list = [...res.data.data];
+                        that.tbDataApply = {...res.data.data};
                     }
                 });
             },

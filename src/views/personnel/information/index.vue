@@ -96,14 +96,14 @@
                                :disabled="!isChosenRow"
                                @click="showDlRole"
                                class="fn-btn">组别</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-document"
+                    <!--<el-button type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
                                @click="create"
                                class="fn-btn">入职培训记录</el-button>
                     <el-button type="primary" size="small" icon="el-icon-edit-outline"
                                :disabled="!isChosenRow"
                                @click="create"
-                               class="fn-btn">退职手续办理</el-button>
+                               class="fn-btn">退职手续办理</el-button>-->
                     <!--<el-button type="danger" size="small" icon="el-icon-delete"
                                :disabled="btnDisabledBatchDelete" @click="batchDelete"
                                class="fn-btn">批量删除</el-button>-->

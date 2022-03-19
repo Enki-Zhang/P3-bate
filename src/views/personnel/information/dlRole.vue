@@ -6,8 +6,8 @@
         <el-row>
             <el-form ref="fm" :model="form" size="small" label-position="right" label-width="120px">
                 <el-row>
-                    <el-form-item prop="username" label="姓名">
-                        <el-input v-model="form.username" placeholder="姓名" disabled clearable></el-input>
+                    <el-form-item prop="name" label="姓名">
+                        <el-input v-model="form.name" placeholder="姓名" disabled clearable></el-input>
                     </el-form-item>
                 </el-row>
                 <el-row>
@@ -74,7 +74,7 @@
             opened: function() {
                 let that = this;
 
-                // console.log(that.params);
+                // console.log(that.params.detail);
                 that.seloptsRole = [...that.params.seloptsRole];
                 that.form = {
                     ...that.params.detail,
