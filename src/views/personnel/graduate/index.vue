@@ -117,22 +117,26 @@
                                :disabled="!isChosenRow"
                                @click="showDlRole"
                                class="fn-btn">组别</el-button>-->
-                    <!--<el-button type="primary" size="small" icon="el-icon-document"
+                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                               type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
                                @click="create"
                                class="fn-btn">入职培训记录</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-document"
+                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                               type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
                                @click="create"
                                class="fn-btn">课题开展记录</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-edit-outline"
+                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                               type="primary" size="small" icon="el-icon-edit-outline"
                                :disabled="!isChosenRow"
                                @click="create"
                                class="fn-btn">毕业手续办理</el-button>
-                    <el-button type="primary" size="small" icon="el-icon-takeaway-box"
+                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                               type="primary" size="small" icon="el-icon-takeaway-box"
                                :disabled="!isChosenRow"
                                @click="create"
-                               class="fn-btn">毕业证书留档</el-button>-->
+                               class="fn-btn">毕业证书留档</el-button>
                 </el-row>
 
                 <!-- 列表 -->
@@ -262,7 +266,11 @@
                 tbData: {list: []},
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
+                btnNameForListArr: [],
             }
+        },
+        created() {
+            this.initBtnForList();
         },
         computed: {
             isChosenRow: function() {
@@ -458,6 +466,21 @@
                     case '删除':
                         break;
                 }
+            },
+
+            initBtnForList: function() {
+                let that = this;
+                that.btnNameForListArr = [];
+
+                api.getMenuBtn({
+                    name:'personnel_information'
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        res.data.data.map(v => {
+                            that.btnNameForListArr.push(v.name);
+                        });
+                    }
+                });
             },
         }
     }

@@ -110,7 +110,7 @@
                         <el-table-column label="操作人" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.updateUser }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="160">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="200">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本</el-link>
