@@ -20,6 +20,7 @@ export default {
     // 表格管理
     'activity': _import('single/activity'),
     'activity|bsl': _import('single/activity/bsl'),
+    'activity|subject': _import('single/activity/subject'),
 
     // 物资管理
     'assets':_import('single/supplies'),

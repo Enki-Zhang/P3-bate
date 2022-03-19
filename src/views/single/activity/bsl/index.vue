@@ -142,7 +142,7 @@
                 this.$refs.compDate.initTable(this.year,this.month);
             },
             initBtn: function() {
-                api.getMenuBtn('activity|bsl').then((res) => {
+                api.getMenuBtn({name:'activity|bsl'}).then((res) => {
                     if(res.data.status === 200) {
                         let list = res.data.data;
                         let btnSet = JSON.parse(JSON.stringify(this.btnSet));

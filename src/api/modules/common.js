@@ -58,8 +58,8 @@ export function testAjaxSleep(params) {
  * @param name
  * @returns {void|*}
  */
-export function getMenuBtn(name) {
-    return ajax.get(`userServer/menu/btn/${name}`,null);
+export function getMenuBtn(params) {
+    return ajax.get(`userServer/menu/btn`,params);
 }
 
 /**
