@@ -142,8 +142,8 @@ export default {
                     <el-option
                       v-for="v,index in (data[${i}].attr_data_source == 'default' ? data[${i}].attr_data_list : data[${i}].bind_list)"
                       :key="index"
-                      :label="v.name"
-                      :value="v.name">
+                      :label="typeof(v.name) == 'object' ? v.name.join(',') : v.name"
+                      :value="typeof(v.name) == 'object' ? v.name.join(',') : v.name">
                     </el-option>
                   </el-select>
               </div>`;

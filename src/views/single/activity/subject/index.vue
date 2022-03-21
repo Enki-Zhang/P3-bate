@@ -68,9 +68,10 @@
                             <el-row class="item mg-l-10" style = "justify-content: flex-end;">
                                 <el-row class="btn">
                                     <el-button 
+                                        @click="groupObj.listSh = true;"
                                         type="primary" 
                                         size="small" 
-                                        icon="el-icon-manage">
+                                        icon="el-icon-receiving">
                                         课题组管理
                                     </el-button>
                                 </el-row>
@@ -132,10 +133,10 @@
 
         <el-dialog
           title="课题组管理"
-          :visible.sync="groupObj.sh"
+          :visible.sync="groupObj.listSh"
           width="50%">
           <div style = "padding-bottom:10px;">
-              <el-button size = "mini" type="primary" icon="el-icon-plus" style = "width:100px;">添加分组</el-button>
+              <el-button @click = "dealGroup()" size = "mini" type="primary" icon="el-icon-plus" style = "width:100px;">添加分组</el-button>
           </div>
           <div>
               <el-table
@@ -144,25 +145,37 @@
                 border
                 style="width: 100%">
                 <el-table-column
-                  prop="group_name"
+                  prop="name"
                   label="组名"
                   width="180">
                 </el-table-column>
                 <el-table-column
-                  prop="group_type"
+                  prop="type"
                   label="类型"
                   width="180">
+                    <template slot-scope="scope">
+                        <span>{{groupTypeArr[scope.row.type]}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                  prop="group_member"
+                  prop="userNames"
                   label="成员">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.userNames.join('、')}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                   width="200"
                   label="操作">
                   <template slot-scope="scope">
-                    <el-button style = "width:40px;" type="text" size="mini">编辑</el-button>
-                    <el-button style = "width:40px;color:#F56C6C;" type="text" size="mini">删除</el-button>
+                    <el-button @click = "dealGroup(scope.row)" style = "width:40px;" type="text" size="mini">编辑</el-button>
+                    <el-popconfirm
+                      title="确定删除该分组吗？"
+                      @confirm="doDelGroup(scope.row.id)"
+                      @onConfirm="doDelGroup(scope.row.id)"
+                    >
+                        <el-button style = "width:40px;color:#F56C6C;" type="text" size="mini" slot="reference">删除</el-button>
+                    </el-popconfirm>
                   </template>
                 </el-table-column>
               </el-table>
@@ -175,15 +188,81 @@
 
         <el-dialog
           :title="groupObj.curId == -1 ? '添加分组' : '编辑分组'"
-          :visible.sync="groupObj.sh2"
+          :visible.sync="groupObj.dealSh"
           width="30%">
           <div>
-              
+              <el-form :model="groupForm" ref="groupForm" label-width="100px" class="demo-groupForm">
+                  <el-form-item label="组名:">
+                    <el-input v-model="groupForm.name" placeholder="请输入组名"></el-input>
+                  </el-form-item>
+                  <el-form-item label="类型:">
+                    <el-select v-model="groupForm.type" placeholder="请选择类型">
+                      <el-option label="常规实验组" :value="0"></el-option>
+                      <el-option label="课题组" :value="1"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="成员:">
+                    <span>{{groupForm.userNames.join('、')}}</span>
+                    <el-button @click = "showMemberList" style = "width:50px;" type="text">选择</el-button>
+                  </el-form-item>
+              </el-form>
           </div>
           <span slot="footer" class="dialog-footer">
-            <el-button size = "mini" @click="groupObj.sh2">取 消</el-button>
-            <el-button size = "mini" type="primary">确 定</el-button>
+            <el-button size = "mini" @click="groupObj.dealSh = false;">取 消</el-button>
+            <el-button size = "mini" @click="doDealGroup" type="primary">确 定</el-button>
           </span>
+        </el-dialog>
+
+        <el-dialog
+          title="选择成员"
+          :visible.sync="groupObj.memberSh"
+          width="50%">
+          <div>
+              <el-table
+                size="mini"
+                :data="groupObj.memberList"
+                border
+                style="width: 100%">
+                <el-table-column
+                  prop="id"
+                  width="300"
+                  label="id">
+                </el-table-column>
+                <el-table-column
+                  prop="username"
+                  label="用户名">
+                </el-table-column>
+                <el-table-column
+                  prop="sex"
+                  width="180"
+                  label="性别">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.sex == 0 ? '女' : '男'}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                  label="是否选择"
+                  width="180">
+                    <template slot-scope="scope">
+                        <span>
+                            <el-checkbox @change = "chooseMember(scope.row.id,scope.row.username)" v-model="scope.row.checked"></el-checkbox>
+                        </span>
+                    </template>
+                </el-table-column>
+              </el-table>
+          </div>
+          <div style = "padding-top:10px;text-align:right;">
+              <el-pagination
+                  background
+                  @current-change="handleMemberChange"
+                  layout="prev, pager, next"
+                  :total="groupObj.memberTotal">
+              </el-pagination>
+          </div>
+          <!-- <span slot="footer" class="dialog-footer">
+            <el-button size = "mini" @click="groupObj.memberSh = false;">取 消</el-button>
+            <el-button size = "mini" @click = "doSelectMember" type="primary">确 定</el-button>
+          </span> -->
         </el-dialog>
     </el-row>
 
@@ -211,15 +290,23 @@
                 key:null,
 
                 groupObj:{
-                    sh:false,
-                    sh2:false,
-                    list:[
-                        {group_name:'111',group_type:'222',group_member:'333'},
-                        {group_name:'111',group_type:'222',group_member:'333'},
-                        {group_name:'111',group_type:'222',group_member:'333'}
-                    ],
+                    listSh:false,
+                    dealSh:false,
+                    memberSh:false,
+                    list:[],
+                    memberList:[],
+                    memberPageCurrent:1,
+                    memberPageSize:10,
+                    memberTotal:0,
                     curId:-1
-                }
+                },
+                groupForm:{
+                    name: '',
+                    type: '',
+                    userIds:[],
+                    userNames:[]
+                },
+                groupTypeArr:['常规实验组','课题组'],
             }
         },
         filters:{
@@ -243,8 +330,118 @@
         mounted() {
             this.getRouterInfo();
             //this.getColumn();
+            this.getGroupList();
         },
         methods: {
+            doDelGroup(id){
+                //console.log(id);
+                api.lessionGroupDel(id).then((res) => {
+                    // console.log(res.data.data);
+                    if(res.data.status === 200) {
+                        this.$message.success('删除成功');
+                        this.getGroupList();
+                    }
+                });
+            },
+            doDealGroup(){
+                //console.log(this.groupForm);
+                if(this.groupForm.name == ''){
+                    this.$message.error('请输入组名');
+                    return;
+                }
+                if(this.groupForm.userIds.length == 0){
+                    this.$message.error('请选择成员');
+                    return;
+                }
+                let params = {
+                    id:this.groupObj.curId == -1 ? 0 : this.groupObj.curId,
+                    name:this.groupForm.name,
+                    type:this.groupForm.type,
+                    userIds:this.groupForm.userIds
+                };
+                //console.log(params);
+                let apiFn = this.groupObj.curId == -1 ? 'lessionGroupAdd' : 'lessionGroupEdit';
+                let successText = this.groupObj.curId == -1 ? '添加成功' : '编辑成功';
+                api[apiFn](params).then((res) => {
+                    // console.log(res.data.data);
+                    if(res.data.status === 200) {
+                        this.$message.success(successText);
+                        this.groupObj.dealSh = false;
+                        this.getGroupList();
+                    }
+                });
+            },
+            chooseMember(id,username){
+                let tempIndex = this.groupForm.userIds.indexOf(id);
+                if(tempIndex > -1){
+                    this.groupForm.userIds.splice(tempIndex,1);
+                    this.groupForm.userNames.splice(tempIndex,1);
+                }   
+                else{
+                    this.groupForm.userIds.push(id);
+                    this.groupForm.userNames.push(username);
+                }
+                // console.log(this.groupForm.userIds);
+                // console.log(this.groupForm.userNames);
+            },
+            handleMemberChange(page){
+                this.groupObj.memberPageCurrent = page;
+                this.showMemberList();
+            },
+            showMemberList(){
+                let params = {
+                    //...that.tbDataFilter,
+                    pageCurrent: this.groupObj.memberPageCurrent,
+                    pageSize:this.groupObj.memberPageSize,
+                };
+
+                api.sysUserInfoList(params).then((res) => {
+                    // console.log(res.data.data);
+                    if(res.data.status === 200) {
+                        let list = res.data.data.records;
+                        list.forEach(e => {
+                            e.checked = false;
+                            if(this.groupForm.userIds.indexOf(e.id + '') > -1){
+                                e.checked = true;
+                            }
+                        });
+                        this.groupObj.memberList = list;
+                        this.groupObj.memberTotal = res.data.data.total;
+                        this.groupObj.memberSh = true;
+
+
+                    }
+                });
+            },
+            dealGroup(obj){
+                if(obj != null){
+                    this.groupObj.curId = obj.id;
+                    this.groupForm = {
+                        name: obj.name,
+                        type: obj.type,
+                        userIds: obj.userIds,
+                        userNames: obj.userNames
+                    }
+                }
+                else{
+                    this.groupObj.curId = -1;
+                    this.groupForm = {
+                        name: '',
+                        type: 0,
+                        userIds:[],
+                        userNames:[]
+                    }
+                }
+                this.groupObj.dealSh = true;
+                //console.log(this.groupObj.curId);
+            },
+            getGroupList(){
+                api.lessionGroupList({pageCurrent:1,pageSize:50}).then((res) => {
+                    if(res.data.status === 200) {
+                        this.groupObj.list = res.data.data.records;
+                    }
+                });
+            },
             getRouterInfo: function() {
                 let menu = JSON.parse(localStorage.getItem('stu-p3lab')).session.userInfo.menus;
                 // console.log(menu);
