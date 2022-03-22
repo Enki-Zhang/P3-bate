@@ -182,21 +182,24 @@
                 :min-height="460" 
                 size="small"
                 highlight-current-row border>
-                <el-table-column label="前置表单id" show-overflow-tooltip width="160">
+                <el-table-column label="前置表单编号" show-overflow-tooltip width="160">
                     <template slot-scope="scope">{{ scope.row.frontTableId }}</template>
                 </el-table-column>
-                <el-table-column label="当前表单id" show-overflow-tooltip>
+                <el-table-column label="前置表单名称" show-overflow-tooltip width="160">
+                    <template slot-scope="scope">{{ scope.row.frontTableName }}</template>
+                </el-table-column>
+                <el-table-column label="当前表单编号" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formId }}</template>
                 </el-table-column>
                 <el-table-column label="当前表单名称" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formName }}</template>
                 </el-table-column>
-                <el-table-column label="创建时间" show-overflow-tooltip width="180">
+                <!-- <el-table-column label="创建时间" show-overflow-tooltip width="180">
                     <template slot-scope="scope">{{ scope.row.createTime | dateStr }}</template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column label="操作" show-overflow-tooltip width="100">
                     <template slot-scope="scope">
-                        <el-row type="flex" justify="space-around">
+                        <el-row>
                             <el-link type="danger" :underline="false" @click="removePrevForm(scope.row)" class="fs-12">删除</el-link>
                         </el-row>
                     </template>

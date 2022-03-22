@@ -246,7 +246,7 @@
                   label="id">
                 </el-table-column>
                 <el-table-column
-                  prop="username"
+                  prop="name"
                   label="用户名">
                 </el-table-column>
                 <el-table-column
