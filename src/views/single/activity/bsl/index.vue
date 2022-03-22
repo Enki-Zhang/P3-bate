@@ -114,7 +114,7 @@
             },
             toPre(){
                 let formId = this.btnSet.pre.formId;
-                console.log(formId);
+                //console.log(formId);
                 api.getFormInfo(formId).then((res) => {
                     if(res.data.status === 200) {
                         this.$refs.compForm.showFn(res.data.data.keyInfo);

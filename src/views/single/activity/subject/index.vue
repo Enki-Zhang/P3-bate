@@ -78,6 +78,23 @@
                             </el-row>
                         </el-form-item>
                     </el-row>
+
+                    <el-row class="filters">
+                        <el-form-item>
+                            <el-row class="item">
+                                <el-row class="btn">
+                                    <el-button 
+                                        v-show = "btnSet.add.sh"
+                                        type="primary" 
+                                        size="small" 
+                                        icon="el-icon-plus"
+                                        @click="toAdd">
+                                        新增
+                                    </el-button>
+                                </el-row>
+                            </el-row>
+                        </el-form-item>
+                    </el-row>
                 </el-form>
 
                 <!-- 列表 -->
@@ -264,14 +281,21 @@
             <el-button size = "mini" @click = "doSelectMember" type="primary">确 定</el-button>
           </span> -->
         </el-dialog>
+
+        <compForm ref = "compForm" @success = "submitForm"/>
     </el-row>
 
 </template>
 
 <script>
     import api from "@api";
+    import compForm from "@/components/formPreview";
+
     export default {
         name: "index",
+        components:{
+            compForm
+        },
         data() {
             return {
                 tbData: {
@@ -288,7 +312,13 @@
                 tbColumn:[],
                 btnLoadingFilter: false,
                 key:null,
-
+                btnSet:{
+                    add:{
+                        formId:'',
+                        formKey:'',
+                        sh:false
+                    }
+                },
                 groupObj:{
                     listSh:false,
                     dealSh:false,
@@ -331,8 +361,33 @@
             this.getRouterInfo();
             //this.getColumn();
             this.getGroupList();
+            this.initBtn();
         },
         methods: {
+            submitForm(data){
+                //console.log(data);
+                // let formInfo = JSON.stringify(data);
+                api.customFormInfoSave({
+                    //documentId: that.detail.id,
+                    formId:this.btnSet.add.formId,
+                    formInfo:data
+                    // uuid: that.man.fast.getUUID(),
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$message.success('提交成功');
+                        this.getTableData();
+                    }
+                });
+            },
+            toAdd(){
+                let formId = this.btnSet.add.formId;
+                //console.log(formId);
+                api.getFormInfo(formId).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$refs.compForm.showFn(res.data.data.keyInfo);
+                    }
+                });
+            },
             doDelGroup(id){
                 //console.log(id);
                 api.lessionGroupDel(id).then((res) => {
@@ -559,6 +614,22 @@
             filterTableData: function(isFilter = true) {
                 let that = this;
                 that.getTableData(1);
+            },
+            initBtn: function() {
+                api.getMenuBtn({name:'activity|subject'}).then((res) => {
+                    if(res.data.status === 200) {
+                        let list = res.data.data;
+                        let btnSet = JSON.parse(JSON.stringify(this.btnSet));
+                        list.forEach(e => {
+                            if(e.name == 'activity|subject|add'){
+                                btnSet.add.formId = e.formIds.length == 0 ? '' : e.formIds[0];
+                                btnSet.add.formKey = e.formKeys.length == 0 ? '' : e.formKeys[0];
+                                btnSet.add.sh = true;
+                            }
+                        });
+                        this.btnSet = btnSet;
+                    }
+                });
             }
         }
     }
