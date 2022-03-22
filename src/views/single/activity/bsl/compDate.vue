@@ -135,9 +135,9 @@
                 api.getFormHead('411').then((res) => {
                     if(res.data.status === 200) {
                         let list = res.data.data;
-                        let formFieldId = list.find(e => e.key == 'startDate').formFieldId;
+                        let formFieldId = list.find(e => e.key == 'startDate').formConfigs[0].formFieldId;
                         this.formFieldId = formFieldId;
-                        
+                        console.log(formFieldId);
                         let date = new Date();
                         let year = date.getFullYear();
                         let month = date.getMonth() + 1;
