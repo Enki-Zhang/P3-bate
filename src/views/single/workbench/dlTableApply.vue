@@ -4,28 +4,28 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
-            <el-table :data="tbData.list" size="small">
-                <el-table-column prop="sponsorName" label="发起人" width="100"></el-table-column>
-                <el-table-column prop="matter" label="事项"></el-table-column>
+            <el-table :data="tbData.records" size="small">
+                <el-table-column prop="createUserName" label="发起人" width="100"></el-table-column>
+                <el-table-column prop="processDefinitionName" label="事项"></el-table-column>
                 <el-table-column prop="createTime" label="申请时间" sortable>
-                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                 </el-table-column>
-                <el-table-column prop="status" label="审批结果">
+                <el-table-column prop="state" label="审批结果">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.status === 0" class="status-blue">待审批</span>
-                        <span v-else-if="scope.row.status === 1" class="status-green">已通过</span>
-                        <span v-else-if="scope.row.status === -1" class="status-red">未通过</span>
+                        <span v-if="scope.row.state === 0" class="status-blue">待审批</span>
+                        <span v-else-if="scope.row.state === 1" class="status-green">已通过</span>
+                        <span v-else-if="scope.row.state === -1" class="status-red">未通过</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="approve" label="审批人">
+                <el-table-column prop="auditUserName" label="审批人">
                     <template slot-scope="scope">
                                 <span v-for="(v, k) in scope.row.approve" :key="k">
                                     {{ v }}
                                 </span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="approveTime" label="审批时间">
-                    <template slot-scope="scope">{{ scope.row.approveTime ? dayjs(scope.row.approveTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                <el-table-column prop="createTime" label="审批时间">
+                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                 </el-table-column>
             </el-table>
         </el-row>
@@ -51,9 +51,10 @@
 <script>
 
     import dayjs from 'dayjs';
+    import api from "@api";
 
     export default {
-        name: "edit",
+        name: "dlTableApply",
         props: {
             value: Boolean,
             params: Object,
@@ -64,11 +65,8 @@
 
                 dialogVisible: false,
 
-                tbData: {current: 1, list: []},
+                tbData: {records: [], total: 0},
             }
-        },
-        computed: {
-
         },
         watch: {
             value(val) {
@@ -82,20 +80,20 @@
             opened: function() {
                 let that = this;
 
-                that.tbData.total = that.params.list.length;
-                that.getTableData();
+                that.getTableData(1);
             },
 
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
-                that.tbData.list = [];
 
-                let limit = page > 1
-                    ? [(page - 1) * pageSize, page * pageSize]
-                    : [0, pageSize];
-                that.params.list.map((v, k) => {
-                    if(k >= limit[0] && k < limit[1]) {
-                        that.tbData.list.push(v);
+                let params = {
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                api.workbenchHistoryStartedByMePage(params).then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbData = {...res.data.data};
                     }
                 });
             },
