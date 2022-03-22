@@ -364,8 +364,12 @@
             this.initBtn();
         },
         methods: {
+            // getFormInfo(data){
+            //     console.log(data);
+            // },
             submitForm(data){
-                //console.log(data);
+                // console.log(data);
+                // return;
                 // let formInfo = JSON.stringify(data);
                 api.customFormInfoSave({
                     //documentId: that.detail.id,

@@ -41,7 +41,8 @@ export default {
     return {
       sh:false,
       preview:null,
-      data:[]
+      data:[],
+      formId:''
     };
   },
   methods:{
@@ -49,7 +50,12 @@ export default {
     submitFn(){
       var keyInfo = JSON.stringify(this.preview.getFormInfo());
       //console.log(keyInfo);
-      this.$emit('success',keyInfo);
+      if(this.$listeners['success']){
+          this.$emit('success',keyInfo);
+      }
+      if(this.$listeners['getFormInfo']){
+          this.$emit('getFormInfo',{formId:this.formId});
+      }
       this.closeFn();
     },
     getText(i){
@@ -446,8 +452,9 @@ export default {
       str += '</div>';
       return str;
     },
-    showFn(dataArr){
+    showFn(dataArr,formId){
       this.sh = true;
+      this.formId = formId;
       const self = this;
       if(typeof dataArr == "string"){
         if(dataArr == ''){
