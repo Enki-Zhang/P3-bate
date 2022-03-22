@@ -4,14 +4,14 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
-            <el-table :data="tbData.list" size="small">
-                <el-table-column label="事项">
+            <el-table :data="tbData.records" size="small">
+                <el-table-column prop="operation" label="事项">
                     <template slot-scope="scope">
-                        {{ `${scope.row.sponsorName} ${scope.row.matter}` }}
+                        {{ `${scope.row.operation}` }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="更新时间" sortable>
-                    <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                    <template slot-scope="scope">{{ scope.row.operationDate ? dayjs(scope.row.operationDate).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                 </el-table-column>
                 <el-table-column label="操作" width="80">
                     <template slot-scope="scope">
@@ -42,9 +42,10 @@
 <script>
 
     import dayjs from 'dayjs';
+    import api from "@api";
 
     export default {
-        name: "edit",
+        name: "dlTableUpdating",
         props: {
             value: Boolean,
             params: Object,
@@ -55,11 +56,8 @@
 
                 dialogVisible: false,
 
-                tbData: {current: 1, list: []},
+                tbData: {records: [], total: 0},
             }
-        },
-        computed: {
-
         },
         watch: {
             value(val) {
@@ -73,20 +71,20 @@
             opened: function() {
                 let that = this;
 
-                that.tbData.total = that.params.list.length;
-                that.getTableData();
+                that.getTableData(1);
             },
 
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
-                that.tbData.list = [];
 
-                let limit = page > 1
-                    ? [(page - 1) * pageSize, page * pageSize]
-                    : [0, pageSize];
-                that.params.list.map((v, k) => {
-                    if(k >= limit[0] && k < limit[1]) {
-                        that.tbData.list.push(v);
+                let params = {
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                api.workbenchUpdateInfoPage(params).then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbData = {...res.data.data};
                     }
                 });
             },

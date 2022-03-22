@@ -23,16 +23,9 @@
                         <el-row>文件编号：<span class="status-blue">{{ detail.documentNo }}</span></el-row>
                         <el-row>第 <span class="status-blue">{{ detail.version }}</span> 版 <span class="status-blue">{{ detail.updateCount }}</span> 次修订</el-row>
                     </el-row>
-                    <!-- mammoth 插件方式 -->
-                    <!--<el-scrollbar class="elsb-preview">
-                        <el-row class="preview">
-                            <div id="wordView" v-html="wordText" />
-                        </el-row>
-                    </el-scrollbar>-->
-                    <!-- 微软方式 -->
                     <iframe v-if="previewSrc"
                             id="iframename" name="iframename"
-                            :src="`https://view.officeapps.live.com/op/embed.aspx?src=${previewSrc}`"
+                            :src="`http://ow365.cn/?i=25507&ssl=1&furl=${previewSrc}`"
                             width="100%" height="500"
                             frameborder="0" scrolling="auto"
                             class="mg-tb-10">
@@ -40,18 +33,6 @@
                     <el-row v-else type="flex" justify="center">
                         <span class="status-red txt-i unable-select" style="line-height: 150px;">无相关文档文件，无法预览</span>
                     </el-row>
-                    <!-- officeWeb365 方式 -->
-<!--                    :src="`http://ow365.cn/?i=25507&ssl=1&furl=${previewSrc}`"-->
-                    <!--<iframe v-if="previewSrc"
-                            id="iframename" name="iframename"
-                            :src="`http://ow365.cn/?i=25516&furl=${previewSrc}`"
-                            width="100%" height="500"
-                            frameborder="0" scrolling="auto"
-                            class="mg-tb-10">
-                    </iframe>
-                    <el-row v-else type="flex" justify="center">
-                        <span class="status-red txt-i unable-select" style="line-height: 150px;">无相关文档文件，无法预览</span>
-                    </el-row>-->
                 </el-row>
                 <el-row class="hr"></el-row>
                 <!-- 相关文件列表 -->
@@ -190,6 +171,7 @@
             if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
         created() {
+            console.log(window.location.origin);
             if(this.$route.query.id > 0) this.getDetail();
         },
         methods: {
@@ -202,6 +184,8 @@
                             ...res.data.data,
                         };
                         that.previewSrc = !!res.data.data.filePath ? res.data.data.filePath : false;
+                        if(that.previewSrc !== false) that.previewSrc = that.mergePath(that.previewSrc);
+                        // console.log(that.previewSrc);
                         this.getTableDataRelated();
                         this.getTableDataForms();
                     }
@@ -277,7 +261,18 @@
                 });
             },
 
-
+            mergePath: function(path) {
+                let domainAndHost = '';
+                switch (process.env.NODE_ENV) {
+                    case 'development':
+                        domainAndHost = process.env.VUE_APP_RESOURCE_HOST;
+                        break;
+                    case 'production':
+                        domainAndHost = `${window.location.origin}/`;
+                        break;
+                }
+                return `${domainAndHost}backServer/resources/${path}`;
+            },
             cancel: function() {
                 let that = this;
 

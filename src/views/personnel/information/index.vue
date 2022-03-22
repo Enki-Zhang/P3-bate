@@ -99,12 +99,12 @@
                     <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
                                type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
-                               @click="create"
+                               @click="toPre('personnel_information|onboarding')"
                                class="fn-btn">入职培训记录</el-button>
                     <el-button v-if="man.fast.inArray('personnel_information|resign', btnNameForListArr)"
                                type="primary" size="small" icon="el-icon-edit-outline"
                                :disabled="!isChosenRow"
-                               @click="create"
+                               @click="toPre('personnel_information|resign')"
                                class="fn-btn">退职手续办理</el-button>
                 </el-row>
 
@@ -181,6 +181,8 @@
                           :cancel-text="asOptions.cancelText"
                           @select="choosedAction"
                           close-on-click-action/>
+        <!-- 表单 -->
+        <compForm ref="compForm" @getFormInfo="setCurrentBtnFormId" @success="submitForm"/>
     </el-row>
 
 </template>
@@ -192,12 +194,14 @@
     import api from "@api";
     import dlAdd from "@views/personnel/information/dlAdd";
     import dlRole from "@views/personnel/information/dlRole";
+    import compForm from "@/components/formPreview";
 
     export default {
         name: "index",
         components: {
             dlAdd,
             dlRole,
+            compForm,
         },
         data() {
             return {
@@ -226,6 +230,8 @@
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
                 btnNameForListArr: [],
+                btnSet: {},
+                currentBtnFormId: '',
             }
         },
         created() {
@@ -437,9 +443,60 @@
                     if(res.data.status === 200) {
                         res.data.data.map(v => {
                             that.btnNameForListArr.push(v.name);
+
+                            // 按钮跳转
+                            let btnSet = JSON.parse(JSON.stringify(this.btnSet));
+                            switch (v.name) {
+                                case 'personnel_information|onboarding':
+                                    btnSet['personnel_information|onboarding'] = {
+                                        pre: {
+                                            formId: v.formIds.length == 0 ? '' : v.formIds[0],
+                                            formKey: v.formKeys.length == 0 ? '' : v.formKeys[0],
+                                            sh: true,
+                                        }
+                                    };
+                                    break;
+                                case 'personnel_information|resign':
+                                    btnSet['personnel_information|resign'] = {
+                                        pre: {
+                                            formId: v.formIds.length == 0 ? '' : v.formIds[0],
+                                            formKey: v.formKeys.length == 0 ? '' : v.formKeys[0],
+                                            sh: true,
+                                        }
+                                    };
+                                    break;
+                            }
+                            this.btnSet = btnSet;
                         });
                     }
                 });
+            },
+            toPre: function(key) {
+                // console.log(this.btnSet[key].pre);
+                let formId = this.btnSet[key].pre.formId;
+                api.getFormInfo(formId).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$refs.compForm.showFn(res.data.data.keyInfo, formId);
+                    }
+                });
+            },
+            submitForm: function(data) {
+                let that = this;
+                setTimeout(function() {
+                    api.customFormInfoSave({
+                        //documentId: that.detail.id,
+                        formId: that.currentBtnFormId,
+                        formInfo: data,
+                        // uuid: that.man.fast.getUUID(),
+                    }).then((res) => {
+                        if(res.data.status === 200) {
+                            that.$message.success('提交成功');
+                        }
+                    });
+                }, 666)
+            },
+            setCurrentBtnFormId: function(res) {
+                this.currentBtnFormId = res.formId;
             },
         }
     }

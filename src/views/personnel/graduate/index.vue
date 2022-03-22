@@ -117,25 +117,25 @@
                                :disabled="!isChosenRow"
                                @click="showDlRole"
                                class="fn-btn">组别</el-button>-->
-                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                    <el-button v-if="man.fast.inArray('personnel_graduate|onboarding', btnNameForListArr)"
                                type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
-                               @click="create"
+                               @click="toPre('personnel_graduate|onboarding')"
                                class="fn-btn">入职培训记录</el-button>
-                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                    <el-button v-if="man.fast.inArray('personnel_graduate|subject', btnNameForListArr)"
                                type="primary" size="small" icon="el-icon-document"
                                :disabled="!isChosenRow"
-                               @click="create"
+                               @click="toPre('personnel_graduate|subject')"
                                class="fn-btn">课题开展记录</el-button>
-                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                    <el-button v-if="man.fast.inArray('personnel_graduate|resign', btnNameForListArr)"
                                type="primary" size="small" icon="el-icon-edit-outline"
                                :disabled="!isChosenRow"
-                               @click="create"
+                               @click="toPre('personnel_graduate|resign')"
                                class="fn-btn">毕业手续办理</el-button>
-                    <el-button v-if="man.fast.inArray('personnel_information|onboarding', btnNameForListArr)"
+                    <el-button v-if="man.fast.inArray('personnel_graduate|cert', btnNameForListArr)"
                                type="primary" size="small" icon="el-icon-takeaway-box"
                                :disabled="!isChosenRow"
-                               @click="create"
+                               @click="toPre('personnel_graduate|cert')"
                                class="fn-btn">毕业证书留档</el-button>
                 </el-row>
 
@@ -221,6 +221,8 @@
                           :cancel-text="asOptions.cancelText"
                           @select="choosedAction"
                           close-on-click-action/>
+        <!-- 表单 -->
+        <compForm ref="compForm" @getFormInfo="setCurrentBtnFormId" @success="submitForm"/>
     </el-row>
 
 </template>
@@ -231,12 +233,14 @@
     import dayjs from 'dayjs';
     import api from "@api";
     import dlAdd from "@views/personnel/graduate/dlAdd";
+    import compForm from "@/components/formPreview";
     // import dlRole from "@views/personnel/information/dlRole";
 
     export default {
         name: "index",
         components: {
             dlAdd,
+            compForm,
             // dlRole,
         },
         data() {
@@ -267,6 +271,8 @@
                 tbDataFilter: {...this.tbFilter},
                 btnLoadingFilter: false,
                 btnNameForListArr: [],
+                btnSet: {},
+                currentBtnFormId: '',
             }
         },
         created() {
@@ -473,14 +479,83 @@
                 that.btnNameForListArr = [];
 
                 api.getMenuBtn({
-                    name:'personnel_information'
+                    name:'personnel_graduate'
                 }).then((res) => {
                     if(res.data.status === 200) {
                         res.data.data.map(v => {
                             that.btnNameForListArr.push(v.name);
+
+                            // 按钮跳转
+                            let btnSet = JSON.parse(JSON.stringify(this.btnSet));
+                            switch (v.name) {
+                                case 'personnel_graduate|onboarding':
+                                    btnSet['personnel_graduate|onboarding'] = {
+                                        pre: {
+                                            formId: v.formIds.length == 0 ? '' : v.formIds[0],
+                                            formKey: v.formKeys.length == 0 ? '' : v.formKeys[0],
+                                            sh: true,
+                                        }
+                                    };
+                                    break;
+                                case 'personnel_graduate|subject':
+                                    btnSet['personnel_graduate|subject'] = {
+                                        pre: {
+                                            formId: v.formIds.length == 0 ? '' : v.formIds[0],
+                                            formKey: v.formKeys.length == 0 ? '' : v.formKeys[0],
+                                            sh: true,
+                                        }
+                                    };
+                                    break;
+                                case 'personnel_graduate|resign':
+                                    btnSet['personnel_graduate|resign'] = {
+                                        pre: {
+                                            formId: v.formIds.length == 0 ? '' : v.formIds[0],
+                                            formKey: v.formKeys.length == 0 ? '' : v.formKeys[0],
+                                            sh: true,
+                                        }
+                                    };
+                                    break;
+                                case 'personnel_graduate|cert':
+                                    btnSet['personnel_graduate|cert'] = {
+                                        pre: {
+                                            formId: v.formIds.length == 0 ? '' : v.formIds[0],
+                                            formKey: v.formKeys.length == 0 ? '' : v.formKeys[0],
+                                            sh: true,
+                                        }
+                                    };
+                                    break;
+                            }
+                            this.btnSet = btnSet;
                         });
                     }
                 });
+            },
+            toPre: function(key) {
+                // console.log(this.btnSet[key].pre);
+                let formId = this.btnSet[key].pre.formId;
+                api.getFormInfo(formId).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$refs.compForm.showFn(res.data.data.keyInfo, formId);
+                    }
+                });
+            },
+            submitForm: function(data) {
+                let that = this;
+                setTimeout(function() {
+                    api.customFormInfoSave({
+                        //documentId: that.detail.id,
+                        formId: that.currentBtnFormId,
+                        formInfo: data,
+                        // uuid: that.man.fast.getUUID(),
+                    }).then((res) => {
+                        if(res.data.status === 200) {
+                            that.$message.success('提交成功');
+                        }
+                    });
+                }, 666)
+            },
+            setCurrentBtnFormId: function(res) {
+                this.currentBtnFormId = res.formId;
             },
         }
     }

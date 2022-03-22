@@ -41,7 +41,7 @@
                         </el-row>
                         <el-row type="flex" justify="center" align="middle" class="bg-count-up">
                             <i-count-up :delay="countUpOpt.delay"
-                                        :endVal="tbDataPending.total"
+                                        :endVal="tbDataProcessing.total"
                                         :options="countUpOpt"
                                         class="count-up green">
                             </i-count-up>
@@ -64,6 +64,7 @@
                     </el-row>
                 </el-col>-->
             </el-row>
+            <!-- 待我审批 -->
             <el-row :gutter="20">
                 <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
@@ -73,7 +74,7 @@
                         </el-row>
                         <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                         <el-row class="pd-lr-5">
-                            <el-table :data="tbDataPending.list" size="small">
+                            <el-table :data="tbDataPending.records" size="small">
                                 <el-table-column label="事项">
                                     <template slot-scope="scope">
                                         {{ scope.row.processDefinitionName }}
@@ -94,7 +95,7 @@
                 <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
-                            <span>更新信息 (<span class="purple">{{ tbDataUpdating.records.length }}</span>)</span>
+                            <span>更新信息 (<span class="purple">{{ tbDataUpdating.total }}</span>)</span>
                             <span @click="showDLTableUpdating" class="more">更多</span>
                         </el-row>
                         <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
@@ -103,11 +104,11 @@
                                       :show-header="true">
                                 <el-table-column label="事项">
                                     <template slot-scope="scope">
-                                        {{ `${scope.row.sponsorName} ${scope.row.matter}` }}
+                                        {{ scope.row.operation }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="更新时间" sortable>
-                                    <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD') : '' }}</template>
+                                    <template slot-scope="scope">{{ scope.row.operationDate ? dayjs(scope.row.operationDate).format('YYYY-MM-DD') : '' }}</template>
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
@@ -119,6 +120,7 @@
                     </el-row>
                 </el-col>
             </el-row>
+            <!-- 办理中 -->
             <el-row class="table-has-title mg-t-20">
                 <el-row type="flex" justify="space-between" class="title">
                     <span>办理中 (<span class="green">{{ tbDataProcessing.total }}</span>)</span>
@@ -126,7 +128,7 @@
                 </el-row>
                 <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                 <el-row class="pd-lr-5">
-                    <el-table :data="tbDataProcessing.list" size="small">
+                    <el-table :data="tbDataProcessing.records" size="small">
                         <el-table-column label="事项">
                             <template slot-scope="scope">
                                 {{ `${scope.row.processDefinitionName}` }}
@@ -143,6 +145,7 @@
                     </el-table>
                 </el-row>
             </el-row>
+            <!-- 申请历史记录 -->
             <el-row class="table-has-title mg-t-20">
                 <el-row type="flex" justify="space-between" class="title">
                     <span>申请历史记录 (<span class="bule">{{ tbDataApply.total }}</span>)</span>
@@ -151,27 +154,27 @@
                 <el-row class="hr mg-tb-10 mg-lr--10"></el-row>
                 <el-row class="pd-lr-5">
                     <el-table :data="tbDataApply.records" size="small">
-                        <el-table-column prop="sponsorName" label="发起人" width="100"></el-table-column>
-                        <el-table-column prop="matter" label="事项"></el-table-column>
+                        <el-table-column prop="createUserName" label="发起人" width="100"></el-table-column>
+                        <el-table-column prop="processDefinitionName" label="事项"></el-table-column>
                         <el-table-column prop="createTime" label="申请时间" sortable>
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <el-table-column prop="status" label="审批结果">
+                        <el-table-column prop="state" label="审批结果">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.status === 0" class="status-blue">待审批</span>
-                                <span v-else-if="scope.row.status === 1" class="status-green">已通过</span>
-                                <span v-else-if="scope.row.status === -1" class="status-red">未通过</span>
+                                <span v-if="scope.row.state === 0" class="status-blue">待审批</span>
+                                <span v-else-if="scope.row.state === 1" class="status-green">已通过</span>
+                                <span v-else-if="scope.row.state === -1" class="status-red">未通过</span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="approve" label="审批人">
+                        <el-table-column prop="auditUserName" label="审批人">
                             <template slot-scope="scope">
                                 <span v-for="(v, k) in scope.row.approve" :key="k">
                                     {{ v }}
                                 </span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="approveTime" label="审批时间">
-                            <template slot-scope="scope">{{ scope.row.approveTime ? dayjs(scope.row.approveTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                        <el-table-column prop="createTime" label="审批时间">
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                         </el-table-column>
                     </el-table>
                 </el-row>
@@ -257,11 +260,11 @@
                 let that = this;
 
                 let params = {
-                    page: 1,
+                    pageCurrent: 1,
                     pageSize,
                 };
 
-                api.camundaTaskWaitForMyAuditPage(params).then((res) => {
+                api.workbenchRunningWaitForMyAuditPage(params).then((res) => {
                     if(res.data.status === 200) {
                         that.tbDataPending = {...res.data.data};
                     }
@@ -271,17 +274,13 @@
                 let that = this;
 
                 let params = {
-                    page: 1,
+                    pageCurrent: 1,
                     pageSize,
                 };
 
-                jsonTbDataUpdating.filter(v => {
-                    return v.updateTime > 0;
-                }).sort((a, b) => {
-                    return b.updateTime - a.updateTime;
-                }).map(v => {
-                    if(that.tbDataUpdating.records.length <= pageSize) {
-                        that.tbDataUpdating.records.push(v);
+                api.workbenchUpdateInfoPage(params).then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbDataUpdating = {...res.data.data};
                     }
                 });
             },
@@ -289,11 +288,11 @@
                 let that = this;
 
                 let params = {
-                    page: 1,
+                    pageCurrent: 1,
                     pageSize,
                 };
 
-                api.camundaTaskStartedByMePage(params).then((res) => {
+                api.workbenchRnningStartedByMePage(params).then((res) => {
                     if(res.data.status === 200) {
                         that.tbDataProcessing = {...res.data.data};
                     }
@@ -303,11 +302,11 @@
                 let that = this;
 
                 let params = {
-                    page: 1,
+                    pageCurrent: 1,
                     pageSize,
                 };
 
-                api.camundaHistoryStartedByMePage(params).then((res) => {
+                api.workbenchHistoryStartedByMePage(params).then((res) => {
                     if(res.data.status === 200) {
                         that.tbDataApply = {...res.data.data};
                     }
@@ -317,33 +316,33 @@
             showDLTablePending: function() {
                 let that = this;
 
-                that.dlParams = {
-                    list: [...jsonTbDataPending],
-                };
+                // that.dlParams = {
+                //     // list: [...jsonTbDataPending],
+                // };
                 that.dlVisibleTablePending = true;
             },
             showDLTableUpdating: function() {
                 let that = this;
 
-                that.dlParams = {
-                    list: [...jsonTbDataUpdating],
-                };
+                // that.dlParams = {
+                //     list: [...jsonTbDataUpdating],
+                // };
                 that.dlVisibleTableUpdating = true;
             },
             showDLTableProcessing: function() {
                 let that = this;
 
-                that.dlParams = {
-                    list: [...jsonTbDataProcessing],
-                };
+                // that.dlParams = {
+                //     list: [...jsonTbDataProcessing],
+                // };
                 that.dlVisibleTableProcessing = true;
             },
             showDLTableApply: function() {
                 let that = this;
 
-                that.dlParams = {
-                    list: [...jsonTbDataApply],
-                };
+                // that.dlParams = {
+                //     list: [...jsonTbDataApply],
+                // };
                 that.dlVisibleTableApply = true;
             },
 

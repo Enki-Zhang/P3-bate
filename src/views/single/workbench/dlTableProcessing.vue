@@ -4,10 +4,10 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
-            <el-table :data="tbData.list" size="small">
+            <el-table :data="tbData.records" size="small">
                 <el-table-column label="事项">
                     <template slot-scope="scope">
-                        {{ `${scope.row.matter}` }}
+                        {{ `${scope.row.processDefinitionName}` }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="申请/更新时间" sortable>
@@ -42,9 +42,10 @@
 <script>
 
     import dayjs from 'dayjs';
+    import api from "@api";
 
     export default {
-        name: "edit",
+        name: "dlTableProcessing",
         props: {
             value: Boolean,
             params: Object,
@@ -55,11 +56,8 @@
 
                 dialogVisible: false,
 
-                tbData: {current: 1, list: []},
+                tbData: {records: [], total: 0},
             }
-        },
-        computed: {
-
         },
         watch: {
             value(val) {
@@ -73,20 +71,20 @@
             opened: function() {
                 let that = this;
 
-                that.tbData.total = that.params.list.length;
-                that.getTableData();
+                that.getTableData(1);
             },
 
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
-                that.tbData.list = [];
 
-                let limit = page > 1
-                    ? [(page - 1) * pageSize, page * pageSize]
-                    : [0, pageSize];
-                that.params.list.map((v, k) => {
-                    if(k >= limit[0] && k < limit[1]) {
-                        that.tbData.list.push(v);
+                let params = {
+                    pageCurrent: page,
+                    pageSize,
+                };
+
+                api.workbenchRnningStartedByMePage(params).then((res) => {
+                    if(res.data.status === 200) {
+                        that.tbData = {...res.data.data};
                     }
                 });
             },
