@@ -420,10 +420,10 @@
                 //     that.$message.warning('您无权限进行此操作');
                 //     return;
                 // }
-                this.$router.push({path: `/forms/forms-forms`});
+                this.$router.push({path: `/forms/forms-forms-add`});
             },
             edit: function(row) {
-                this.$router.push({path: '/forms/forms-forms',query:{id:parseInt(row.id)}});
+                this.$router.push({path: '/forms/forms-forms-edit',query:{id:parseInt(row.id)}});
             },
             remove: function(row) {
                 // let that = this;

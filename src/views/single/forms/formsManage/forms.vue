@@ -9,8 +9,7 @@
                       <el-form-item label="表单名称">
                         <el-input 
                           v-model="dataForm.formName"
-                          size="small"
-                          :style="{width:inputWidth + 'px'}">  
+                          size="small">  
                         </el-input>
                       </el-form-item>
                     </el-col>
@@ -18,8 +17,7 @@
                       <el-form-item label="表单编号">
                         <el-input 
                           v-model="dataForm.formNumber"
-                          size="small"
-                          :style="{width:inputWidth + 'px'}">
+                          size="small">
                          </el-input>
                       </el-form-item>
                     </el-col>
@@ -27,8 +25,7 @@
                       <el-form-item label="表单Key">
                         <el-input 
                           v-model="dataForm.formKey"
-                          size="small"
-                          :style="{width:inputWidth + 'px'}">
+                          size="small">
                          </el-input>
                       </el-form-item>
                     </el-col>
@@ -36,8 +33,7 @@
                       <el-form-item label="版本号">
                         <el-input 
                           v-model="dataForm.versions"
-                          size="small"
-                          :style="{width:inputWidth + 'px'}">
+                          size="small">
                         </el-input>
                       </el-form-item>
                     </el-col>
@@ -45,7 +41,6 @@
                       <el-form-item label="描述">
                         <el-input 
                           v-model="dataForm.description"
-                          :style="{width:inputWidth + 'px'}"
                           :rows="3"
                           resize="none"
                           type="textarea">
@@ -1356,6 +1351,8 @@
     flex-grow: 1;
     padding: 10px;
     width: 0;
+    height:453px;
+    overflow:auto;
   }
   .rightBox {
     border: 1px solid @moduleBorderColor;
