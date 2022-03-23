@@ -643,7 +643,7 @@
                                 </div>
                               </div>
                               <div v-else-if = "k == 'attr_data_bind'">
-                                <select @change = "getSourceSelectList(k)" v-model = "attrObj[k]" placeholder = "请选择数据源">
+                                <select v-model = "attrObj[k]" placeholder = "请选择数据源">
                                   <option 
                                     :key = "'dataSource_' + index2"
                                     v-for = "v2,index2 in dataSourceList" 

@@ -64,7 +64,7 @@
                     <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
                               highlight-current-row border>
-                        <el-table-column v-if = "tbColumn.length > 0" label="表单id" fixed="left" show-overflow-tooltip width="60">
+                        <el-table-column v-if = "tbColumn.length > 0" label="表单序号" fixed="left" show-overflow-tooltip width="80">
                             <template slot-scope="scope">{{ scope.row.formId }}</template>
                         </el-table-column>
                         <el-table-column v-else label="未绑定表单" show-overflow-tooltip>

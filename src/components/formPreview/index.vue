@@ -19,6 +19,7 @@
 <script>
 import Vue from "vue";
 import 'element-ui/lib/theme-chalk/index.css';
+import api from "@api";
 import { Button,Input,InputNumber,Select,Option,Radio,Switch,Checkbox,CheckboxGroup,TimePicker,DatePicker,TimeSelect,Cascader,Upload } from 'element-ui';
 Vue.use(Button);
 Vue.use(Input);
@@ -464,6 +465,39 @@ export default {
           dataArr = JSON.parse(dataArr);
         }
       }
+      
+      let rqSelectArr = [];//将绑定数据的下拉组件筛选出来，记录下标
+      for(let i = 0;i < dataArr.length;i++){
+          if(dataArr[i].hasOwnProperty('attr_data_source') && dataArr[i].attr_data_source == 'bind' && dataArr[i].attr_data_bind != ''){
+              rqSelectArr.push(i);
+          }
+      }
+
+      let rqCount = 0;
+      if(rqSelectArr.length == 0){//未发现绑定数据的下拉组件，直接初始化
+          self.initPreview(dataArr);
+          return;
+      }
+      rqSelectArr.forEach(e => {//存在绑定数据的下拉组件，先遍历请求数据完再初始化
+          let bindId = dataArr[e].attr_data_bind;
+          api.formSourceSelectList(bindId).then((res) => {
+              if(res.data.status === 200) {
+                  let reArr = res.data.data;
+                  let arr = [];
+                  for(let i = 0;i < reArr.length;i++){
+                      arr.push({id:i + 1,name:reArr[i]});
+                  }
+                  dataArr[e].bind_list = arr;
+                  rqCount++;
+                  if(rqCount == rqSelectArr.length){
+                      self.initPreview(dataArr);
+                  }
+              }
+          });
+      });
+    },
+    initPreview(dataArr){
+      const self = this;
       Vue.nextTick(function () {
         // DOM 更新了
         const element = self.$el.querySelector('#preview_dialog')
@@ -539,7 +573,6 @@ export default {
         });
         self.preview = new vueHtml().$mount('#preview');
       })
-      
     },
     closeFn(){
       this.sh = false;
