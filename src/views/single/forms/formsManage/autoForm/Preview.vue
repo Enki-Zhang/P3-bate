@@ -17,6 +17,7 @@
 <script>
 import Vue from "vue";
 import 'element-ui/lib/theme-chalk/index.css';
+import api from "@api";
 import { Button,Input,InputNumber,Select,Option,Radio,Switch,Checkbox,CheckboxGroup,TimePicker,DatePicker,TimeSelect,Cascader,Upload } from 'element-ui';
 Vue.use(Button);
 Vue.use(Input);
@@ -446,79 +447,113 @@ export default {
     showFn(){
       this.sh = true;
       //console.log(this.data);
-      const self = this
-      Vue.nextTick(function () {
-        // DOM 更新了
-        const element = self.$el.querySelector('#preview_dialog')
-        element.innerHTML = '<div id="preview"></div>';
-        
-        // const _Vue_ = Vue.extend(self.modeler.build(self.list))
-        // self.preview = new _Vue_().$mount('#preview')
-        console.log(self.data);
-        var vueHtml = Vue.extend({
-            template:self.buildHtml(),
-            data: function () {
-                return{
-                    data:JSON.parse(JSON.stringify(self.data))
-                }
-            },
-            methods:{
-              test(e){
-                console.log(e);
-              },
-              calWidth(v){
-                v += '';
-                if(v == '')
-                  return 'auto';
-                if(v.indexOf('%') > -1)
-                  return v;
-                if(!isNaN(v))
-                return v + 'px';
-              },
-              addChildFormRow(index){
-                var obj = JSON.parse(JSON.stringify(this.data[index]));
-                // console.log(obj);
-                let tempArr = [];
-                for(var i = 0;i < obj.arr.length;i++){
-                  if(obj.arr[i].type == 'select' || obj.arr[i].type == 'radio' || obj.arr[i].type == 'check'){
-                    tempArr.push(obj.arr[i].data_value);
+      const self = this;
+
+      let rqSelectArr = [];//将绑定数据的下拉组件筛选出来，记录下标
+      for(let i = 0;i < self.data.length;i++){
+          if(self.data[i].hasOwnProperty('attr_data_source') && self.data[i].attr_data_source == 'bind' && self.data[i].attr_data_bind != ''){
+              rqSelectArr.push(i);
+          }
+      }
+
+      let rqCount = 0;
+      if(rqSelectArr.length == 0){//未发现绑定数据的下拉组件，直接初始化
+          self.initPreview();
+          return;
+      }
+      rqSelectArr.forEach(e => {//存在绑定数据的下拉组件，先遍历请求数据完再初始化
+          let bindId = self.data[e].attr_data_bind;
+          api.formSourceSelectList(bindId).then((res) => {
+              if(res.data.status === 200) {
+                  let reArr = res.data.data;
+                  let arr = [];
+                  for(let i = 0;i < reArr.length;i++){
+                      arr.push({id:i + 1,name:reArr[i]});
                   }
-                  else if(obj.arr[i].type == 'switch'){
-                    tempArr.push(obj.arr[i].attr_boolean_value);
+                  self.data[e].bind_list = arr;
+                  rqCount++;
+                  if(rqCount == rqSelectArr.length){
+                      self.initPreview();
                   }
-                  else if(obj.arr[i].type == 'time'){
-                    tempArr.push(obj.arr[i].attr_time_value);
-                  }
-                  else if(obj.arr[i].type == 'timeRange'){
-                    tempArr.push(obj.arr[i].attr_time_range_value);
-                  }
-                  else if(obj.arr[i].type == 'date'){
-                    tempArr.push(obj.arr[i].attr_date_value);
-                  }
-                  else if(obj.arr[i].type == 'dateRange'){
-                    tempArr.push(obj.arr[i].attr_date_range_value);
-                  }
-                  else if(obj.arr[i].type == 'upload'){
-                    tempArr.push(obj.arr[i].data_url);
-                  }
-                  else{
-                    tempArr.push(obj.arr[i].attr_value);
-                  }
-                }
-                obj.dataList.push(tempArr);
-                this.$set(this.data,index,obj);
-              },
-              delRow(index,index2){
-                var obj = JSON.parse(JSON.stringify(this.data[index]));
-                obj.dataList.splice(index2,1);
-                this.$set(this.data,index,obj);
               }
-            }
- 
-        });
-        self.preview = new vueHtml().$mount('#preview');
-      })
-      
+          });
+      });
+    },
+    initPreview(){
+        let self = this;
+        Vue.nextTick(function () {
+            // DOM 更新了
+            const element = self.$el.querySelector('#preview_dialog')
+            element.innerHTML = '<div id="preview"></div>';
+            
+            // const _Vue_ = Vue.extend(self.modeler.build(self.list))
+            // self.preview = new _Vue_().$mount('#preview')
+            console.log(self.data);
+            
+
+            var vueHtml = Vue.extend({
+                template:self.buildHtml(),
+                data: function () {
+                    return{
+                        data:JSON.parse(JSON.stringify(self.data))
+                    }
+                },
+                methods:{
+                  test(e){
+                    console.log(e);
+                  },
+                  calWidth(v){
+                    v += '';
+                    if(v == '')
+                      return 'auto';
+                    if(v.indexOf('%') > -1)
+                      return v;
+                    if(!isNaN(v))
+                    return v + 'px';
+                  },
+                  addChildFormRow(index){
+                    var obj = JSON.parse(JSON.stringify(this.data[index]));
+                    // console.log(obj);
+                    let tempArr = [];
+                    for(var i = 0;i < obj.arr.length;i++){
+                      if(obj.arr[i].type == 'select' || obj.arr[i].type == 'radio' || obj.arr[i].type == 'check'){
+                        tempArr.push(obj.arr[i].data_value);
+                      }
+                      else if(obj.arr[i].type == 'switch'){
+                        tempArr.push(obj.arr[i].attr_boolean_value);
+                      }
+                      else if(obj.arr[i].type == 'time'){
+                        tempArr.push(obj.arr[i].attr_time_value);
+                      }
+                      else if(obj.arr[i].type == 'timeRange'){
+                        tempArr.push(obj.arr[i].attr_time_range_value);
+                      }
+                      else if(obj.arr[i].type == 'date'){
+                        tempArr.push(obj.arr[i].attr_date_value);
+                      }
+                      else if(obj.arr[i].type == 'dateRange'){
+                        tempArr.push(obj.arr[i].attr_date_range_value);
+                      }
+                      else if(obj.arr[i].type == 'upload'){
+                        tempArr.push(obj.arr[i].data_url);
+                      }
+                      else{
+                        tempArr.push(obj.arr[i].attr_value);
+                      }
+                    }
+                    obj.dataList.push(tempArr);
+                    this.$set(this.data,index,obj);
+                  },
+                  delRow(index,index2){
+                    var obj = JSON.parse(JSON.stringify(this.data[index]));
+                    obj.dataList.splice(index2,1);
+                    this.$set(this.data,index,obj);
+                  }
+                }
+     
+            });
+            self.preview = new vueHtml().$mount('#preview');
+        })
     },
     closeFn(){
       this.sh = false;
