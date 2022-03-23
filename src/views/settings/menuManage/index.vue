@@ -94,7 +94,7 @@
                                                        @change="generateFormItemChosen">
                                                 <el-option v-for="v in seloptsFormItem" :key="v.id"
                                                            v-if="!man.fast.inArray(v.id, chosenFormItemIdArr)"
-                                                           :label="v.attr_name" :value="v.id"></el-option>
+                                                           :label="v.attr_name" :value="`f.id-v.id`"></el-option>
                                             </el-select>
                                         </template>
                                     </el-table-column>
@@ -251,6 +251,7 @@
                         api.customFormFindList(that.form.formIds.join(',')).then((res) => {
                             if(res.data.status === 200) {
                                 res.data.data.map(v => {
+
                                     if(v.keyInfo.length > 0) that.seloptsFormItem = that.seloptsFormItem.concat(JSON.parse(v.keyInfo));
                                 });
                                 // console.log(that.seloptsFormItem);

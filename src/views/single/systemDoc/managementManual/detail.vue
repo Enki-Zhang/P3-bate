@@ -25,7 +25,7 @@
                     </el-row>
                     <iframe v-if="previewSrc"
                             id="iframename" name="iframename"
-                            :src="`http://ow365.cn/?i=25507&ssl=1&furl=${previewSrc}`"
+                            :src="`http://ow365.cn/?i=25507&ssl=0&furl=${previewSrc}`"
                             width="100%" height="500"
                             frameborder="0" scrolling="auto"
                             class="mg-tb-10">
@@ -171,7 +171,6 @@
             if(this.$route.query.folderTitle !== undefined) this.man.bus.$emit('changeCurrentRouteVirtualParentMetaTitle', JSON.parse(this.$route.query.folderTitle));
         },
         created() {
-            console.log(window.location.origin);
             if(this.$route.query.id > 0) this.getDetail();
         },
         methods: {

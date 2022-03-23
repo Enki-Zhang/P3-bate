@@ -82,7 +82,7 @@
         validateAllSpace,
         validateNullArray,
     } from '@plugins/man/validate';
-    const listRouteName = 'personnel_organization';
+    const listRoutePath = '/personnel/organization';
 
     export default {
         name: "edit",
@@ -121,7 +121,7 @@
                     if (valid) {
                         that.btnLoadingSave = true;
 
-                        if(that.$route.params.id) {
+                        if(that.$route.query.id.length > 0) {
                             api.sysRoleEdit({
                                 ...that.form,
                                 permission: that.form.permission.join(','),
@@ -131,7 +131,7 @@
 
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
-                                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                                    that.$router.push({name: listRoutePath, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
                                 }
                             });
                         } else {
@@ -144,7 +144,7 @@
 
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
-                                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                                    that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
                                 }
                             });
                         }
@@ -159,7 +159,7 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                    that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
                 }).catch();
             },
 

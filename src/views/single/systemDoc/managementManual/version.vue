@@ -225,22 +225,22 @@
             },
             remove: function(row) {
                 let that = this;
-                if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
+                /*if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
                     that.$message.warning('您无权限进行此操作');
                     return;
-                }
+                }*/
 
                 that.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,
                     confirmButtonText: '删除',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    /*api.sysUserDel(row.id).then((res) => {
+                    api.systemDocumentDelete(row.id).then((res) => {
                         if(res.data.status === 200) {
                             that.$message.success('保存成功');
                             that.getTableData();
                         }
-                    });*/
+                    });
                 }).catch();
             },
             handleSelectionChange: function(chooseArr) {

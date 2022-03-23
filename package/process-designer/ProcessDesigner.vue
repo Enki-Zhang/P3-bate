@@ -443,6 +443,7 @@
                 const Align = this.bpmnModeler.get("alignElements");
                 const Selection = this.bpmnModeler.get("selection");
                 const SelectedElements = Selection.get();
+                console.log(SelectedElements);
                 if (!SelectedElements || SelectedElements.length <= 1) {
                     this.$message.warning("请按住 Ctrl 键选择多个元素对齐");
                     return;

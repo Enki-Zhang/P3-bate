@@ -106,13 +106,21 @@
                     }).then((res) => {
                         if(res.data.status === 200) {
                             that.$message.success('操作成功');
-                            that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
+                            that.$router.push({path: listRoutePath, query: {}});
                         }
                     });
                 } catch (e) {console.error(`[Process Designer Warn ]: ${e.message || e}`);}
             },
             cancel: function() {
+                let that = this;
 
+                that.$confirm('是否返回列表', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '返回列表',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
+                }).catch();
             },
 
 

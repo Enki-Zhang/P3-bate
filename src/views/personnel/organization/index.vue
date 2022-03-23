@@ -183,6 +183,9 @@
 
                 that.$router.push({
                     path: `/personnel/organization/add`,
+                    query: {
+                        _lpq: JSON.stringify(that.tbDataFilter),
+                    }
                 });
             },
             edit: function(row) {
