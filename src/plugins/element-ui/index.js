@@ -31,6 +31,7 @@ import {
     ButtonGroup,
     Select,
     Option,
+    OptionGroup,
     Radio,
     RadioGroup,
     Switch,
@@ -92,6 +93,7 @@ Vue.use(Button);
 Vue.use(ButtonGroup);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(OptionGroup);
 Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(Switch);
