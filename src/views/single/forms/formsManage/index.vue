@@ -183,13 +183,13 @@
                 size="small"
                 highlight-current-row border>
                 <el-table-column label="前置表单编号" show-overflow-tooltip width="160">
-                    <template slot-scope="scope">{{ scope.row.frontTableId }}</template>
+                    <template slot-scope="scope">{{ scope.row.frontTableNumber }}</template>
                 </el-table-column>
                 <el-table-column label="前置表单名称" show-overflow-tooltip width="160">
                     <template slot-scope="scope">{{ scope.row.frontTableName }}</template>
                 </el-table-column>
                 <el-table-column label="当前表单编号" show-overflow-tooltip>
-                    <template slot-scope="scope">{{ scope.row.formId }}</template>
+                    <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                 </el-table-column>
                 <el-table-column label="当前表单名称" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formName }}</template>
