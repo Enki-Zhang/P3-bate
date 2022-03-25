@@ -105,6 +105,7 @@
             }
         },
         mounted() {
+            
             this.getFormFieldId();
         },
         filters:{
@@ -132,12 +133,13 @@
         },
         methods: {
             getFormFieldId(){
-                api.getFormHead('411').then((res) => {
+                let menuId = this.getMenuId();
+                api.getFormHead(menuId).then((res) => {
                     if(res.data.status === 200) {
                         let list = res.data.data;
                         let formFieldId = list.find(e => e.key == 'startDate').formConfigs[0].formFieldId;
                         this.formFieldId = formFieldId;
-                        console.log(formFieldId);
+                        //console.log(formFieldId);
                         let date = new Date();
                         let year = date.getFullYear();
                         let month = date.getMonth() + 1;
@@ -154,6 +156,8 @@
                     return day;
                 }
 
+                let menuId = this.getMenuId();
+
                 let start = `${year}-${month < 10 ? '0' + month : month}-01`;
                 let end = `${year}-${month < 10 ? '0' + month : month}-${this.getLastDay(year,month)}`;
                 // console.log(start);
@@ -161,7 +165,7 @@
 
                 api.getFormRecord({
                     //documentId: that.detail.id,
-                    menuId:"411",
+                    menuId:menuId,
                     pageCurrent:1,
                     pageSize:50,
                     searchForms:[{
