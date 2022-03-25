@@ -99,35 +99,26 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
-                              :min-height="460" size="small"
-                              highlight-current-row border>
-                        <el-table-column v-if = "tbColumn.length > 0" label="表单序号" fixed="left" show-overflow-tooltip width="80">
+                    <el-table 
+                        ref="multipleTable" 
+                        :data="tbData.records" 
+                        tooltip-effect="dark"
+                        :min-height="460" 
+                        size="small"
+                        highlight-current-row 
+                        border>
+                        <!-- <el-table-column v-if = "tbData.headArr.length > 0" label="表单序号" fixed="left" show-overflow-tooltip width="80">
                             <template slot-scope="scope">{{ scope.row.formId }}</template>
+                        </el-table-column> -->
+                        <el-table-column v-if = "tbData.headArr.length == 0" label="未绑定表单" show-overflow-tooltip>
                         </el-table-column>
-                        <el-table-column v-else label="未绑定表单" show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column v-for = "v,index in tbColumn" :key = "index" :label="v.name" show-overflow-tooltip >
+                        <el-table-column v-for = "v,index in tbData.headArr" :key = "index" :label="v.showName" show-overflow-tooltip >
                             <template slot-scope="scope">
-                                <div v-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'linkSelect'">
-                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName].join('/')}}
-                                </div>
-                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'check'">
-                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName].join(',')}}
-                                </div>
-                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'switch'">
-                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName] ? '是' : '否'}}
-                                </div>
-                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'timeRange' || JSON.parse(scope.row.formInfo)[v.index].type == 'dateRange'">
-                                    {{JSON.parse(scope.row.formInfo)[v.index][v.valueName].join('至')}}
-                                </div>
-                                <div v-else-if = "JSON.parse(scope.row.formInfo)[v.index].type == 'upload'">
-                                    <img
-                                        v-if = "JSON.parse(scope.row.formInfo)[v.index][v.valueName] != ''" 
-                                        :src = "JSON.parse(scope.row.formInfo)[v.index][v.valueName]"/>
+                                <div v-if = "v.type == 'DATE_RANGE' || v.type == 'TIME_RANGE'">
+                                    {{scope.row[v.key][0]}}至{{scope.row[v.key][1]}}
                                 </div>
                                 <div v-else>
-                                    {{ JSON.parse(scope.row.formInfo)[v.index][v.valueName] }}
+                                    {{scope.row[v.key]}}
                                 </div>
                             </template>
                         </el-table-column>
@@ -299,7 +290,9 @@
         data() {
             return {
                 tbData: {
-                    content: [],
+                    headArr:[],
+                    searchArr:[],
+                    records:[],
                     total:0,
                     size:10,
                     current:1
@@ -309,7 +302,6 @@
                     responer:'',
                     area:''
                 },
-                tbColumn:[],
                 btnLoadingFilter: false,
                 key:null,
                 btnSet:{
@@ -358,15 +350,99 @@
             }
         },
         mounted() {
-            this.getRouterInfo();
-            //this.getColumn();
+            this.getFormFieldId();
             this.getGroupList();
             this.initBtn();
         },
         methods: {
-            // getFormInfo(data){
-            //     console.log(data);
-            // },
+            getFormFieldId(){
+                let menuId = this.getMenuId();
+                api.getFormHead(menuId).then((res) => {
+                    if(res.data.status === 200) {
+                        let list = res.data.data;
+                        let searchArr = [];
+                        list.forEach(e => {
+                            if(e.search){
+                                searchArr.push(e);
+                            }
+                        })
+                        
+                        this.tbData.headArr = list;
+                        this.tbData.searchArr = searchArr;
+                        if(this.tbData.headArr.length > 0)
+                            this.loadData();
+                    }
+                });       
+            },
+            loadData(){
+                if(this.tbData.headArr.length == 0)return;
+
+                let menuId = this.getMenuId();
+                let params = {
+                    menuId:menuId,
+                    pageCurrent:this.tbData.current,
+                    pageSize:this.tbData.size,
+                    // searchForms:[{
+                    //     formFieldId:this.formFieldId,
+                    //     logic:'between',
+                    //     betweenValues:[start,end]
+                    // }]
+                };
+                params = this.formSearchFn(params);
+                api.getFormRecord(params).then((res) => {
+                    if(res.data.status === 200) {
+                        let data = res.data.data.data;
+                        this.tbData.records = data.records;
+                        this.tbData.total = data.total;
+                    }
+                });
+            },
+            formSearchFn(params){
+                // tbDataFilter: {
+                //     datetime:null,
+                //     responer:'',
+                //     area:''
+                // },
+                let searchForms = [];
+                let searchArr = this.tbData.searchArr;
+                if(this.tbDataFilter.area){
+                    let option = searchArr.find(e => e.key == 'area').formConfigs;
+                    searchForms.push({
+                        formFieldId:option[0].formFieldId,
+                        logic:'=',
+                        searchValue:this.tbDataFilter.area
+                    });
+                }
+                if(this.tbDataFilter.responer){
+                    let option = searchArr.find(e => e.key == 'responer').formConfigs;
+                    searchForms.push({
+                        formFieldId:option[0].formFieldId,
+                        logic:'=',
+                        searchValue:this.tbDataFilter.responer
+                    });
+                }
+                if(this.tbDataFilter.datetime){
+                    console.log(this.tbDataFilter.datetime);
+                    let dateOption = searchArr.find(e => e.key == "startDate").formConfigs;
+                    let timeOption = searchArr.find(e => e.key == "startTime").formConfigs;
+                    let startArr = this.tbDataFilter.datetime[0].split(' ');
+                    let endArr = this.tbDataFilter.datetime[1].split(' ');
+                    searchForms.push({
+                        formFieldId:dateOption[0].formFieldId,
+                        logic:'between',
+                        betweenValues:[startArr[0],endArr[0]]
+                    });
+                    searchForms.push({
+                        formFieldId:timeOption[0].formFieldId,
+                        logic:'between',
+                        betweenValues:[startArr[1],endArr[1]]
+                    });
+                }
+                if(searchForms.length > 0){
+                    params.searchForms = searchForms;
+                }
+                return params;
+            },
             submitForm(data){
                 // console.log(data);
                 // return;
@@ -379,7 +455,7 @@
                 }).then((res) => {
                     if(res.data.status === 200) {
                         this.$message.success('提交成功');
-                        this.getTableData();
+                        this.loadData();
                     }
                 });
             },
@@ -501,123 +577,20 @@
                     }
                 });
             },
-            getRouterInfo: function() {
-                let menu = JSON.parse(localStorage.getItem('stu-p3lab')).session.userInfo.menus;
-                // console.log(menu);
-                // console.log(this.$route.name);
-
-                function findRouterObj(arr,name){
-                    for(let i = 0;i < arr.length;i++){
-                        if(arr[i].name == name){
-                            return arr[i];
-                        }
-                        if(arr[i].children.length > 0){
-                            let obj = findRouterObj(arr[i].children,name);
-                            if(obj != null)
-                                return obj;
-                        }
-                    }
-                    return null;
-                }
-
-                let obj = findRouterObj(menu,this.$route.name);
-                // console.log(obj);
-                if(obj != null && obj.formKeys.length > 0){
-                    let key = obj.formKeys[0];
-                    this.key = key;
-                    this.getColumn();
-                }
-            },
-            getColumn:function(){
-
-                function getValueName(type){
-                    let obj ={
-                        'input':'attr_value',
-                        'textarea':'attr_value',
-                        'inputNumber':'attr_value',
-                        'select':'data_value',
-                        'radio':'data_value',
-                        'check':'data_value',
-                        'linkSelect':'attr_data_link_value',
-                        'switch':'attr_boolean_value',
-                        'time':'attr_time_value',
-                        'timeRange':'attr_time_range_value',
-                        'date':'attr_date_value',
-                        'dateRange':'attr_date_range_value',
-                        'upload':'data_url'
-                    }
-                    return obj[type];
-                }
-
-                let formKey = this.key;
-                api.formStructInfo(formKey).then((res) => {
-                    this.btnLoadingFilter = false;
-                    if(res.data.status === 200) {
-                        let arr = JSON.parse(res.data.data.keyInfo);
-                        let columnArr = [];
-                        for(var i = 0;i < arr.length;i++){
-                            if(arr[i].type != 'childForm'){
-                                columnArr.push({
-                                    name:arr[i].attr_name,
-                                    index:i,
-                                    type:arr[i].type,
-                                    valueName:getValueName(arr[i].type)
-                                }); 
-                            }  
-                        }
-                        this.tbColumn = columnArr;
-                        this.getTableData();
-                    }
-                });
-            },
-            getTableData: function(page = 1, pageSize = 10) {
-                if(this.key == null)return;
-                this.btnLoadingFilter = true;
-
-                let params = {
-                    ...this.tbDataFilter,
-                    pageCurrent: page,
-                    pageSize,
-                };
-                console.log(this.$route.name);
-                let formKey = this.key;
-                params.formKey = formKey;
-
-                if(params.datetime != null){
-                    params.startTime = params.datetime[0];
-                    params.endTime = params.datetime[1];
-                }
-                delete params.datetime;
-
-                api.formInfoList(params).then((res) => {
-                    this.btnLoadingFilter = false;
-                    if(res.data.status === 200) {
-                        this.tbData.content = res.data.data.records;
-                        this.tbData.current = res.data.data.current;
-                        this.tbData.size = res.data.data.size;
-                        this.tbData.total = res.data.data.total;
-
-                        // this.tbData.content =
-                        // [
-                        //     {
-                        //         "caseId": "",
-                        //         "createTime": "",
-                        //         "formId": 0,
-                        //         "formInfo": "[{\"attr_name\":\"单行输入框\",\"attr_value\":\"aaa\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058653788\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"多行输入框\",\"attr_value\":\"vvvv\",\"attr_placeholder\":\"请输入\",\"type\":\"textarea\",\"id\":\"module_1628058654786\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"计数器\",\"attr_value\":1,\"attr_min\":0,\"attr_max\":100,\"attr_input_width\":150,\"attr_placeholder\":\"请输入\",\"type\":\"inputNumber\",\"id\":\"module_1628058656088\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"下拉选择\",\"attr_input_width\":150,\"attr_data_list\":[{\"id\":1,\"name\":\"选项1\"},{\"id\":2,\"name\":\"选项2\"}],\"attr_placeholder\":\"请选择\",\"data_index\":1,\"data_value\":\"选项2\",\"type\":\"select\",\"id\":\"module_1628058657634\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"子表单\",\"type\":\"childForm\",\"id\":\"module_1628058684434\",\"label_width\":100,\"belongTo\":\"formBox\",\"arr\":[{\"attr_name\":\"单行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058703580\",\"label_width\":100,\"belongTo\":\"formItem\"},{\"attr_name\":\"单行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058706006\",\"label_width\":100,\"belongTo\":\"formItem\"},{\"attr_name\":\"单行输入框\",\"attr_value\":\"\",\"attr_placeholder\":\"请输入\",\"type\":\"input\",\"id\":\"module_1628058707753\",\"label_width\":100,\"belongTo\":\"formItem\"}],\"dataList\":[]},{\"attr_name\":\"级联选择\",\"attr_input_width\":250,\"attr_data_link_list\":[{\"value\":\"选项1\",\"label\":\"选项1\",\"children\":[{\"value\":\"选项11\",\"label\":\"选项11\",\"children\":[{\"value\":\"选项111\",\"label\":\"选项111\"},{\"value\":\"选项112\",\"label\":\"选项112\"}]},{\"value\":\"选项12\",\"label\":\"选项12\",\"children\":[{\"value\":\"选项121\",\"label\":\"选项121\"},{\"value\":\"选项122\",\"label\":\"选项122\"}]}]}],\"attr_data_link_value\":[\"选项1\",\"选项11\",\"选项112\"],\"attr_placeholder\":\"请选择\",\"type\":\"linkSelect\",\"id\":\"module_1628058658963\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"单选框组\",\"attr_data_list\":[{\"id\":1,\"name\":\"选项1\"},{\"id\":2,\"name\":\"选项2\"}],\"data_index\":1,\"data_value\":\"选项2\",\"type\":\"radio\",\"attr_layer\":\"inline-block\",\"id\":\"module_1628058660643\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"多选框组\",\"attr_data_check_list\":[{\"id\":1,\"name\":\"选项1\",\"check\":true},{\"id\":2,\"name\":\"选项2\",\"check\":true}],\"data_value\":[\"选项1\",\"选项2\"],\"type\":\"check\",\"attr_layer\":\"inline-block\",\"id\":\"module_1628058663418\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"开关\",\"attr_boolean_value\":true,\"type\":\"switch\",\"id\":\"module_1628058668719\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"时间选择\",\"attr_time_value\":\"14:37:52\",\"attr_input_width\":150,\"type\":\"time\",\"id\":\"module_1628058671130\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"时间范围\",\"attr_time_range_value\":[\"08:00:00\",\"08:00:00\"],\"attr_input_width\":360,\"type\":\"timeRange\",\"id\":\"module_1628058673617\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"日期选择\",\"attr_date_value\":\"2021-08-03\",\"attr_input_width\":150,\"type\":\"date\",\"id\":\"module_1628058675607\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"日期范围\",\"attr_date_range_value\":[\"2021-09-14\",\"2021-09-15\"],\"attr_input_width\":360,\"type\":\"dateRange\",\"id\":\"module_1628058677544\",\"label_width\":100,\"belongTo\":\"formBox\"},{\"attr_name\":\"上传\",\"type\":\"upload\",\"attr_url\":\"\",\"data_url\":\"\",\"id\":\"module_1628058680040\",\"label_width\":100,\"belongTo\":\"formBox\"}]",
-                        //         "id": 0,
-                        //         "updateTime": "",
-                        //         "userId": ""
-                        //     }
-                        // ]
-                    }
-                });
-            },
             handlePaginationChange: function(page) {
-                this.getTableData(page);
+                this.tbData.current = page;
+                this.loadData();
             },
             filterTableData: function(isFilter = true) {
-                let that = this;
-                that.getTableData(1);
+                if(!isFilter){
+                    this.tbDataFilter = {
+                        datetime:null,
+                        responer:'',
+                        area:''
+                    }
+                }
+                this.tbData.current = 1;
+                this.loadData();
             },
             initBtn: function() {
                 api.getMenuBtn({name:'activity|subject'}).then((res) => {
