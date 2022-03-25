@@ -238,6 +238,7 @@
                         that.form = {
                             ...res.data.data,
                             admissionTime: res.data.data.admissionTime ? dayjs(res.data.data.admissionTime).format('YYYY-MM-DD') : '',
+                            graduationTime: res.data.data.graduationTime ? dayjs(res.data.data.graduationTime).format('YYYY-MM-DD') : '',
                         };
                     }
                 });

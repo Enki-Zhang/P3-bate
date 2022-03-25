@@ -74,13 +74,13 @@
                         </el-row>
                         <el-row type="flex" class="br bb">
                             <el-row class="_title">入学时间</el-row>
-                            <el-row class="_val">{{ detail.admissionTime }}</el-row>
+                            <el-row class="_val">{{ detail.admissionTime ? dayjs(detail.admissionTime).format('YYYY-MM-DD') : '' }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
                         <el-row type="flex" class="br bb">
                             <el-row class="_title">毕业时间</el-row>
-                            <el-row class="_val">{{ detail.graduationTime }}</el-row>
+                            <el-row class="_val">{{ detail.graduationTime ? dayjs(detail.graduationTime).format('YYYY-MM-DD') : '' }}</el-row>
                         </el-row>
                     </el-row>
                 </el-row>

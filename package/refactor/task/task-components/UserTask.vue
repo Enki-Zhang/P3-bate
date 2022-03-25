@@ -6,13 +6,16 @@
             </el-select>
         </el-form-item>
         <el-form-item label="候选用户">
-            <el-select v-model="userTaskForm.candidateUsers" multiple collapse-tags
-                       @change="updateElementTask('candidateUsers')">
+            <el-select v-model="userTaskForm.candidateUsers"
+                       @change="updateElementTask('candidateUsers')"
+                       multiple collapse-tags>
                 <el-option v-for="(v, k) in mockHX" :key="`user-${k}`" :label="v.name" :value="v.uid"/>
             </el-select>
         </el-form-item>
         <el-form-item label="候选分组">
-            <el-select v-model="userTaskForm.candidateGroups" multiple @change="updateElementTask('candidateGroups')">
+            <el-select v-model="userTaskForm.candidateGroups"
+                       @change="updateElementTask('candidateGroups')"
+                       multiple>
                 <el-option v-for="(v, k) in seloptsUserGroup" :key="`group-${k}`" :label="v.role" :value="v.id"/>
             </el-select>
             <!--  collapse-tags -->
