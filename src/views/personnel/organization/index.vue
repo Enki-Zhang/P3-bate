@@ -6,10 +6,10 @@
                 <!-- 筛选 -->
                 <el-form ref="fmTbFilter" :model="tbFilter">
                     <el-row class="filters">
-                        <el-form-item prop="title">
+                        <el-form-item prop="role">
                             <el-row class="item">
                                 <el-row class="lb lb-unmgl">角色名称</el-row>
-                                <el-row><el-input v-model="tbFilter.title" placeholder="角色名称查询" size="small" class="inp"></el-input></el-row>
+                                <el-row><el-input v-model="tbFilter.role" placeholder="角色名称查询" size="small" class="inp"></el-input></el-row>
                             </el-row>
                         </el-form-item>
                         <!--<el-form-item prop="userName">
@@ -61,7 +61,7 @@
                     <el-table ref="multipleTable" :data="tbData.records"
                               tooltip-effect="dark" size="small"
                               highlight-current-row border>
-                        <el-table-column label="角色编号" fixed="left" show-overflow-tooltip min-width="200">
+                        <el-table-column label="角色编号" fixed="left" show-overflow-tooltip min-width="220">
                             <template slot-scope="scope">{{ scope.row.id }}</template>
                         </el-table-column>
                         <el-table-column label="角色名称" fixed="left" show-overflow-tooltip min-width="200">
@@ -70,7 +70,7 @@
                         <el-table-column label="描述" show-overflow-tooltip min-width="280">
                             <template slot-scope="scope">{{ scope.row.description }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="110">
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip width="135">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
@@ -109,7 +109,7 @@
             return {
                 tbSelectedArr: [],
                 tbFilter: {
-                    title: '',
+                    role: '',
                     createTime: [],
                 },
                 tbData: {records: []},

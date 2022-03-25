@@ -6,16 +6,16 @@
                 <!-- 筛选 -->
                 <el-form ref="fmTbFilter" :model="tbFilter" size="small">
                     <el-row class="filters">
-                        <el-form-item prop="username">
+                        <el-form-item prop="name">
                             <el-row class="item">
                                 <el-row class="lb lb-unmgl">名字查询</el-row>
-                                <el-row><el-input v-model="tbFilter.username" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
+                                <el-row><el-input v-model="tbFilter.name" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
-                        <el-form-item prop="phone">
+                        <el-form-item prop="phoneNumber">
                             <el-row class="item mg-l-10">
                                 <el-row class="lb lb-unmgl">手机号查询</el-row>
-                                <el-row><el-input v-model="tbFilter.phone" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
+                                <el-row><el-input v-model="tbFilter.phoneNumber" placeholder="支持模糊查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
                         <!--<el-form-item prop="type">
@@ -222,8 +222,8 @@
                 tbChosenRow: {},
                 tbSelectedArr: [],
                 tbFilter: {
-                    username: '',
-                    phone: '',
+                    name: '',
+                    phoneNumber: '',
                     createTime: [],
                 },
                 tbData: {list: []},
@@ -284,8 +284,8 @@
                 if(isFilter) {
                     that.tbDataFilter = {
                         ...that.tbFilter,
-                        startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
-                        endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
+                        // startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
+                        // endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
                     };
                     delete that.tbDataFilter.createTime;
                 } else {

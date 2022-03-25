@@ -121,7 +121,7 @@
                     if (valid) {
                         that.btnLoadingSave = true;
 
-                        if(that.$route.query.id.length > 0) {
+                        if(that.$route.query.id) {
                             api.sysRoleEdit({
                                 ...that.form,
                                 permission: that.form.permission.join(','),
@@ -131,7 +131,7 @@
 
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
-                                    that.$router.push({name: listRoutePath, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                                    that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
                                 }
                             });
                         } else {

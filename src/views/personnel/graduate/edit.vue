@@ -89,9 +89,9 @@
                                                   // {type: 'string', len: 11, message: '长度为 11 个字符'},
                                                   // {validator: validatePhone, message: '请填写中行卡号'}
                                               ]">
-                                <el-input v-model="form.graduateSchoolAndMajor2" placeholder="请填写毕业学校" clearable></el-input>
+                                <el-input v-model="form.graduateSchoolAndMajor" placeholder="请填写毕业学校" clearable></el-input>
                             </el-form-item>
-                            <el-form-item prop="graduateSchoolAndMajor" label=""
+                            <el-form-item prop="graduateSchoolAndMajor2" label=""
                                           :rules="[
                                               // {required: false, message: '请填写中行卡号'},
                                               // {type: 'string', len: 11, message: '长度为 11 个字符'},
@@ -111,13 +111,13 @@
                                 </el-form-item>
                             </el-row>
                             <el-row>
-                                <el-form-item prop="phoneNumber" label="手机号码"
+                                <el-form-item prop="contactNumber" label="手机号码"
                                               :rules="[
                                               // {required: false, message: '请填写中行卡号'},
                                               // {type: 'string', len: 11, message: '长度为 11 个字符'},
                                               // {validator: validatePhone, message: '请填写中行卡号'}
                                           ]">
-                                    <el-input v-model="form.phoneNumber" placeholder="请填写手机号码" clearable></el-input>
+                                    <el-input v-model="form.contactNumber" placeholder="请填写手机号码" clearable></el-input>
                                 </el-form-item>
                             </el-row>
                         </el-row>
@@ -148,12 +148,12 @@
                         </el-row>
                         <el-row type="flex">
                             <el-row>
-                                <el-form-item prop="entryTime" label="入职时间"
+                                <el-form-item prop="admissionTime" label="入学时间"
                                               :rules="[
                                                   {required: false, message: '请选择日期'},
                                                   {type: 'string', len: 10, message: '请选择日期'},
                                               ]">
-                                    <el-date-picker v-model="form.entryTime"
+                                    <el-date-picker v-model="form.admissionTime"
                                                     placeholder="选择日期"
                                                     type="date"
                                                     format="yyyy-MM-dd"
@@ -231,13 +231,14 @@
             getDetail: function(id) {
                 let that = this;
 
-                api.sysUserInfoFind(id).then((res) => {
+                api.sysYjsInfoFind(id).then((res) => {
                     // console.log(res.data);
 
                     if(res.data.status === 200) {
                         that.form = {
                             ...res.data.data,
-                            gradingTime: res.data.data.gradingTime ? dayjs(res.data.data.gradingTime).format('YYYY-MM-DD') : '',
+                            admissionTime: res.data.data.admissionTime ? dayjs(res.data.data.admissionTime).format('YYYY-MM-DD') : '',
+                            graduationTime: res.data.data.graduationTime ? dayjs(res.data.data.graduationTime).format('YYYY-MM-DD') : '',
                         };
                     }
                 });
@@ -251,12 +252,13 @@
                         that.btnLoadingSave = true;
 
                         api.sysYjsInfoEdit({
-                            id: that.form.id,
+                            ...that.form,
+                            /*id: that.form.id,
                             employeeCategory: that.form.employeeCategory,
                             position: that.form.position,
                             wageScale: that.form.wageScale,
                             gradingTime: that.form.gradingTime,
-                            socialSecurityAndMedicalInsurance: that.form.socialSecurityAndMedicalInsurance,
+                            socialSecurityAndMedicalInsurance: that.form.socialSecurityAndMedicalInsurance,*/
                         }).then((res) => {
                             // console.log(res);
                             that.btnLoadingSave = false;

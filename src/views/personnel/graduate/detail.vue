@@ -14,31 +14,31 @@
                     <el-row type="flex">
                         <el-row type="flex">
                             <el-row class="_title">导师</el-row>
-                            <el-row class="_val">{{ detail.studentNumber }}</el-row>
+                            <el-row class="_val">{{ detail.tutor }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">攻读学位</el-row>
-                            <el-row class="_val">{{ detail.idNumber }}</el-row>
+                            <el-row class="_val">{{ detail.studyForADegree }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
                         <el-row type="flex">
                             <el-row class="_title">学号</el-row>
-                            <el-row class="_val">{{ detail.admissionTime }}</el-row>
+                            <el-row class="_val">{{ detail.studentNumber }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">一卡通号</el-row>
-                            <el-row class="_val">{{ detail.contactNumber }}</el-row>
+                            <el-row class="_val">{{ detail.allInOneCardNumber }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
                         <el-row type="flex">
                             <el-row class="_title">中行卡号</el-row>
-                            <el-row class="_val">{{ detail.allInOneCardNumber }}</el-row>
+                            <el-row class="_val">{{ detail.bocCardNo }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">最高学历</el-row>
-                            <el-row class="_val">{{ detail.bocCardNo }}</el-row>
+                            <el-row class="_val">{{ detail.highestEducation }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
@@ -47,21 +47,21 @@
                                 <el-row>本科毕业学校</el-row>
                                 <el-row>及专业</el-row>
                             </el-row>
-                            <el-row class="_val">{{ detail.email }}</el-row>
+                            <el-row class="_val">{{ detail.graduateSchoolAndMajor }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">邮箱</el-row>
-                            <el-row class="_val">{{ detail.graduateSchoolAndMajor }}</el-row>
+                            <el-row class="_val">{{ detail.email }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
                         <el-row type="flex">
                             <el-row class="_title">手机号码</el-row>
-                            <el-row class="_val">{{ detail.familyEmergencyContactNumber }}</el-row>
+                            <el-row class="_val">{{ detail.contactNumber }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">家庭住址</el-row>
-                            <el-row class="_val">{{ detail.highestEducation }}</el-row>
+                            <el-row class="_val">{{ detail.homeAddress }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
@@ -70,17 +70,17 @@
                                 <el-row>紧急联系人</el-row>
                                 <el-row>及电话</el-row>
                             </el-row>
-                            <el-row class="_val">{{ detail.homeAddress }}</el-row>
+                            <el-row class="_val">{{ detail.familyEmergencyContactNumber }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br bb">
                             <el-row class="_title">入学时间</el-row>
-                            <el-row class="_val">{{ detail.graduationTime }}</el-row>
+                            <el-row class="_val">{{ detail.admissionTime ? dayjs(detail.admissionTime).format('YYYY-MM-DD') : '' }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">
                         <el-row type="flex" class="br bb">
                             <el-row class="_title">毕业时间</el-row>
-                            <el-row class="_val">{{ detail.title }}</el-row>
+                            <el-row class="_val">{{ detail.graduationTime ? dayjs(detail.graduationTime).format('YYYY-MM-DD') : '' }}</el-row>
                         </el-row>
                     </el-row>
                 </el-row>

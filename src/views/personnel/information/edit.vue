@@ -430,8 +430,10 @@
                     if(res.data.status === 200) {
                         that.form = {
                             ...res.data.data,
+                            birthday: res.data.data.birthday ? dayjs(res.data.data.birthday).format('YYYY-MM-DD') : '',
                             gradingTime: res.data.data.gradingTime ? dayjs(res.data.data.gradingTime).format('YYYY-MM-DD') : '',
                         };
+                        console.log(that.form);
                     }
                 });
             },
@@ -467,7 +469,7 @@
                             });
                         } else {
                             api.sysUserInfoEditSelf({
-                                id: that.detail.id,
+                                id: that.form.id,
                                 ...that.form,
                             }).then((res) => {
                                 // console.log(res);

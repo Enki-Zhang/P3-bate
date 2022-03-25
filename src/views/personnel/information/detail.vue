@@ -71,7 +71,7 @@
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">入职时间</el-row>
-                            <el-row class="_val">{{ detail.entryTime }}</el-row>
+                            <el-row class="_val">{{ detail.entryTime ? dayjs(detail.entryTime).format('YYYY-MM-DD') : '' }}</el-row>
                         </el-row>
                     </el-row>
                     <el-row type="flex">

@@ -37,7 +37,7 @@
                         </el-button>
                     </el-tooltip>
                 </el-button-group>
-                <el-button-group key="align-control">
+                <!--<el-button-group key="align-control">
                     <el-tooltip effect="light" content="向左对齐">
                         <el-button :size="headerButtonSize" class="align align-left" icon="el-icon-s-data"
                                    @click="elementsAlign('left')"/>
@@ -62,7 +62,7 @@
                         <el-button :size="headerButtonSize" class="align align-middle" icon="el-icon-s-data"
                                    @click="elementsAlign('middle')"/>
                     </el-tooltip>
-                </el-button-group>
+                </el-button-group>-->
                 <el-button-group key="scale-control">
                     <el-tooltip effect="light" content="缩小视图">
                         <el-button :size="headerButtonSize" :disabled="defaultZoom < 0.2" icon="el-icon-zoom-out"
