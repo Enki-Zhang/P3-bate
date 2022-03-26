@@ -25,7 +25,7 @@
                     </el-row>
                     <iframe v-if="previewSrc"
                             id="iframename" name="iframename"
-                            :src="`http://ow365.cn/?i=25507&ssl=0&furl=${previewSrc}`"
+                            :src="`http://ow365.cn/?i=25516&ssl=0&furl=${previewSrc}`"
                             width="100%" height="500"
                             frameborder="0" scrolling="auto"
                             class="mg-tb-10">
@@ -158,7 +158,8 @@
                 dlTableFormsVisible: false,
 
                 wordText: '',
-                previewSrc: 'https://public.ohyesido.cn/test.docx',
+                // previewSrc: 'https://public.ohyesido.cn/test.docx',
+                previewSrc: '',
 
                 detail: {},
                 tbDataRelated: {list: []},
