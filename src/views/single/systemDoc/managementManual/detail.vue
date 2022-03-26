@@ -268,7 +268,7 @@
                         domainAndHost = process.env.VUE_APP_RESOURCE_HOST;
                         break;
                     case 'production':
-                        domainAndHost = `${window.location.origin}/`;
+                        domainAndHost = `${window.location.origin}/api/`;
                         break;
                 }
                 return `${domainAndHost}backServer/resources/${path}`;
