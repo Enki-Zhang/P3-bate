@@ -180,19 +180,19 @@ let componentLayer = [
 
 componentInput.forEach(function(e,index){
     e.id = 'componentInput_' + (index + 1);
-    e.label_width = 100;
+    e.label_width = 150;
     e.belongTo = 'componentBox';
 });
 
 componentSelect.forEach(function(e,index){
     e.id = 'componentSelect_' + (index + 1);
-    e.label_width = 100;
+    e.label_width = 150;
     e.belongTo = 'componentBox';
 });
 
 componentLayer.forEach(function(e,index){
     e.id = 'componentLayer_' + (index + 1);
-    e.label_width = 100;
+    e.label_width = 150;
     e.belongTo = 'componentBox';
 });
 

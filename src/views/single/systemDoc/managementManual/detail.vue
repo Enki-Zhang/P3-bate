@@ -85,9 +85,9 @@
                         <el-table-column label="编号" fixed="left" show-overflow-tooltip min-width="60">
                             <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                         </el-table-column>
-                        <el-table-column label="表单key" fixed="left" show-overflow-tooltip min-width="220">
+                        <!-- <el-table-column label="表单key" fixed="left" show-overflow-tooltip min-width="220">
                             <template slot-scope="scope">{{ scope.row.formKey }}</template>
-                        </el-table-column>
+                        </el-table-column> -->
                         <el-table-column label="表单名称" fixed="left" show-overflow-tooltip>
                             <template slot-scope="scope">{{ scope.row.formName }}</template>
                         </el-table-column>

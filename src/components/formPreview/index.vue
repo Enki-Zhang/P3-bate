@@ -50,7 +50,8 @@ export default {
 
     submitFn(){
       var keyInfo = JSON.stringify(this.preview.getFormInfo());
-      //console.log(keyInfo);
+      // console.log(keyInfo);
+      // return;
       if(this.$listeners['success']){
           this.$emit('success',keyInfo);
       }
@@ -224,21 +225,17 @@ export default {
               </div>`;
     },
     getUpload(i){
-      return `<div class = "previewRow inputBox">
-                  <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+      return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
+                  <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span>{{data[${i}].data_url}}</span>
                   <el-upload
                     class="avatar-uploader"
                     :action="data[${i}].attr_url"
                     :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :headers="{Token:token}"
                    >
-                    <img 
-                      v-if="data[${i}].data_url" 
-                      :src="data[${i}].data_url" 
-                      class="avatar" />
-                    <i 
-                      v-else 
-                      class="el-icon-plus avatar-uploader-icon">
-                    </i>
+                    <el-button size="mini" type="primary">点击上传</el-button>
                   </el-upload>
               </div>`;
     },
@@ -289,10 +286,10 @@ export default {
                           v-model="v[index2]" 
                           :placeholder="v2.attr_placeholder">
                           <el-option
-                            v-for="v3,index3 in v2.attr_data_list"
-                            :key="index3"
-                            :label="v3.name"
-                            :value="v3.name">
+                              v-for="v3,index3 in (v2.attr_data_source == 'default' ? v2.attr_data_list : v2.bind_list)"
+                              :key="index3"
+                              :label="typeof(v3.name) == 'object' ? v3.name.join(',') : v3.name"
+                              :value="typeof(v3.name) == 'object' ? v3.name.join(',') : v3.name">
                           </el-option>
                         </el-select>
 
@@ -369,21 +366,19 @@ export default {
                           v-model="v[index2]">
                         </el-switch>
 
-                        <el-upload
-                          v-else-if = "v2.type == 'upload'"
-                          class="avatar-uploader"
-                          :action="v2.attr_url"
-                          :show-file-list="false"
-                         >
-                          <img 
-                            v-if="v[index2]" 
-                            :src="v[index2]" 
-                            class="avatar" />
-                          <i 
-                            v-else 
-                            class="el-icon-plus avatar-uploader-icon">
-                          </i>
-                        </el-upload>
+                        <div v-else-if = "v2.type == 'upload'" @click = "setCompIndex(${i},index,index2)">
+                            <span style = "display:inline-block;vertical-align:middle;">{{v[index2]}}</span>
+                            <el-upload
+                              style = "display:inline-block;vertical-align:middle;"
+                              class="avatar-uploader"
+                              :action="v2.attr_url"
+                              :show-file-list="false"
+                              :on-success="handleAvatarSuccess"
+                              :headers="{Token:token}"
+                             >
+                              <el-button style = "width:80px;" size="mini" type="primary">点击上传</el-button>
+                            </el-upload>
+                        </div>
 
                         <div v-else>{{v[index2]}}</div>
                       </td>
@@ -467,10 +462,21 @@ export default {
       }
       
       let rqSelectArr = [];//将绑定数据的下拉组件筛选出来，记录下标
+      let childIndexSet = {};//记录子表单绑定数据的下拉组件下标
       for(let i = 0;i < dataArr.length;i++){
           if(dataArr[i].hasOwnProperty('attr_data_source') && dataArr[i].attr_data_source == 'bind' && dataArr[i].attr_data_bind != ''){
               rqSelectArr.push(i);
           }
+          if(dataArr[i].type == 'childForm'){
+              let childList = dataArr[i].arr;
+              for(let j = 0;j < childList.length;j++){
+                  if(childList[j].hasOwnProperty('attr_data_source') && childList[j].attr_data_source == 'bind' && childList[j].attr_data_bind != ''){
+                      rqSelectArr.push(i);
+                      childIndexSet[i] = j;
+                      break;
+                  }
+              }
+          } 
       }
 
       let rqCount = 0;
@@ -479,7 +485,8 @@ export default {
           return;
       }
       rqSelectArr.forEach(e => {//存在绑定数据的下拉组件，先遍历请求数据完再初始化
-          let bindId = dataArr[e].attr_data_bind;
+          let ifChildForm = dataArr[e].type == "childForm";
+          let bindId = ifChildForm ? dataArr[e].arr[childIndexSet[e]].attr_data_bind : dataArr[e].attr_data_bind;
           api.formSourceSelectList(bindId).then((res) => {
               if(res.data.status === 200) {
                   let reArr = res.data.data;
@@ -487,7 +494,10 @@ export default {
                   for(let i = 0;i < reArr.length;i++){
                       arr.push({id:i + 1,name:reArr[i]});
                   }
-                  dataArr[e].bind_list = arr;
+                  if(ifChildForm)
+                      dataArr[e].arr[childIndexSet[e]].bind_list = arr;
+                  else
+                      dataArr[e].bind_list = arr;
                   rqCount++;
                   if(rqCount == rqSelectArr.length){
                       self.initPreview(dataArr);
@@ -507,16 +517,43 @@ export default {
         // self.preview = new _Vue_().$mount('#preview')
         console.log(dataArr);
         self.data = JSON.parse(JSON.stringify(dataArr));
+        let session = JSON.parse(localStorage.getItem('stu-p3lab'));
+        let token = session.session.userInfo.token;
+
+
         var vueHtml = Vue.extend({
             template:self.buildHtml(),
             data: function () {
                 return{
-                    data:self.data
+                    data:self.data,
+                    token:token,
+                    compIndex:-1,
+                    compIndex2:-1,
+                    compIndex3:-1
                 }
             },
             methods:{
               test(e){
                 console.log(e);
+              },
+              setCompIndex(index,index2,index3){
+                  //console.log(index);
+                  self.preview.compIndex = index;
+                  self.preview.compIndex2 = index2;
+                  self.preview.compIndex3 = index3;
+              },
+              handleAvatarSuccess(res, file) {
+                  // console.log(res);
+                  // console.log(file);
+                  // console.log(self.preview.compIndex);
+                  // console.log(self.preview.compIndex2);
+                  // console.log(self.preview.compIndex3);
+                  if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
+                      self.preview.data[self.preview.compIndex].data_url = res.data;
+                  else
+                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3] = res.data;
+                  self.preview.$forceUpdate();
+                  self.$message.success('上传成功');
               },
               getFormInfo(){
                 return this.data;

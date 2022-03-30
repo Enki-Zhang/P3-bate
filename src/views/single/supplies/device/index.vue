@@ -50,7 +50,7 @@
                         </el-form-item>
                     </el-row>
 
-                    <el-row class="filters">
+                    <!-- <el-row class="filters">
                         <el-form-item>
                             <el-row class="item">
                                 <el-row class="btn">
@@ -65,7 +65,7 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>
-                    </el-row>
+                    </el-row> -->
                 </el-form>
 
                 <!-- 列表 -->
@@ -272,7 +272,7 @@
                 }).then((res) => {
                     if(res.data.status === 200) {
                         this.$message.success('提交成功');
-                        this.getTableData();
+                        this.loadData();
                     }
                 });
             },
