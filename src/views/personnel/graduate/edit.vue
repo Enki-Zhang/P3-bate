@@ -200,7 +200,7 @@
         validateAllSpace,
         validateNullArray,
     } from '@plugins/man/validate';
-    const listRoutePath = '/personnel/information/detail';
+    const listRoutePath = '/personnel/graduate/detail';
 
     export default {
         name: "edit",
@@ -284,7 +284,7 @@
                     confirmButtonText: '返回列表',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                    that.$router.push({path: listRoutePath, query: {id: that.form.id,}});
                 }).catch();
             },
         }

@@ -150,6 +150,7 @@
 
 <script>
 
+    import {mapState} from 'vuex';
     import dayjs from 'dayjs';
     import jsonTableData from '@mock/systemDocManagementManual.json';
     import api from "@api";
@@ -192,6 +193,9 @@
             this.tbDataFilter = {...this.tbFilter};
             delete this.tbDataFilter.createTime;
             this.getTableData();
+        },
+        computed: {
+            ...mapState(['userInfo']),
         },
         methods: {
             getTableData: function(page = 1, pageSize = 10) {
@@ -236,10 +240,10 @@
 
             create: function() {
                 let that = this;
-                // if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
+                if(!that.man.fast.inArray('system-doc:management-manual:add', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$router.push({
                     path: `/system-doc/management-manual/add`,
@@ -252,6 +256,10 @@
             },
             versionManage: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual:version', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$router.push({
                     path: `/system-doc/management-manual/version`,
@@ -265,6 +273,10 @@
             },
             detail: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual:detail', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$router.push({
                     path: `/system-doc/management-manual/detail`,
@@ -277,10 +289,10 @@
             },
             edit: function(row) {
                 let that = this;
-                // if(!that.man.fast.inArray('sys:user:add', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
+                if(!that.man.fast.inArray('system-doc:management-manual:edit', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$router.push({
                     path: `/system-doc/management-manual/edit`,
@@ -293,10 +305,10 @@
             },
             remove: function(row) {
                 let that = this;
-                // if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
-                //     that.$message.warning('您无权限进行此操作');
-                //     return;
-                // }
+                if(!that.man.fast.inArray('system-doc:management-manual:del', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,

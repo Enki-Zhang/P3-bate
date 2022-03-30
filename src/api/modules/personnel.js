@@ -26,6 +26,9 @@ export function sysRoleDel(data) {
 export function sysUserInfoList(params) {
     return ajax.get('userServer/sys/user/info/list', params);
 }
+export function sysUserInfoSelect(params) {
+    return ajax.get('userServer/sys/user/info/select', params);
+}
 export function sysRoleSelect(params) {
     return ajax.get('userServer/sysRole/select', params);
 }

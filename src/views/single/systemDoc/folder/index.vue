@@ -51,6 +51,7 @@
 
 <script>
 
+    import {mapState} from 'vuex';
     import dlEdit from "@views/single/systemDoc/folder/dlEdit";
     import api from "@api";
 
@@ -69,6 +70,9 @@
         },
         created() {
             this.getFolderList();
+        },
+        computed: {
+            ...mapState(['userInfo']),
         },
         methods: {
             getFolderList: function() {
@@ -100,6 +104,10 @@
             },
             create: function() {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual-type:add', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.dlParams = {
                     mode: 'create',
@@ -109,6 +117,10 @@
             },
             edit: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual-type:edit', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 api.systemDocumentTypeFindById(row.id).then((res) => {
                     if(res.data.status === 200) {
@@ -122,6 +134,10 @@
             },
             remove: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual-type:del', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$confirm(`是否删除该文件类型`, '确认信息', {
                     distinguishCancelAndClose: true,

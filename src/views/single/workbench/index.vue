@@ -64,8 +64,8 @@
                     </el-row>
                 </el-col>-->
             </el-row>
-            <!-- 待我审批 -->
             <el-row :gutter="20">
+                <!-- 待我审批 -->
                 <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
@@ -92,6 +92,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
+                <!-- 更新信息 -->
                 <el-col :span="12" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
@@ -102,7 +103,7 @@
                         <el-row class="pd-lr-5">
                             <el-table :data="tbDataUpdating.records" size="small"
                                       :show-header="true">
-                                <el-table-column label="事项">
+                                <el-table-column label="操作">
                                     <template slot-scope="scope">
                                         {{ scope.row.operation }}
                                     </template>
@@ -112,7 +113,9 @@
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
-                                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">详情</el-link>
+                                        <el-link v-if="scope.row.operation !== '删除' && scope.row.operation !== '创建'"
+                                                 type="primary" :underline="false"
+                                                 @click.native="navUpdatingDetail(scope.row)">详情</el-link>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -344,6 +347,30 @@
                 //     list: [...jsonTbDataApply],
                 // };
                 that.dlVisibleTableApply = true;
+            },
+
+            navUpdatingDetail: function(row) {
+                let that = this;
+                // console.log(row);
+
+                switch (row.type) {
+                    case 'CUSTOM_FORM':
+                        that.$router.push({
+                            path: '/forms/forms-forms-edit',
+                            query: {
+                                id: row.id,
+                            }
+                        });
+                        break;
+                    case 'SYSTEM_DOCUMENT':
+                        that.$router.push({
+                            path: '/system-doc/management-manual/detail',
+                            query: {
+                                id: row.id,
+                            }
+                        });
+                        break;
+                }
             },
 
             removeRow: function(index, row) {

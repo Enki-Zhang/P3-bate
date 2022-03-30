@@ -128,6 +128,7 @@
 
 <script>
 
+    import {mapState} from 'vuex';
     import api from "@api";
     import dayjs from 'dayjs';
 
@@ -164,6 +165,9 @@
             this.tbDataFilter = {...this.tbFilter};
             delete this.tbDataFilter.createTime;
             this.getTableData();
+        },
+        computed: {
+            ...mapState(['userInfo']),
         },
         methods: {
             getTableData: function(page = 1, pageSize = 10) {
@@ -207,6 +211,10 @@
 
             setAsMainVersion: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual:version:as-main', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$confirm('确认要设其为主版本吗？', '确认信息', {
                     distinguishCancelAndClose: true,
@@ -225,10 +233,10 @@
             },
             remove: function(row) {
                 let that = this;
-                /*if(!that.man.fast.inArray('sys:user:del', that.userInfo.permissions)) {
+                if(!that.man.fast.inArray('system-doc:management-manual:version:del', that.userInfo.permissions)) {
                     that.$message.warning('您无权限进行此操作');
                     return;
-                }*/
+                }
 
                 that.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,

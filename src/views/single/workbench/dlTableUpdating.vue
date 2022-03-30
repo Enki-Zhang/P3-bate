@@ -15,7 +15,9 @@
                 </el-table-column>
                 <el-table-column label="操作" width="80">
                     <template slot-scope="scope">
-                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">审批</el-link>
+                        <el-link v-if="scope.row.operation !== '删除' && scope.row.operation !== '创建'"
+                                 type="primary" :underline="false"
+                                 @click.native="navUpdatingDetail(scope.row)">详情</el-link>
                     </template>
                 </el-table-column>
             </el-table>
@@ -73,7 +75,6 @@
 
                 that.getTableData(1);
             },
-
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
 
@@ -90,6 +91,29 @@
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
+            },
+            navUpdatingDetail: function(row) {
+                let that = this;
+                // console.log(row);
+
+                switch (row.type) {
+                    case 'CUSTOM_FORM':
+                        that.$router.push({
+                            path: '/forms/forms-forms-edit',
+                            query: {
+                                id: row.id,
+                            }
+                        });
+                        break;
+                    case 'SYSTEM_DOCUMENT':
+                        that.$router.push({
+                            path: '/system-doc/management-manual/detail',
+                            query: {
+                                id: row.id,
+                            }
+                        });
+                        break;
+                }
             },
 
             beforeClose: function(done) {

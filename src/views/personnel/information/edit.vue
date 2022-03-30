@@ -432,8 +432,9 @@
                             ...res.data.data,
                             birthday: res.data.data.birthday ? dayjs(res.data.data.birthday).format('YYYY-MM-DD') : '',
                             gradingTime: res.data.data.gradingTime ? dayjs(res.data.data.gradingTime).format('YYYY-MM-DD') : '',
+                            entryTime: res.data.data.entryTime ? dayjs(res.data.data.entryTime).format('YYYY-MM-DD') : '',
                         };
-                        console.log(that.form);
+                        // console.log(that.form);
                     }
                 });
             },
@@ -460,7 +461,7 @@
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
                                     that.$router.push({
-                                        path: `/personnel/information/edit`,
+                                        path: `/personnel/information/detail`,
                                         query: {
                                             id: that.form.id,
                                         }
@@ -478,9 +479,9 @@
                                 if(res.data.status === 200) {
                                     that.$message.success('保存成功');
                                     that.$router.push({
-                                        path: `/personnel/information/edit`,
+                                        path: `/personnel/information/detail`,
                                         query: {
-                                            id: that.detail.id,
+                                            id: that.form.id,
                                         }
                                     });
                                 }

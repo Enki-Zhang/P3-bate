@@ -24,7 +24,7 @@
                     <el-row type="flex">
                         <el-row type="flex">
                             <el-row class="_title">出生日期</el-row>
-                            <el-row class="_val">{{ detail.birthday }}</el-row>
+                            <el-row class="_val">{{ detail.birthday ? dayjs(detail.birthday).format('YYYY-MM-DD') : '' }}</el-row>
                         </el-row>
                         <el-row type="flex" class="br">
                             <el-row class="_title">手机号码</el-row>

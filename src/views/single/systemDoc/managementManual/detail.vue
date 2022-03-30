@@ -134,6 +134,7 @@
 
 <script>
 
+    import {mapState} from 'vuex';
     import dayjs from 'dayjs';
     import api from "@api";
     // let mammoth = require("mammoth");
@@ -173,6 +174,9 @@
         },
         created() {
             if(this.$route.query.id > 0) this.getDetail();
+        },
+        computed: {
+            ...mapState(['userInfo']),
         },
         methods: {
             getDetail: function() {
@@ -228,6 +232,10 @@
             },
             lookDetail: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual:detail:detail', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
 
                 that.$router.push({
                     path: `/system-doc/management-manual/detail`,
@@ -240,6 +248,10 @@
             },
             showApplyForm: function(row) {
                 let that = this;
+                if(!that.man.fast.inArray('system-doc:management-manual:detail:apply', that.userInfo.permissions)) {
+                    that.$message.warning('您无权限进行此操作');
+                    return;
+                }
                 // console.log(row);
                 that.applyFormItem = {...row};
 
@@ -284,6 +296,9 @@
                     that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                 }).catch();
             },
+
+
+
             // 插件方式 - 该方法暂时遗弃
             convertWordToText: function(wordURL) {
                 const xhr = new XMLHttpRequest();
