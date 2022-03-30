@@ -9,8 +9,11 @@
                       @selection-change="handleSelectionChange"
                       highlight-current-row class="dp-pc">
                 <el-table-column type="selection" width="45"></el-table-column>
-                <el-table-column label="id" fixed="left" show-overflow-tooltip min-width="60">
+                <!-- <el-table-column label="id" fixed="left" show-overflow-tooltip min-width="60">
                     <template slot-scope="scope">{{ scope.row.id }}</template>
+                </el-table-column> -->
+                <el-table-column label="编号" fixed="left" show-overflow-tooltip min-width="60">
+                    <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                 </el-table-column>
                 <el-table-column label="表单ID" fixed="left" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formId }}</template>
