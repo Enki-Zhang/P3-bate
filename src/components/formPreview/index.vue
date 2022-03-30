@@ -1,5 +1,5 @@
 <template>
-  <div class = "popBox" v-show = "sh">
+  <div class = "popBox" :class = "{popBoxNormal:!fixed}" v-show = "sh">
     <div class = "p_box">
       <div class = "header">
         <p>申请</p>
@@ -9,8 +9,8 @@
       <div class = "body" id = "preview_dialog">
       </div>
 
-      <div class = "footer">
-        <el-button v-show = "submitBtn" @click = "submitFn" style = "width:100px;" type="primary">提交表单</el-button>
+      <div class = "footer" v-show = "submitBtn">
+        <el-button @click = "submitFn" style = "width:100px;" type="primary">提交表单</el-button>
       </div>
     </div>
   </div>
@@ -42,6 +42,10 @@ export default {
       submitBtn: {
           type: Boolean,
           default: true
+      },
+      fixed:{
+          type:Boolean,
+          default:true
       }
   },
   data() {
@@ -682,8 +686,15 @@ export default {
       flex-grow: 1;
       height: 0;
     }
+  }   
+}
+.popBoxNormal{
+  position:relative;
+  .p_box{
+    .body{
+      height:auto;
+    }
   }
-    
 }
 
 #preview_dialog{
