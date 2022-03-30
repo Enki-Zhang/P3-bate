@@ -10,7 +10,7 @@
       </div>
 
       <div class = "footer">
-        <el-button @click = "submitFn" style = "width:100px;" type="primary">提交表单</el-button>
+        <el-button v-show = "submitBtn" @click = "submitFn" style = "width:100px;" type="primary">提交表单</el-button>
       </div>
     </div>
   </div>
@@ -38,6 +38,12 @@ Vue.use(Upload);
 
 export default {
   name: "Preview",
+  props:{
+      submitBtn: {
+          type: Boolean,
+          default: true
+      }
+  },
   data() {
     return {
       sh:false,
