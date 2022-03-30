@@ -11,9 +11,6 @@
                 <el-table-column type="selection" width="45"></el-table-column>
                 <el-table-column label="表单编号" fixed="left" show-overflow-tooltip min-width="60">
                     <template slot-scope="scope">{{ scope.row.formNumber }}</template>
-                </el-table-column> -->
-                <el-table-column label="编号" fixed="left" show-overflow-tooltip min-width="60">
-                    <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                 </el-table-column>
                 <el-table-column label="表单名称" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formName }}</template>

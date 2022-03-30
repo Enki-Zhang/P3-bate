@@ -7,7 +7,7 @@
             <el-table :data="tbData.records" size="small">
                 <el-table-column label="事项">
                     <template slot-scope="scope">
-                        {{ `${scope.row.processDefinitionName}` }}
+                        {{ `${scope.row.formName}` }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="申请/更新时间" sortable>

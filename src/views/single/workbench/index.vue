@@ -77,7 +77,7 @@
                             <el-table :data="tbDataPending.records" size="small">
                                 <el-table-column label="事项">
                                     <template slot-scope="scope">
-                                        {{ scope.row.processDefinitionName }}
+                                        {{ scope.row.formName }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="时间" sortable>
@@ -134,7 +134,7 @@
                     <el-table :data="tbDataProcessing.records" size="small">
                         <el-table-column label="事项">
                             <template slot-scope="scope">
-                                {{ `${scope.row.processDefinitionName}` }}
+                                {{ `${scope.row.formName}` }}
                             </template>
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
@@ -142,7 +142,8 @@
                         </el-table-column>
                         <el-table-column label="操作" width="80">
                             <template slot-scope="scope">
-                                <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">查看进度</el-link>
+                                <!--  @click.native="viewProcess(scope.row)" -->
+                                <el-link type="primary" :underline="false">查看进度</el-link>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -158,7 +159,7 @@
                 <el-row class="pd-lr-5">
                     <el-table :data="tbDataApply.records" size="small">
                         <el-table-column prop="createUserName" label="发起人" width="100"></el-table-column>
-                        <el-table-column prop="processDefinitionName" label="事项"></el-table-column>
+                        <el-table-column prop="formName" label="事项"></el-table-column>
                         <el-table-column prop="createTime" label="申请时间" sortable>
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
@@ -192,6 +193,8 @@
         <dl-table-processing v-model="dlVisibleTableProcessing" :params="dlParams"></dl-table-processing>
         <!-- 组件：申请历史记录 -->
         <dl-table-apply v-model="dlVisibleTableApply" :params="dlParams"></dl-table-apply>
+        <!-- 组件：查看进度 -->
+<!--        <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>-->
     </el-row>
 
 </template>
@@ -202,15 +205,11 @@
     import ICountUp from 'vue-countup-v2';
     import api from '@api';
 
-    import jsonTbDataPending from '@mock/tbDataPending.json';
-    import jsonTbDataUpdating from '@mock/tbDataUpdating.json';
-    import jsonTbDataProcessing from '@mock/tbDataProcessing.json';
-    import jsonTbDataApply from '@mock/tbDataApply.json';
-
     import dlTablePending from "@views/single/workbench/dlTablePending";
     import dlTableUpdating from "@views/single/workbench/dlTableUpdating";
     import dlTableProcessing from "@views/single/workbench/dlTableProcessing";
     import dlTableApply from "@views/single/workbench/dlTableApply";
+    // import dlViewProgress from "@views/single/workbench/dlViewProgress";
 
     export default {
         name: "index",
@@ -220,16 +219,11 @@
             dlTableUpdating,
             dlTableProcessing,
             dlTableApply,
+            // dlViewProgress,
         },
         data() {
             return {
                 dayjs,
-
-                dlParams: {},
-                dlVisibleTablePending: false,
-                dlVisibleTableUpdating: false,
-                dlVisibleTableProcessing: false,
-                dlVisibleTableApply: false,
 
                 countUpOpt: {
                     delay: 500,
@@ -243,6 +237,13 @@
                     prefix: '',
                     suffix: ''
                 },
+
+                dlParams: {},
+                dlVisibleTablePending: false,
+                dlVisibleTableUpdating: false,
+                dlVisibleTableProcessing: false,
+                dlVisibleTableApply: false,
+                dlVisibleViewProgress: false,
 
                 tbDataPending: {records: [], total: 0,},
                 tbDataUpdating: {records: [], total: 0,},
@@ -372,6 +373,15 @@
                         break;
                 }
             },
+            /*viewProcess: function(row) {
+                let that = this;
+
+                api.workbenchGetDetail(row.processInstanceId).then((res) => {
+                    if(res.data.status === 200) {
+                        that.dlVisibleViewProgress = true;
+                    }
+                });
+            },*/
 
             removeRow: function(index, row) {
                 console.log(row);

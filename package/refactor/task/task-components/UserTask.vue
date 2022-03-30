@@ -2,14 +2,14 @@
     <div style="margin-top: 16px">
         <el-form-item label="处理用户">
             <el-select v-model="userTaskForm.assignee" @change="updateElementTask('assignee')">
-                <el-option v-for="(v, k) in mockCL" :key="`ass-${k}`" :label="v.name" :value="v.uid"/>
+                <el-option v-for="(v, k) in seloptsUser" :key="`ass-${k}`" :label="v.name" :value="v.id"/>
             </el-select>
         </el-form-item>
         <el-form-item label="候选用户">
             <el-select v-model="userTaskForm.candidateUsers"
                        @change="updateElementTask('candidateUsers')"
                        multiple collapse-tags>
-                <el-option v-for="(v, k) in mockHX" :key="`user-${k}`" :label="v.name" :value="v.uid"/>
+                <el-option v-for="(v, k) in seloptsUser" :key="`user-${k}`" :label="v.name" :value="v.id"/>
             </el-select>
         </el-form-item>
         <el-form-item label="候选分组">
@@ -71,7 +71,11 @@
             };
         },
         created() {
-            this.getUserGroup();
+            this.initSeloptsUser();
+            this.initSeloptsUserGroup();
+        },
+        beforeDestroy() {
+            this.bpmnElement = null;
         },
         watch: {
             id: {
@@ -105,7 +109,16 @@
             },
 
 
-            getUserGroup: function() {
+            initSeloptsUser: function() {
+                let that = this;
+
+                api.sysUserInfoSelect().then((res) => {
+                    if(res.data.status === 200) {
+                        that.seloptsUser = [...res.data.data];
+                    }
+                });
+            },
+            initSeloptsUserGroup: function() {
                 let that = this;
 
                 api.sysRoleSelect().then((res) => {
@@ -114,9 +127,6 @@
                     }
                 });
             },
-        },
-        beforeDestroy() {
-            this.bpmnElement = null;
         }
     };
 </script>

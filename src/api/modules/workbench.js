@@ -19,6 +19,9 @@ export function workbenchUpdateInfoPage(params) {
 export function workbenchRnningStartedByMePage(params) {
     return ajax.get(`backServer/workbench/running/startedByMe/page`, params);
 }
+export function workbenchGetDetail(params) {
+    return ajax.get(`backServer/workbench/getDetail/${params}`);
+}
 
 
 // 申请历史记录

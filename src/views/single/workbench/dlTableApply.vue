@@ -6,7 +6,7 @@
         <el-row>
             <el-table :data="tbData.records" size="small">
                 <el-table-column prop="createUserName" label="发起人" width="100"></el-table-column>
-                <el-table-column prop="processDefinitionName" label="事项"></el-table-column>
+                <el-table-column prop="formName" label="事项"></el-table-column>
                 <el-table-column prop="createTime" label="申请时间" sortable>
                     <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                 </el-table-column>
