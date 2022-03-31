@@ -142,8 +142,7 @@
                         </el-table-column>
                         <el-table-column label="操作" width="80">
                             <template slot-scope="scope">
-                                <!--  @click.native="viewProcess(scope.row)" -->
-                                <el-link type="primary" :underline="false">查看进度</el-link>
+                                <el-link type="primary" :underline="false" @click.native="viewProcess(scope.row)">查看进度</el-link>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -194,7 +193,7 @@
         <!-- 组件：申请历史记录 -->
         <dl-table-apply v-model="dlVisibleTableApply" :params="dlParams"></dl-table-apply>
         <!-- 组件：查看进度 -->
-<!--        <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>-->
+        <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>
     </el-row>
 
 </template>
@@ -209,7 +208,7 @@
     import dlTableUpdating from "@views/single/workbench/dlTableUpdating";
     import dlTableProcessing from "@views/single/workbench/dlTableProcessing";
     import dlTableApply from "@views/single/workbench/dlTableApply";
-    // import dlViewProgress from "@views/single/workbench/dlViewProgress";
+    import dlViewProgress from "@views/single/workbench/dlViewProgress";
 
     export default {
         name: "index",
@@ -219,7 +218,7 @@
             dlTableUpdating,
             dlTableProcessing,
             dlTableApply,
-            // dlViewProgress,
+            dlViewProgress,
         },
         data() {
             return {
@@ -373,15 +372,18 @@
                         break;
                 }
             },
-            /*viewProcess: function(row) {
+            viewProcess: function(row) {
                 let that = this;
 
                 api.workbenchGetDetail(row.processInstanceId).then((res) => {
                     if(res.data.status === 200) {
+                        that.dlParams = {
+                            ...res.data.data,
+                        };
                         that.dlVisibleViewProgress = true;
                     }
                 });
-            },*/
+            },
 
             removeRow: function(index, row) {
                 console.log(row);

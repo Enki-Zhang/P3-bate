@@ -59,6 +59,8 @@ import {
     CollapseItem,
     Drawer,
     Divider,
+    Timeline,
+    TimelineItem,
 } from 'element-ui';
 
 Vue.use(Scrollbar);
@@ -123,3 +125,5 @@ Vue.use(Collapse);
 Vue.use(CollapseItem);
 Vue.use(Drawer);
 Vue.use(Divider);
+Vue.use(Timeline);
+Vue.use(TimelineItem);
