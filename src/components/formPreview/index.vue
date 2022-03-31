@@ -1,7 +1,7 @@
 <template>
   <div class = "popBox" :class = "{popBoxNormal:!fixed}" v-show = "sh">
     <div class = "p_box">
-      <div class = "header">
+      <div class = "header" v-show = "submitBtn">
         <p>申请</p>
         <span @click = "closeFn">关闭</span>
       </div>
