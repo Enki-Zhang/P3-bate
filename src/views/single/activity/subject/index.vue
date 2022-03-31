@@ -99,33 +99,7 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table 
-                        ref="multipleTable" 
-                        :data="tbData.records" 
-                        tooltip-effect="dark"
-                        :min-height="460" 
-                        size="small"
-                        highlight-current-row 
-                        border>
-                        <!-- <el-table-column v-if = "tbData.headArr.length > 0" label="表单序号" fixed="left" show-overflow-tooltip width="80">
-                            <template slot-scope="scope">{{ scope.row.formId }}</template>
-                        </el-table-column> -->
-                        <el-table-column v-if = "tbData.headArr.length == 0" label="未绑定表单" show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column v-for = "v,index in tbData.headArr" :key = "index" :label="v.showName" show-overflow-tooltip >
-                            <template slot-scope="scope">
-                                <div v-if = "v.type == 'DATE_RANGE' || v.type == 'TIME_RANGE'">
-                                    {{scope.row[v.key][0]}}至{{scope.row[v.key][1]}}
-                                </div>
-                                <div v-else-if = "v.type == 'UPLOAD'">
-                                    <el-link @click = "downloadFn(scope.row[v.key])" style = "font-size:12px;" type="primary">{{scope.row[v.key]}}</el-link>
-                                </div>
-                                <div v-else>
-                                    {{scope.row[v.key]}}
-                                </div>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <compTable :dataList = "tbData.records" :dataColumn = "tbData.headArr"/>
                 </el-row>
 
                 <!-- 分页 -->
@@ -284,11 +258,13 @@
 <script>
     import api from "@api";
     import compForm from "@/components/formPreview";
+    import compTable from "@/components/formPreview/table";
 
     export default {
         name: "index",
         components:{
-            compForm
+            compForm,
+            compTable
         },
         data() {
             return {
@@ -358,53 +334,6 @@
             this.initBtn();
         },
         methods: {
-            downloadFn(fileName){
-                const self = this;
-                let fileUrl = self.man.fast.getResourcePath(fileName);
-                let msg = self.$message.warning({
-                    showClose: true,
-                    duration: 0,
-                    message: '正在下载...'
-                });
-                //const file = obj;
-                function judgePort(url,name){
-                    var u = navigator.userAgent;
-                    if((u.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-                        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-                        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-                        // if(isAndroid)
-                        //     alert('android');
-                        // if(isiOS)
-                        //     alert('ios');
-                        let a = document.createElement('a');
-                        a.download = name;
-                        a.href = url;
-                        a.target = '_blank';
-                        a.click();
-                        return;
-                    }
-                }
-                judgePort(fileUrl,fileName);
-                //console.log(self.staticPath)
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", fileUrl, true);
-                xhr.responseType = 'blob';
-                xhr.onload = function(e) {
-                    var url = window.URL.createObjectURL(xhr.response)
-                    var a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    a.click()
-                    if (xhr.status !== 200 && xhr.readyState === 4) {
-                        self.$message.error({
-                            duration: 3000,
-                            message: '下载失败！'
-                        })
-                    }
-                    msg.close();
-                }
-                xhr.send();
-            },
             getFormFieldId(){
                 let menuId = this.getMenuId();
                 api.getFormHead(menuId).then((res) => {

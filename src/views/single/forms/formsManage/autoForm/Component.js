@@ -20,16 +20,21 @@ let componentAttrName = {
     'attr_size':'文字大小',
     'attr_placeholder':'占位符',
     'attr_layer':'布局',
-    'attr_url':'上传链接'
+    'attr_url':'上传链接',
+    'attr_label_align':'文字位置',
+    'attr_label_weight':'文字粗细'
 }
 
 let componentInput = [
-    // { 
-    //     attr_name: '文本',
-    //     attr_value:'这是写死的文本',
-    //     type:'text',
-    //     attr_size:14
-    // },
+    { 
+        attr_name: '文本',
+        //attr_value:'',
+        type:'text',
+        attr_size:14,
+        attr_label_weight:'normal',
+        attr_label_align:'left'
+
+    },
     { 
         attr_name: '单行输入框',
         attr_value:'',
@@ -50,7 +55,13 @@ let componentInput = [
         attr_input_width:150,
         attr_placeholder:'请输入',
         type:'inputNumber'
-    }
+    },
+    // { 
+    //     attr_name: '单行输入框',
+    //     attr_value:'',
+    //     attr_placeholder:'请输入',
+    //     type:'input'
+    // },
     //{ id: 99, attr_name: '按钮',type:'button',belongTo:'componentBox'},
 ]
 

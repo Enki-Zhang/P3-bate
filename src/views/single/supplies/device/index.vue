@@ -70,30 +70,7 @@
 
                 <!-- 列表 -->
                 <el-row>
-                    <el-table 
-                        ref="multipleTable" 
-                        :data="tbData.records" 
-                        tooltip-effect="dark"
-                        :min-height="460" 
-                        size="small"
-                        highlight-current-row 
-                        border>
-                        <!-- <el-table-column v-if = "tbData.headArr.length > 0" label="表单序号" fixed="left" show-overflow-tooltip width="80">
-                            <template slot-scope="scope">{{ scope.row.formId }}</template>
-                        </el-table-column> -->
-                        <el-table-column v-if = "tbData.headArr.length == 0" label="未绑定表单" show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column v-for = "v,index in tbData.headArr" :key = "index" :label="v.showName" show-overflow-tooltip >
-                            <template slot-scope="scope">
-                                <div v-if = "v.type == 'DATE_RANGE' || v.type == 'TIME_RANGE'">
-                                    {{scope.row[v.key][0]}}至{{scope.row[v.key][1]}}
-                                </div>
-                                <div v-else>
-                                    {{scope.row[v.key]}}
-                                </div>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <compTable :dataList = "tbData.records" :dataColumn = "tbData.headArr"/>
                 </el-row>
 
                 <!-- 分页 -->
@@ -118,11 +95,13 @@
 <script>
     import api from "@api";
     import compForm from "@/components/formPreview";
+    import compTable from "@/components/formPreview/table";
 
     export default {
         name: "index",
         components:{
-            compForm
+            compForm,
+            compTable
         },
         data() {
             return {

@@ -572,7 +572,7 @@
                                 v-else 
                                 :key="item.id" 
                                 class = "formItem" 
-                                :style = "{textAlign:item.attr_label_align}"
+                                :style = "{textAlign:'left'}"
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
@@ -604,6 +604,12 @@
                                   <option value = "left">左对齐</option>
                                   <option value = "center">居中</option>
                                   <option value = "right">右对齐</option>
+                                </select>
+                              </div>
+                              <div v-else-if = "k == 'attr_label_weight'">
+                                <select v-model = "attrObj[k]">
+                                  <option value = "normal">正常</option>
+                                  <option value = "bolder">加粗</option>
                                 </select>
                               </div>
                               <div v-else-if = "k == 'attr_layer'">

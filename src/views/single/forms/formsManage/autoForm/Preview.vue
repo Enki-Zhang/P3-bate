@@ -51,7 +51,7 @@ export default {
   },
   methods:{
     getText(i){
-      return `<div :style = "{textAlign:'right',fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
+      return `<div :style = "{fontWeight:data[${i}].attr_label_weight,textAlign:data[${i}].attr_label_align,fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
     },
     getInput(i){
       return `<div class = "previewRow inputBox">
