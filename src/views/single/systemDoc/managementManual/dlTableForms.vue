@@ -1,6 +1,6 @@
 <template>
 
-    <el-dialog top="18vh" width="688px" :title="`相关记录列表`" :visible.sync="dialogVisible"
+    <el-dialog top="16vh" width="800px" :title="`相关记录列表`" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" class="_root_page" append-to-body>
         <el-row>
@@ -9,13 +9,13 @@
                       @selection-change="handleSelectionChange"
                       highlight-current-row class="dp-pc">
                 <el-table-column type="selection" width="45"></el-table-column>
-                <el-table-column label="表单编号" fixed="left" show-overflow-tooltip min-width="60">
+                <el-table-column label="表单编号" width="120">
                     <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                 </el-table-column>
                 <el-table-column label="表单名称" show-overflow-tooltip>
                     <template slot-scope="scope">{{ scope.row.formName }}</template>
                 </el-table-column>
-                <el-table-column label="前置表单编号" fixed="left" show-overflow-tooltip>
+                <el-table-column label="前置表单编号" width="120">
                     <template slot-scope="scope">{{ scope.row.frontTableIds.join(',') }}</template>
                 </el-table-column>
                 <el-table-column label="前置表单名称" show-overflow-tooltip>
