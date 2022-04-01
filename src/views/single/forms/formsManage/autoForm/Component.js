@@ -33,7 +33,6 @@ let componentInput = [
         attr_size:14,
         attr_label_weight:'normal',
         attr_label_align:'left'
-
     },
     { 
         attr_name: '单行输入框',
@@ -130,6 +129,7 @@ let componentSelect = [
             {id:1,name:'选项1'},
             {id:2,name:'选项2'}
         ],
+        otherValue:'',
         data_index:0,
         data_value:'选项1',
         type:'radio',
@@ -141,6 +141,7 @@ let componentSelect = [
             {id:1,name:'选项1',check:false},
             {id:2,name:'选项2',check:false}
         ],
+        otherValue:'',
         data_value:[],
         type:'check',
         attr_layer:'inline-block' //1-水平 2-垂直

@@ -13,16 +13,31 @@
             </el-table-column> -->
             <el-table-column v-if = "dataColumn.length == 0" label="未绑定表单" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column v-for = "v,index in dataColumn" :key = "index" :label="v.showName" show-overflow-tooltip >
+            <el-table-column :width="v.type == 'CHILD_FORM' ? '800' : ''" v-for = "v,index in dataColumn" :key = "index" :label="v.showName" show-overflow-tooltip >
                 <template slot-scope="scope">
                     <div v-if = "v.type == 'DATE_RANGE' || v.type == 'TIME_RANGE'">
-                        <span v-if = "scope.row[v.key] != null">{{scope.row[v.key][0]}} ~ {{scope.row[v.key][1]}}</span>
+                        <span v-if = "scope.row[v.key]">{{scope.row[v.key][0]}} ~ {{scope.row[v.key][1]}}</span>
                     </div>
                     <div v-else-if = "v.type == 'UPLOAD'">
                         <el-link @click = "downloadFn(scope.row[v.key])" style = "font-size:12px;" type="primary">{{scope.row[v.key]}}</el-link>
                     </div>
+                    <div v-else-if = "v.type == 'CHILD_FORM'" class = "childFormBox">
+                        <div class = "c_row" v-for = "obj,objIndex in scope.row[v.key]" :key = "objIndex">
+                            <span class = "c_col" v-for = "obj2,objIndex2 in obj" :key = "objIndex2">
+                                <span>{{obj2.label}}</span> :
+                                <span v-if = "obj2.type == 'dateRange' || obj2.type == 'timeRange'">
+                                    <span v-if = "obj2.value">{{obj2.value[0]}} ~ {{obj2.value[1]}}</span>
+                                </span>
+                                <span v-else-if = "obj2.type == 'upload'">
+                                    <el-link @click = "downloadFn(obj2.value)" style = "font-size:12px;" type="primary">{{obj2.value}}</el-link>
+                                </span>
+                                <span v-else>{{obj2.value != null && typeof obj2.value == 'object' ? obj2.value.join('、') : obj2.value}}
+                                </span> 
+                            </span>
+                        </div>
+                    </div>
                     <div v-else>
-                        {{scope.row[v.key]}}
+                        {{scope.row[v.key] != null && typeof scope.row[v.key] == 'object' ? scope.row[v.key].join('、') : scope.row[v.key]}}
                     </div>
                 </template>
             </el-table-column>
@@ -112,6 +127,12 @@
 </script>
 
 <style lang="scss" scoped>
-
+.childFormBox{
+    .c_row{
+        .c_col{
+            margin-right:10px;
+        }
+    }
+}
  
 </style>

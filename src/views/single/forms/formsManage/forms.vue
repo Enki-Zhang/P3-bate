@@ -646,6 +646,7 @@
                                 </table>
                                 <div>
                                   <a @click = "selectAdd" class = "btn2" href = "javascript:void(0);">添加</a>
+                                  <a v-if = "attrObj.hasOwnProperty('otherValue')" @click = "selectOtherAdd" style = "margin-left:6px;" class = "btn2" href = "javascript:void(0);">添加其他</a>
                                 </div>
                               </div>
                               <div v-else-if = "k == 'attr_data_bind'">
@@ -673,6 +674,7 @@
                                 </table>
                                 <div>
                                   <a @click = "checkAdd" class = "btn2" href = "javascript:void(0);">添加</a>
+                                  <a style = "margin-left:6px;" v-if = "attrObj.hasOwnProperty('otherValue')" @click = "checkOtherAdd" class = "btn2" href = "javascript:void(0);">添加其他</a>
                                 </div>
                               </div>
                               <div v-else-if = "k == 'attr_data_link_value'">
@@ -1064,6 +1066,25 @@
                   this.attrObj = obj['arr'][this.selectingIndex[1]];
                 }
               },
+              checkOtherAdd(){
+                  if(this.selectingIndex.length == 1){
+                      var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
+                      //console.log(obj);
+                      let findObj = obj.attr_data_check_list.find(e => e.id == 999);
+                      if(typeof findObj != 'undefined')return;
+                      obj.attr_data_check_list.push({id:999,name:'其他',check:false});
+                      this.$set(this.formBox,this.selectingIndex[0],obj);
+                      this.attrObj = obj;
+                  }
+                  else if(this.selectingIndex.length == 2){
+                      var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
+                      let findObj = obj['arr'][this.selectingIndex[1]].attr_data_check_list.find(e => e.id == 999);
+                      if(typeof findObj != 'undefined')return;
+                      obj['arr'][this.selectingIndex[1]].attr_data_check_list.push({id:999,name:'其他',check:false});
+                      this.$set(this.formBox,this.selectingIndex[0],obj);
+                      this.attrObj = obj['arr'][this.selectingIndex[1]];
+                  }
+              },
               checkAdd(){
                 if(this.selectingIndex.length == 1){
                   var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
@@ -1107,6 +1128,26 @@
                       obj['arr'][this.selectingIndex[1]].data_value.push(obj['arr'][this.selectingIndex[1]].attr_data_check_list[i].name);
                     }
                   }
+                  this.$set(this.formBox,this.selectingIndex[0],obj);
+                  this.attrObj = obj['arr'][this.selectingIndex[1]];
+                }
+              },
+              selectOtherAdd(){
+                if(this.selectingIndex.length == 1){
+                  var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
+                  //console.log(obj);
+                  let findObj = obj.attr_data_list.find(e => e.id == 999);
+                  if(typeof findObj != 'undefined')return;
+                  obj.attr_data_list.push({id:999,name:'其他'});
+                  this.$set(this.formBox,this.selectingIndex[0],obj);
+                  this.attrObj = obj;
+                }
+                else if(this.selectingIndex.length == 2){
+                  var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
+                  let findObj = obj.arr[this.selectingIndex[1]].attr_data_list.find(e => e.id == 999);
+                  if(typeof findObj != 'undefined')return;
+
+                  obj['arr'][this.selectingIndex[1]].attr_data_list.push({id:999,name:'其他'});
                   this.$set(this.formBox,this.selectingIndex[0],obj);
                   this.attrObj = obj['arr'][this.selectingIndex[1]];
                 }

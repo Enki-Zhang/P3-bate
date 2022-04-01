@@ -9,7 +9,7 @@
     </div>
 
     <div class = "footer">
-      <!-- <el-button type="primary">主要按钮</el-button> -->
+      <!-- <el-button @click = "submit" type="primary">主要按钮</el-button> -->
     </div>
   </div>
 </template>
@@ -50,6 +50,9 @@ export default {
     };
   },
   methods:{
+    submit(){
+      console.log(this.preview.data);
+    },
     getText(i){
       return `<div :style = "{fontWeight:data[${i}].attr_label_weight,textAlign:data[${i}].attr_label_align,fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
     },
@@ -166,15 +169,15 @@ export default {
     getRadio(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-
                   <span>
-                    <el-radio 
-                      :style = "{display:data[${i}].attr_layer,marginRight:'30px',textAlign:'left'}"
-                      v-for = "v,index in data[${i}].attr_data_list" 
-                      v-model="data[${i}].data_value" 
-                      :label="v.name">
-                      {{v.name}}
-                    </el-radio>
+                    <span :key="index" v-for = "v,index in data[${i}].attr_data_list" :style = "{display:data[${i}].attr_layer,marginRight:'30px',marginTop:'4px',marginBottom:'4px',textAlign:'left'}">
+                      <el-radio
+                        v-model="data[${i}].data_value" 
+                        :label="v.name">
+                        {{v.name}}
+                        <input type = "text" v-if = "v.id == 999" v-model = "data[${i}].otherValue"/>
+                      </el-radio>
+                    </span>
                   </span>
               </div>`;
     },
@@ -184,10 +187,12 @@ export default {
 
                   <el-checkbox-group v-model = "data[${i}].data_value">
                     <el-checkbox
-                      :style = "{display:data[${i}].attr_layer,marginRight:'30px',textAlign:'left'}"
+                      :style = "{display:data[${i}].attr_layer,marginTop:'4px',marginBottom:'4px',marginRight:'30px',textAlign:'left'}"
                       v-for = "v,index in data[${i}].attr_data_check_list"
                       :key = "index" 
                       :label="v.name">
+                      <span style = "margin-right:10px">{{v.name}}</span>
+                      <input v-model = "data[${i}].otherValue" v-if = "v.id == 999" type = "text"/>
                     </el-checkbox>
                   </el-checkbox-group>
               </div>`;
@@ -228,15 +233,6 @@ export default {
                     <el-button size="mini" type="primary">点击上传</el-button>
                   </el-upload>
               </div>`;
-
-              // <img 
-              //   v-if="data[${i}].data_url" 
-              //   :src="data[${i}].data_url" 
-              //   class="avatar" />
-              // <i 
-              //   v-else 
-              //   class="el-icon-plus avatar-uploader-icon">
-              // </i>
     },
     getBtn(i){
       return `<div class = "previewRow btnBox"><span>{{data['${i}'].attr_name}}</span></div>`;
@@ -257,12 +253,12 @@ export default {
                           v-if = "v2.type == 'input'" 
                           size = "small" 
                           :placeholder="v2.attr_placeholder"
-                          v-model = "v[index2]">
+                          v-model = "v[index2].value">
                         </el-input>
 
                         <el-input-number 
                           v-else-if = "v2.type == 'inputNumber'" 
-                          v-model = "v[index2]"
+                          v-model = "v[index2].value"
                           :min = "v2.attr_min" 
                           :max = "v2.attr_max" 
                           :placeholder="v2.attr_placeholder" 
@@ -276,13 +272,13 @@ export default {
                           type="textarea"  
                           :rows = "5" 
                           :placeholder="v2.attr_placeholder"
-                          v-model = "v[index2]">
+                          v-model = "v[index2].value">
                         </el-input>
 
                         <el-select 
                           v-else-if = "v2.type == 'select'"
                           size = "small" 
-                          v-model="v[index2]" 
+                          v-model="v[index2].value" 
                           :placeholder="v2.attr_placeholder">
                           <el-option
                               v-for="v3,index3 in (v2.attr_data_source == 'default' ? v2.attr_data_list : v2.bind_list)"
@@ -297,26 +293,28 @@ export default {
                           clearable
                           v-else-if = "v2.type == 'linkSelect'"
                           :placeholder="v2.attr_placeholder"
-                          v-model="v2.attr_data_link_value"
+                          v-model="v[index2].value"
                           :options="v2.attr_data_link_list">
                         </el-cascader>
 
                         <div v-else-if = "v2.type == 'radio'" style = "text-align:left">
-                          <el-radio 
-                            :style = "{display:v2.attr_layer,textAlign:'left'}"
-                            v-for = "v3,index3 in v2.attr_data_list" 
-                            :key = "index3"
-                            v-model="v[index2]" 
-                            :label="v3.name">
-                            {{v3.name}}
-                          </el-radio>
+                            <span :style = "{display:v2.attr_layer,textAlign:'left',marginRight:'20px',marginTop:'4px',marginBottom:'4px'}"
+                                    v-for = "v3,index3 in v2.attr_data_list" 
+                                    :key = "index3">
+                                <el-radio
+                                    v-model="v[index2].value" 
+                                    :label="v3.name">
+                                    {{v3.name}}
+                                    <input v-model = "v[index2].otherValue" v-if = "v3.id == 999" type = "text"/>
+                                </el-radio>
+                            </span>
                         </div>
 
                         <el-date-picker
                           v-else-if = "v2.type == 'date'"
                           size="small"
                           value-format="yyyy-MM-dd"
-                          v-model="v[index2]"
+                          v-model="v[index2].value"
                           type="date">
                         </el-date-picker>
 
@@ -324,7 +322,7 @@ export default {
                           v-else-if = "v2.type == 'dateRange'"
                           size="small"
                           value-format="yyyy-MM-dd"
-                          v-model="v[index2]"
+                          v-model="v[index2].value"
                           type="daterange"
                           range-separator="-">
                         </el-date-picker>
@@ -333,7 +331,7 @@ export default {
                           v-else-if = "v2.type == 'time'"
                           size="small"
                           value-format="HH:mm:ss"
-                          v-model="v[index2]"
+                          v-model="v[index2].value"
                           :picker-options="{
                             selectableRange: '00:00:00 - 23:59:59'
                           }">
@@ -342,7 +340,7 @@ export default {
                         <el-time-picker
                           v-else-if = "v2.type == 'timeRange'"
                           is-range
-                          v-model="v[index2]"
+                          v-model="v[index2].value"
                           value-format="HH:mm:ss"
                           range-separator="-"
                         >
@@ -351,23 +349,25 @@ export default {
                         <el-checkbox-group
                           style = "text-align:left"
                           v-else-if = "v2.type == 'check'"
-                          v-model = "v[index2]">
+                          v-model = "v[index2].value">
                           <el-checkbox
                             :style = "{display:v2.attr_layer,textAlign:'left'}"
                             v-for = "v3,index3 in v2.attr_data_check_list"
                             :key = "index3" 
                             :label="v3.name">
+                            <span style = "margin-right:10px;">{{v3.name}}</span>
+                            <input v-model = "v[index2].otherValue" type = "text" v-if = "v3.id == 999"/>
                           </el-checkbox>
                         </el-checkbox-group>
 
                         <el-switch
                           v-else-if = "v2.type == 'switch'"
-                          v-model="v[index2]">
+                          v-model="v[index2].value">
                         </el-switch>
 
 
                         <div v-else-if = "v2.type == 'upload'" @click = "setCompIndex(${i},index,index2)">
-                            <span style = "display:inline-block;vertical-align:middle;">{{v[index2]}}</span>
+                            <span style = "display:inline-block;vertical-align:middle;">{{v[index2].value}}</span>
                             <el-upload
                               style = "display:inline-block;vertical-align:middle;"
                               class="avatar-uploader"
@@ -380,7 +380,7 @@ export default {
                             </el-upload>
                         </div>
 
-                        <div v-else>{{v[index2]}}</div>
+                        <div v-else>{{v[index2].value}}</div>
                       </td>
                     </tr>
                   </table>
@@ -545,7 +545,7 @@ export default {
                       if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
                           self.preview.data[self.preview.compIndex].data_url = res.data;
                       else
-                          self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3] = res.data;
+                          self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
                       self.preview.$forceUpdate();
                       self.$message.success('上传成功');
                   },
@@ -560,32 +560,79 @@ export default {
                   },
                   addChildFormRow(index){
                     var obj = JSON.parse(JSON.stringify(this.data[index]));
-                    // console.log(obj);
+                    console.log(obj);
                     let tempArr = [];
                     for(var i = 0;i < obj.arr.length;i++){
-                      if(obj.arr[i].type == 'select' || obj.arr[i].type == 'radio' || obj.arr[i].type == 'check'){
-                        tempArr.push(obj.arr[i].data_value);
+                      if(obj.arr[i].type == 'select'){
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].data_value
+                          });
+                      }
+                      else if(obj.arr[i].type == 'radio' || obj.arr[i].type == 'check'){
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].data_value,
+                              otherValue:''
+                          });
+                      }
+                      else if(obj.arr[i].type == 'linkSelect'){
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_data_link_value
+                          });
                       }
                       else if(obj.arr[i].type == 'switch'){
-                        tempArr.push(obj.arr[i].attr_boolean_value);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_boolean_value
+                          });
                       }
                       else if(obj.arr[i].type == 'time'){
-                        tempArr.push(obj.arr[i].attr_time_value);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_time_value
+                          });
                       }
                       else if(obj.arr[i].type == 'timeRange'){
-                        tempArr.push(obj.arr[i].attr_time_range_value);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_time_range_value
+                          });
                       }
                       else if(obj.arr[i].type == 'date'){
-                        tempArr.push(obj.arr[i].attr_date_value);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_date_value
+                          });
                       }
                       else if(obj.arr[i].type == 'dateRange'){
-                        tempArr.push(obj.arr[i].attr_date_range_value);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_date_range_value
+                          });
                       }
                       else if(obj.arr[i].type == 'upload'){
-                        tempArr.push(obj.arr[i].data_url);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].data_url
+                          });
                       }
                       else{
-                        tempArr.push(obj.arr[i].attr_value);
+                          tempArr.push({
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].attr_value
+                          });
                       }
                     }
                     obj.dataList.push(tempArr);
