@@ -28,12 +28,15 @@
                 </el-scrollbar>
             </el-row>
         </el-row>
-        <!--<el-row slot="footer" class="dialog-footer">
+        <el-row slot="footer" class="dialog-footer">
             <el-row type="flex" justify="center" align="middle">
-                <el-button type="default" size="small" @click="closed" class="fn-btn">关 闭</el-button>
-&lt;!&ndash;                <el-button type="primary" size="small" @click="save" class="fn-btn">保 存</el-button>&ndash;&gt;
+<!--                <el-button type="default" size="small" @click="closed" class="fn-btn">关 闭</el-button>-->
+                <el-button type="primary" size="small" @click="showDLApprovalConfirm" class="fn-btn">审 批</el-button>
             </el-row>
-        </el-row>-->
+        </el-row>
+
+        <!-- 组件：审批确认 -->
+        <dl-approval-confirm v-model="dlVisibleApprovalConfirm" :params="dlParams"></dl-approval-confirm>
     </el-dialog>
 
 </template>
@@ -43,6 +46,7 @@
     import dayjs from 'dayjs';
     import api from "@api";
     import formPreview from "@components/formPreview";
+    import dlApprovalConfirm from "@views/single/workbench/dlApprovalConfirm";
 
     export default {
         name: "dlViewProgress",
@@ -52,12 +56,15 @@
         },
         components: {
             formPreview,
+            dlApprovalConfirm,
         },
         data() {
             return {
                 dayjs,
 
+                dlParams: {},
                 dialogVisible: false,
+                dlVisibleApprovalConfirm: false,
 
                 timeLineData: [
                     {
@@ -85,8 +92,19 @@
         methods: {
             opened: function() {
                 let that = this;
+                // console.log(that.params);
 
                 that.$refs.formPreview.showFn(that.params.formInfo);
+            },
+            showDLApprovalConfirm: function() {
+                let that = this;
+
+                api.camundaFindByProcessInstanceId(that.params.taskId).then((res) => {
+                    if(res.data.status === 200) {
+                        that.dlParams = {...res.data.data};
+                        that.dlVisibleApprovalConfirm = true;
+                    }
+                });
             },
 
             beforeClose: function(done) {

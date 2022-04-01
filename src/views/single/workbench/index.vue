@@ -85,7 +85,7 @@
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
-                                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">审批</el-link>
+                                        <el-link type="primary" :underline="false" @click.native="showDLApprovalProcess(scope.row)">审批</el-link>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -142,7 +142,7 @@
                         </el-table-column>
                         <el-table-column label="操作" width="80">
                             <template slot-scope="scope">
-                                <el-link type="primary" :underline="false" @click.native="viewProcess(scope.row)">查看进度</el-link>
+                                <el-link type="primary" :underline="false" @click.native="showDLViewProcess(scope.row)">查看进度</el-link>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -192,6 +192,8 @@
         <dl-table-processing v-model="dlVisibleTableProcessing" :params="dlParams"></dl-table-processing>
         <!-- 组件：申请历史记录 -->
         <dl-table-apply v-model="dlVisibleTableApply" :params="dlParams"></dl-table-apply>
+        <!-- 组件：审批 -->
+        <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams"></dl-approval-progress>
         <!-- 组件：查看进度 -->
         <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>
     </el-row>
@@ -209,6 +211,7 @@
     import dlTableProcessing from "@views/single/workbench/dlTableProcessing";
     import dlTableApply from "@views/single/workbench/dlTableApply";
     import dlViewProgress from "@views/single/workbench/dlViewProgress";
+    import dlApprovalProgress from "@views/single/workbench/dlApprovalProgress";
 
     export default {
         name: "index",
@@ -219,6 +222,7 @@
             dlTableProcessing,
             dlTableApply,
             dlViewProgress,
+            dlApprovalProgress,
         },
         data() {
             return {
@@ -243,6 +247,7 @@
                 dlVisibleTableProcessing: false,
                 dlVisibleTableApply: false,
                 dlVisibleViewProgress: false,
+                dlVisibleApprovalProcess: false,
 
                 tbDataPending: {records: [], total: 0,},
                 tbDataUpdating: {records: [], total: 0,},
@@ -372,7 +377,31 @@
                         break;
                 }
             },
-            viewProcess: function(row) {
+            showDLApprovalProcess: function(row) {
+                let that = this;
+                // console.log(row);
+
+                api.workbenchGetDetail(row.processInstanceId).then((res) => {
+                    if(res.data.status === 200) {
+                        that.dlParams = {
+                            ...res.data.data,
+                        };
+                        that.dlVisibleApprovalProcess = true;
+                    }
+                });
+
+                /*api.camundaFindByProcessInstanceId({
+                    processInstanceId: row.processInstanceId,
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        that.dlParams = {
+                            ...res.data.data,
+                        };
+                        that.dlVisibleApprovalProcess = true;
+                    }
+                });*/
+            },
+            showDLViewProcess: function(row) {
                 let that = this;
 
                 api.workbenchGetDetail(row.processInstanceId).then((res) => {

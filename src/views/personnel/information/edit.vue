@@ -373,7 +373,7 @@
                 </el-row>
             </el-row>
             <el-row type="flex" justify="center" align="middle" class="page-default-pd-bgc-white edit-page-options-btn">
-                <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回列表</el-button>
+                <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回详情</el-button>
                 <el-button type="primary" size="small" icon="el-icon-finished" :loading="btnLoadingSave" @click="save" class="btn">保存修改</el-button>
             </el-row>
         </el-row>
@@ -493,12 +493,17 @@
             cancel: function() {
                 let that = this;
 
-                that.$confirm('是否取消编辑内容并返回列表', '确认信息', {
+                that.$confirm('是否取消编辑内容并返回详情', '确认信息', {
                     distinguishCancelAndClose: true,
-                    confirmButtonText: '返回列表',
+                    confirmButtonText: '返回详情',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    that.$router.push({name: listRouteName, params: {_lpq: JSON.parse(that.$route.params._lpq)}});
+                    that.$router.push({
+                        path: `/personnel/information/detail`,
+                        query: {
+                            id: that.form.id,
+                        }
+                    });
                 }).catch();
             },
         }

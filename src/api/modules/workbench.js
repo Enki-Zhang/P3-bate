@@ -5,6 +5,12 @@ import ajax from "@plugins/ajax";
 export function workbenchRunningWaitForMyAuditPage(params) {
     return ajax.get(`backServer/workbench/running/waitForMyAudit/page`, params);
 }
+export function camundaFindByProcessInstanceId(params) {
+    return ajax.get(`backServer/camunda/findByProcessInstanceId/${params}`);
+}
+export function camundaComplete(data) {
+    return ajax.post(`backServer/camunda/complete`, data);
+}
 
 
 // 更新中
