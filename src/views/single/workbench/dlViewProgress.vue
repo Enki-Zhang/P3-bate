@@ -15,9 +15,15 @@
                 </el-scrollbar>
                 <el-scrollbar class="elsb-cp">
                     <el-row class="current-process">
-                        <el-row class="_title">流程进度</el-row>
+                        <el-row class="_title">{{ timeLineData.formName }}流程进度</el-row>
                         <el-timeline>
-                            <el-timeline-item v-for="(v, k) in timeLineData" :key="k"
+                            <!--<el-timeline-item v-for="(v, k) in timeLineData.details" :key="k"
+                                              :type="v.type" :color="v.color"
+                                              :icon="v.icon" size="large"
+                                              :timestamp="v.timestamp">
+                                {{ v.content }}
+                            </el-timeline-item>-->
+                            <el-timeline-item v-for="(v, k) in timeLineData.details" :key="k"
                                               :type="v.type" :color="v.color"
                                               :icon="v.icon" size="large"
                                               :timestamp="v.timestamp">
@@ -59,19 +65,22 @@
 
                 dialogVisible: false,
 
-                timeLineData: [
-                    {
-                        content: '张三申请了钢笔',
-                        timestamp: '2018-04-12 20:46',
-                        icon: 'el-icon-check',
-                        type: 'primary',
-                    },
-                    {
-                        content: '工厂开始生产（审批中）',
-                        timestamp: '2018-04-12 20:56',
-                        color: '#1DC084'
-                    },
-                ],
+                timeLineData: {
+                    formName: '',
+                    details: [
+                        {
+                            content: '张三申请了钢笔',
+                            timestamp: '2018-04-12 20:46',
+                            icon: 'el-icon-check',
+                            type: 'primary',
+                        },
+                        {
+                            content: '工厂开始生产（审批中）',
+                            timestamp: '2018-04-12 20:56',
+                            color: '#1DC084'
+                        },
+                    ],
+                },
             }
         },
         watch: {
@@ -86,7 +95,23 @@
             opened: function() {
                 let that = this;
 
-                that.$refs.formPreview.showFn(that.params.formInfo);
+                that.$refs.formPreview.showFn(that.params.formData.formInfo);
+                that.mergeProcess();
+            },
+            mergeProcess: function() {
+                let that = this;
+
+                that.timeLineData.details = [];
+                that.params.processData.details.map(v => {
+                    let tmp = {
+                        content: `${v.audiUserName}${v.operationName}`,
+                        timestamp: v.operationTime ? dayjs(v.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+                        icon: !!v.complete ? 'el-icon-check' : '',
+                        type: !!v.complete ? 'primary' : 'success',
+                    };
+                    that.timeLineData.details.push(tmp);
+                });
+                // console.log(that.timeLineData);
             },
 
             beforeClose: function(done) {

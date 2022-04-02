@@ -94,12 +94,28 @@
                 let that = this;
                 // console.log(that.params);
 
-                that.$refs.formPreview.showFn(that.params.formInfo);
+                that.$refs.formPreview.showFn(that.params.formData.formInfo);
+                that.mergeProcess();
+            },
+            mergeProcess: function() {
+                let that = this;
+
+                that.timeLineData.details = [];
+                that.params.processData.details.map(v => {
+                    let tmp = {
+                        content: `${v.audiUserName}${v.operationName}`,
+                        timestamp: v.operationTime ? dayjs(v.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+                        icon: !!v.complete ? 'el-icon-check' : '',
+                        type: !!v.complete ? 'primary' : 'success',
+                    };
+                    that.timeLineData.details.push(tmp);
+                });
+                // console.log(that.timeLineData);
             },
             showDLApprovalConfirm: function() {
                 let that = this;
 
-                api.camundaFindByProcessInstanceId(that.params.taskId).then((res) => {
+                api.camundaFindByProcessInstanceId(that.params.processInstanceId).then((res) => {
                     if(res.data.status === 200) {
                         that.dlParams = {...res.data.data};
                         that.dlVisibleApprovalConfirm = true;

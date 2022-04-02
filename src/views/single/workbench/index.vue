@@ -205,6 +205,7 @@
     import dayjs from 'dayjs';
     import ICountUp from 'vue-countup-v2';
     import api from '@api';
+    import ajax from '@plugins/ajax';
 
     import dlTablePending from "@views/single/workbench/dlTablePending";
     import dlTableUpdating from "@views/single/workbench/dlTableUpdating";
@@ -381,33 +382,33 @@
                 let that = this;
                 // console.log(row);
 
-                api.workbenchGetDetail(row.processInstanceId).then((res) => {
-                    if(res.data.status === 200) {
+                ajax.all([
+                    api.workbenchGetDetail(row.processInstanceId),
+                    api.camundaGetProcessInstanceState(row.processInstanceId),
+                ]).then((res) => {
+                    if(res[0].data.status === 200 && res[1].data.status === 200) {
                         that.dlParams = {
-                            ...res.data.data,
+                            formData: {
+                                processInstanceId: row.processInstanceId,
+                                ...res[0].data.data,
+                            },
+                            processData: {...res[1].data.data},
                         };
                         that.dlVisibleApprovalProcess = true;
                     }
                 });
-
-                /*api.camundaFindByProcessInstanceId({
-                    processInstanceId: row.processInstanceId,
-                }).then((res) => {
-                    if(res.data.status === 200) {
-                        that.dlParams = {
-                            ...res.data.data,
-                        };
-                        that.dlVisibleApprovalProcess = true;
-                    }
-                });*/
             },
             showDLViewProcess: function(row) {
                 let that = this;
 
-                api.workbenchGetDetail(row.processInstanceId).then((res) => {
-                    if(res.data.status === 200) {
+                ajax.all([
+                    api.workbenchGetDetail(row.processInstanceId),
+                    api.camundaGetProcessInstanceState(row.processInstanceId),
+                ]).then((res) => {
+                    if(res[0].data.status === 200 && res[1].data.status === 200) {
                         that.dlParams = {
-                            ...res.data.data,
+                            formData: {...res[0].data.data},
+                            processData: {...res[1].data.data},
                         };
                         that.dlVisibleViewProgress = true;
                     }
