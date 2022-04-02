@@ -51,7 +51,7 @@ export function systemDocumentVersions(params) {
     return ajax.get(`backServer/systemDocument/versions`, params);
 }
 export function systemDocumentSetManVersion(data) {
-    return ajax.post('backServer/systemDocument/setMainVersion', data);
+    return ajax.post(`backServer/systemDocument/setMainVersion/${data}`);
 }
 
 // 查阅

@@ -221,9 +221,7 @@
                     confirmButtonText: '设为主版本',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    api.systemDocumentSetManVersion({
-                        id: row.id,
-                    }).then((res) => {
+                    api.systemDocumentSetManVersion(row.id).then((res) => {
                         if(res.data.status === 200) {
                             that.$message.success('保存成功');
                             that.getTableData();
