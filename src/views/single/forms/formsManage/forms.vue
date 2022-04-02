@@ -214,7 +214,7 @@
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "selectBox">
-                                          <input :placeholder = "item2.attr_placeholder" readonly type = "text" :value = "item2.attr_data_link_value.join('/')"/>
+                                          <input :placeholder = "item2.attr_placeholder" readonly type = "text" :value = "getLinkSelectName(item2.attr_data_link_list,item2.attr_data_link_value)"/>
                                         </div>
                                       </div>
                                       <div 
@@ -552,7 +552,7 @@
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "selectBox">
-                                  <input readonly :placeholder = "item.attr_placeholder" type = "text" :value = "item.attr_data_link_value.join('/')"/>
+                                  <input readonly :placeholder = "item.attr_placeholder" type = "text" :value = "getLinkSelectName(item.attr_data_link_list,item.attr_data_link_value)"/>
                                 </span>
                               </div>
                               <div 
@@ -744,21 +744,21 @@
                           <div class = "l_first" v-for = "v,index in (attrObj.hasOwnProperty('attr_data_link_list') ? attrObj.attr_data_link_list : [])" :key = "index">
                             <div class = "l_row">
                               <span>文本：</span><input v-model = "v.label"/>
-                              <span>值：</span><input v-model = "v.value"/>
+                              <!-- <span>值：</span><input v-model = "v.value"/> -->
                               <span><a @click = "linkSelectAdd(0,index)" href="javascript:void(0);">添加子选项</a></span>
                               <span><a @click = "linkSelectDel(index)" href="javascript:void(0);">删除</a></span>
                             </div>
                             <div class = "l_second" v-if = "v.hasOwnProperty('children')" v-for = "v2,index2 in v.children" :key = "index2">
                               <div class = "l_row">
                                 <span>文本：</span><input v-model = "v2.label"/>
-                                <span>值：</span><input v-model = "v2.value"/>
+                                <!-- <span>值：</span><input v-model = "v2.value"/> -->
                                 <span><a @click = "linkSelectAdd(0,index,index2)" href="javascript:void(0);">添加子选项</a></span>
                                 <span><a @click = "linkSelectDel(index,index2)" href="javascript:void(0);">删除</a></span>
                               </div>
                               <div class = "l_third" v-if = "v2.hasOwnProperty('children')" v-for = "v3,index3 in v2.children" :key = "index3">
                                 <div class = "l_row">
                                   <span>文本：</span><input v-model = "v3.label"/>
-                                  <span>值：</span><input v-model = "v3.value"/>
+                                  <!-- <span>值：</span><input v-model = "v3.value"/> -->
                                   <span><a @click = "linkSelectDel(index,index2,index3)" href="javascript:void(0);">删除</a></span>
                                 </div>
                               </div>
@@ -829,6 +829,26 @@
             this.getSourceList();
         },
         methods: {
+            getLinkSelectName(arr,value){
+                if(value.length == 0){
+                    return '';
+                }
+                else if(value.length == 1){
+                    let findObj = arr.find(e => e.value == value[0]);
+                    return findObj.label;
+                }
+                else if(value.length == 2){
+                    let findObj = arr.find(e => e.value == value[0]);
+                    let findObj2 = findObj.children.find(e => e.value == value[1]);
+                    return findObj.label + '/' + findObj2.label;
+                }
+                else if(value.length == 3){
+                    let findObj = arr.find(e => e.value == value[0]);
+                    let findObj2 = findObj.children.find(e => e.value == value[1]);
+                    let findObj3 = findObj2.children.find(e => e.value == value[2]);
+                    return findObj.label + '/' + findObj2.label + '/' + findObj3.label;
+                }
+            },
             getSourceSelectList(e){
               //console.log(this.attrObj[e]);
               api.formSourceSelectList(this.attrObj[e]).then((res) => {
@@ -997,38 +1017,82 @@
                   var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
 
                   if(arguments.length == 1){
-                    obj.attr_data_link_list.push({label:'',value:''});
+                      let value = '1';
+                      let list = obj.attr_data_link_list;
+                      if(list.length > 0){
+                          value = parseInt(list[list.length - 1].value) + 1 + '';
+                      }
+                      obj.attr_data_link_list.push({label:'',value});
                   }
                   else if(arguments.length == 2){
-                    if(!obj.attr_data_link_list[arguments[1]].hasOwnProperty('children'))
-                      obj.attr_data_link_list[arguments[1]].children = [];
-                    obj.attr_data_link_list[arguments[1]]['children'].push({label:'',value:''});
+                      if(!obj.attr_data_link_list[arguments[1]].hasOwnProperty('children'))
+                          obj.attr_data_link_list[arguments[1]].children = [];
+
+                      let value = obj.attr_data_link_list[arguments[1]].value + '_1';
+                      let list = obj.attr_data_link_list[arguments[1]]['children'];
+                      if(list.length > 0){
+                          let tempArr = list[list.length - 1].value.split('_');
+                          value = obj.attr_data_link_list[arguments[1]].value + '_' + (parseInt(tempArr[1]) + 1);
+                      }
+
+                      obj.attr_data_link_list[arguments[1]]['children'].push({label:'',value});
                   }
                   else if(arguments.length == 3){
-                    if(!obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].hasOwnProperty('children'))
-                      obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].children = [];
-                    obj.attr_data_link_list[arguments[1]]['children'][arguments[2]]['children'].push({label:'',value:''});
+                      if(!obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].hasOwnProperty('children'))
+                          obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].children = [];
+
+                      let value = obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].value + '_1';
+                      let list = obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].children;
+                      if(list.length > 0){
+                          let tempArr = list[list.length - 1].value.split('_');
+                          value = obj.attr_data_link_list[arguments[1]]['children'][arguments[2]].value + '_' + (parseInt(tempArr[2]) + 1);
+                      }
+
+                      obj.attr_data_link_list[arguments[1]]['children'][arguments[2]]['children'].push({label:'',value});
                   }
 
                   
                   this.$set(this.formBox,this.selectingIndex[0],obj);
                   this.attrObj = obj;
+                  //console.log(JSON.parse(JSON.stringify(obj)));
                 }
                 else if(this.selectingIndex.length == 2){
                   var obj = JSON.parse(JSON.stringify(this.formBox[this.selectingIndex[0]]));
 
                   if(arguments.length == 1){
-                    obj['arr'][this.selectingIndex[1]].attr_data_link_list.push({label:'',value:''});
+                      let value = '1';
+                      let list = obj['arr'][this.selectingIndex[1]].attr_data_link_list;
+                      if(list.length > 0){
+                          value = parseInt(list[list.length - 1].value) + 1 + '';
+                      }
+
+                      obj['arr'][this.selectingIndex[1]].attr_data_link_list.push({label:'',value});
                   }
                   else if(arguments.length == 2){
-                    if(!obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]].hasOwnProperty('children'))
-                      obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]].children = [];
-                    obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'].push({label:'',value:''});
+                      if(!obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]].hasOwnProperty('children'))
+                          obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]].children = [];
+
+                      let value = obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]].value + '_1';
+                      let list = obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'];
+                      if(list.length > 0){
+                          let tempArr = list[list.length - 1].value.split('_');
+                          value = obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]].value + '_' + (parseInt(tempArr[1]) + 1);
+                      }
+
+                      obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'].push({label:'',value});
                   }
                   else if(arguments.length == 3){
-                    if(!obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].hasOwnProperty('children'))
-                      obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].children = [];
-                    obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]]['children'].push({label:'',value:''});
+                      if(!obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].hasOwnProperty('children'))
+                          obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].children = [];
+
+                      let value = obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].value + '_1';
+                      let list = obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].children;
+                      if(list.length > 0){
+                          let tempArr = list[list.length - 1].value.split('_');
+                          value = obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]].value + '_' + (parseInt(tempArr[2]) + 1);
+                      }
+
+                      obj['arr'][this.selectingIndex[1]].attr_data_link_list[arguments[1]]['children'][arguments[2]]['children'].push({label:'',value});
                   }
 
                   this.$set(this.formBox,this.selectingIndex[0],obj);
