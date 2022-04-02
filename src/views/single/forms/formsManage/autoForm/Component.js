@@ -85,41 +85,11 @@ let componentSelect = [
         attr_input_width:250,
         attr_data_link_list:[
           {
-              value: '选项1',
-              label: '选项1',
-              children: [
-                  {
-                    value: '选项11',
-                    label: '选项11',
-                    children: [
-                        {
-                          value: '选项111',
-                          label: '选项111'
-                        },
-                        {
-                          value: '选项112',
-                          label: '选项112'
-                        }
-                    ]
-                  }, 
-                  {
-                    value: '选项12',
-                    label: '选项12',
-                    children: [
-                        {
-                          value: '选项121',
-                          label: '选项121'
-                        },
-                        {
-                          value: '选项122',
-                          label: '选项122'
-                        }
-                    ]
-                  }
-              ]
+              value: '1',
+              label: '选项1'
           }
         ],
-        attr_data_link_value:['选项1','选项11','选项111'],
+        attr_data_link_value:[],
         attr_placeholder:'请选择',
         type:'linkSelect'
     },

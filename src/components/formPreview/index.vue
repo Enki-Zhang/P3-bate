@@ -98,6 +98,12 @@ export default {
               }
           }
 
+          if(e.type == 'linkSelect'){//级联下拉组件将value替换为label再提交
+              let arr = e.attr_data_link_list;
+              let value = JSON.parse(JSON.stringify(e.attr_data_link_value));
+              e.attr_data_link_value = this.getLinkSelectName(arr,value);
+          }
+
           if(e.type == 'childForm'){//子表单
               let optionList = e.arr;
               let dataList = e.dataList;
@@ -121,13 +127,37 @@ export default {
                                   }
                               }
                           }
-                              
+                      }
+                      if(optionList[eIndex].type == 'linkSelect'){//级联下拉组件将value替换为label再提交
+                          let arr = optionList[eIndex].attr_data_link_list;
+                          let value = JSON.parse(JSON.stringify(eCol.value));
+                          eCol.value = this.getLinkSelectName(arr,value);
                       }
                   })
               });
           }
       });
       return JSON.stringify(arr);
+    },
+    getLinkSelectName(arr,value){
+        if(value.length == 0){
+            return [];
+        }
+        else if(value.length == 1){
+            let findObj = arr.find(e => e.value == value[0]);
+            return [findObj.label];
+        }
+        else if(value.length == 2){
+            let findObj = arr.find(e => e.value == value[0]);
+            let findObj2 = findObj.children.find(e => e.value == value[1]);
+            return [findObj.label,findObj2.label];
+        }
+        else if(value.length == 3){
+            let findObj = arr.find(e => e.value == value[0]);
+            let findObj2 = findObj.children.find(e => e.value == value[1]);
+            let findObj3 = findObj2.children.find(e => e.value == value[2]);
+            return [findObj.label,findObj2.label,findObj3.label];
+        }
     },
     getText(i){
       return `<div :style = "{fontWeight:data[${i}].attr_label_weight,textAlign:data[${i}].attr_label_align,fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
