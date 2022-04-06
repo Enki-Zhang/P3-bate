@@ -87,7 +87,7 @@
             </el-row>
         </el-row>
 
-        <compForm ref = "compForm" @success = "submitForm" :submitBtn = "false"/>
+        <compForm ref = "compForm" @success = "submitForm"/>
     </el-row>
 
 </template>
