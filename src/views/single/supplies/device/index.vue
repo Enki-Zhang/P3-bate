@@ -50,7 +50,7 @@
                         </el-form-item>
                     </el-row>
 
-                    <el-row class="filters">
+                    <!-- <el-row class="filters">
                         <el-form-item>
                             <el-row class="item">
                                 <el-row class="btn">
@@ -65,7 +65,7 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>
-                    </el-row>
+                    </el-row> -->
                 </el-form>
 
                 <!-- 列表 -->
@@ -87,7 +87,7 @@
             </el-row>
         </el-row>
 
-        <compForm ref = "compForm" @success = "submitForm"/>
+        <compForm ref = "compForm" @success = "submitForm" :submitBtn = "false"/>
     </el-row>
 
 </template>

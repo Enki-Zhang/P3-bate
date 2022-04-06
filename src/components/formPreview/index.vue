@@ -166,6 +166,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input 
+                    :disabled = "!canEdit"
                     size = "small" 
                     v-model = "data[${i}].attr_value" 
                     :placeholder="data[${i}].attr_placeholder">
@@ -176,6 +177,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-time-picker
+                    :disabled = "!canEdit"
                     size="small"
                     :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     value-format="HH:mm:ss"
@@ -191,6 +193,7 @@ export default {
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
         
                   <el-time-picker
+                    :disabled = "!canEdit"
                     is-range
                     size="small"
                     :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
@@ -205,6 +208,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-date-picker
+                    :disabled = "!canEdit"
                     :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     size="small"
                     value-format="yyyy-MM-dd"
@@ -218,6 +222,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-date-picker
+                    :disabled = "!canEdit"
                     :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
                     size="small"
                     value-format="yyyy-MM-dd"
@@ -230,6 +235,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input-number 
+                    :disabled = "!canEdit"
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     size = "small" 
                     :min = "data[${i}].attr_min" 
@@ -245,6 +251,7 @@ export default {
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-select 
+                    :disabled = "!canEdit"
                     size = "small" 
                     v-model="data[${i}].data_value" 
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
@@ -263,6 +270,7 @@ export default {
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-cascader
+                    :disabled = "!canEdit"
                     size="small"
                     clearable
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
@@ -278,10 +286,11 @@ export default {
                   <span>
                     <span :key="index" v-for = "v,index in data[${i}].attr_data_list" :style = "{display:data[${i}].attr_layer,marginRight:'30px',marginTop:'4px',marginBottom:'4px',textAlign:'left'}">
                       <el-radio
+                        :disabled = "!canEdit"
                         v-model="data[${i}].data_value" 
                         :label="v.name">
                         {{v.name}}
-                        <input type = "text" v-if = "v.id == 999" v-model = "data[${i}].otherValue"/>
+                        <input :disabled = "!canEdit" type = "text" v-if = "v.id == 999" v-model = "data[${i}].otherValue"/>
                       </el-radio>
                     </span>
                   </span>
@@ -293,12 +302,13 @@ export default {
 
                   <el-checkbox-group v-model = "data[${i}].data_value">
                     <el-checkbox
+                      :disabled = "!canEdit"
                       :style = "{display:data[${i}].attr_layer,marginTop:'4px',marginBottom:'4px',marginRight:'30px',textAlign:'left'}"
                       v-for = "v,index in data[${i}].attr_data_check_list"
                       :key = "index" 
                       :label="v.name">
                       <span style = "margin-right:10px">{{v.name}}</span>
-                      <input v-model = "data[${i}].otherValue" v-if = "v.id == 999" type = "text"/>
+                      <input :disabled = "!canEdit" v-model = "data[${i}].otherValue" v-if = "v.id == 999" type = "text"/>
                     </el-checkbox>
                   </el-checkbox-group>
               </div>`;
@@ -308,6 +318,7 @@ export default {
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-switch
+                    :disabled = "!canEdit"
                     v-model="data[${i}].attr_boolean_value">
                   </el-switch>
               </div>`;
@@ -316,6 +327,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input 
+                    :disabled = "!canEdit"
                     size = "small" 
                     resize = "none" 
                     :placeholder="data[${i}].attr_placeholder"
@@ -330,6 +342,7 @@ export default {
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <span>{{data[${i}].data_url}}</span>
                   <el-upload
+                    v-show = "canEdit"
                     class="avatar-uploader"
                     :action="data[${i}].attr_url"
                     :show-file-list="false"
@@ -356,6 +369,7 @@ export default {
                       <td class = "col0" @click = "delRow(${i},index)">{{index+1}}</td>
                       <td v-for = "v2,index2 in data[${i}].arr" :key = "'childFormListTd' + index2">
                         <el-input 
+                          :disabled = "!canEdit"
                           v-if = "v2.type == 'input'" 
                           size = "small" 
                           :placeholder="v2.attr_placeholder"
@@ -363,6 +377,7 @@ export default {
                         </el-input>
 
                         <el-input-number 
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'inputNumber'" 
                           v-model = "v[index2].value"
                           :min = "v2.attr_min" 
@@ -372,6 +387,7 @@ export default {
                         </el-input-number>
 
                         <el-input 
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'textarea'"
                           class = "formTextarea" 
                           resize = "none" 
@@ -382,6 +398,7 @@ export default {
                         </el-input>
 
                         <el-select 
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'select'"
                           size = "small" 
                           v-model="v[index2].value" 
@@ -395,6 +412,7 @@ export default {
                         </el-select>
 
                         <el-cascader
+                          :disabled = "!canEdit"
                           size="small"
                           clearable
                           v-else-if = "v2.type == 'linkSelect'"
@@ -408,15 +426,17 @@ export default {
                                     v-for = "v3,index3 in v2.attr_data_list" 
                                     :key = "index3">
                                 <el-radio
+                                    :disabled = "!canEdit"
                                     v-model="v[index2].value" 
                                     :label="v3.name">
                                     {{v3.name}}
-                                    <input v-model = "v[index2].otherValue" v-if = "v3.id == 999" type = "text"/>
+                                    <input :disabled = "!canEdit" v-model = "v[index2].otherValue" v-if = "v3.id == 999" type = "text"/>
                                 </el-radio>
                             </span>
                         </div>
 
                         <el-date-picker
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'date'"
                           size="small"
                           value-format="yyyy-MM-dd"
@@ -425,6 +445,7 @@ export default {
                         </el-date-picker>
 
                         <el-date-picker
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'dateRange'"
                           size="small"
                           value-format="yyyy-MM-dd"
@@ -434,6 +455,7 @@ export default {
                         </el-date-picker>
 
                         <el-time-picker
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'time'"
                           size="small"
                           value-format="HH:mm:ss"
@@ -444,6 +466,7 @@ export default {
                         </el-time-picker>
 
                         <el-time-picker
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'timeRange'"
                           is-range
                           v-model="v[index2].value"
@@ -453,6 +476,7 @@ export default {
                         </el-time-picker>
 
                         <el-checkbox-group
+                          :disabled = "!canEdit"
                           style = "text-align:left"
                           v-else-if = "v2.type == 'check'"
                           v-model = "v[index2].value">
@@ -462,11 +486,12 @@ export default {
                             :key = "index3" 
                             :label="v3.name">
                             <span style = "margin-right:10px;">{{v3.name}}</span>
-                            <input v-model = "v[index2].otherValue" type = "text" v-if = "v3.id == 999"/>
+                            <input :disabled = "!canEdit" v-model = "v[index2].otherValue" type = "text" v-if = "v3.id == 999"/>
                           </el-checkbox>
                         </el-checkbox-group>
 
                         <el-switch
+                          :disabled = "!canEdit"
                           v-else-if = "v2.type == 'switch'"
                           v-model="v[index2].value">
                         </el-switch>
@@ -475,6 +500,7 @@ export default {
                         <div v-else-if = "v2.type == 'upload'" @click = "setCompIndex(${i},index,index2)">
                             <span style = "display:inline-block;vertical-align:middle;">{{v[index2].value}}</span>
                             <el-upload
+                              v-show = "canEdit"
                               style = "display:inline-block;vertical-align:middle;"
                               class="avatar-uploader"
                               :action="v2.attr_url"
@@ -491,7 +517,7 @@ export default {
                     </tr>
                   </table>
                 </div>
-                <div class = "formBoxBtn" :style = "{paddingLeft:calWidth(data[${i}].label_width)}">
+                <div v-show = "canEdit" class = "formBoxBtn" :style = "{paddingLeft:calWidth(data[${i}].label_width)}">
                   <span @click = "addChildFormRow(${i})">+ 添加</span>
                 </div>
               </div>`;
@@ -626,6 +652,7 @@ export default {
         let session = JSON.parse(localStorage.getItem('stu-p3lab'));
         let token = session.session.userInfo.token;
 
+        // console.log(self.submitBtn);
 
         var vueHtml = Vue.extend({
             template:self.buildHtml(),
@@ -633,6 +660,7 @@ export default {
                 return{
                     data:self.data,
                     token:token,
+                    canEdit:self.submitBtn,
                     compIndex:-1,
                     compIndex2:-1,
                     compIndex3:-1
