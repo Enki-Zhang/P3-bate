@@ -20,6 +20,7 @@
 import Vue from "vue";
 import 'element-ui/lib/theme-chalk/index.css';
 import api from "@api";
+import handWriteComp from '@/components/formPreview/handWrite';
 import { Button,Input,InputNumber,Select,Option,Radio,Switch,Checkbox,CheckboxGroup,TimePicker,DatePicker,TimeSelect,Cascader,Upload } from 'element-ui';
 Vue.use(Button);
 Vue.use(Input);
@@ -337,6 +338,14 @@ export default {
                   </el-input>
               </div>`;
     },
+    getHandWrite(i){
+      return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
+                  <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
+                  <span style = "flex-grow:1;width:0;">
+                      <handWriteComp :disabled = "!canEdit" @successFn = "handleHandWriteSuccess" :dataUrl = "data[${i}].data_url"/>
+                  </span>
+              </div>`;
+    },
     getUpload(i){
       return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
@@ -570,6 +579,9 @@ export default {
         else if(this.data[i].type == 'upload'){
           str += this.getUpload(i);
         }
+        else if(this.data[i].type == 'handWrite'){
+          str += this.getHandWrite(i);
+        }
         else if(this.data[i].type == 'childForm'){
           str += this.getBox(i);
         }
@@ -666,6 +678,9 @@ export default {
                     compIndex3:-1
                 }
             },
+            components: {
+                handWriteComp
+            },
             methods:{
               test(e){
                 console.log(e);
@@ -675,6 +690,12 @@ export default {
                   self.preview.compIndex = index;
                   self.preview.compIndex2 = index2;
                   self.preview.compIndex3 = index3;
+              },
+              handleHandWriteSuccess(res){
+                  if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
+                      self.preview.data[self.preview.compIndex].data_url = res.data;
+                  else
+                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
               },
               handleAvatarSuccess(res, file) {
                   // console.log(res);

@@ -514,7 +514,6 @@
                                   <b> - </b>
                                   <input type="time" step = "1" v-model = "item.attr_time_range_value[1]"/>
                                 </span>
-                                
                               </div>
                               <div 
                                 v-else-if = "item.type == 'date'" 
@@ -540,6 +539,19 @@
                                   <input type="date" v-model = "item.attr_date_range_value[0]"/>
                                   <b> - </b>
                                   <input type="date" v-model = "item.attr_date_range_value[1]"/>
+                                </span>
+                              </div>
+                              <div 
+                                v-else-if = "item.type == 'handWrite'" 
+                                :key="item.id"
+                                class = "formItem formItemInput" 
+                                :class = "item.id == selectingId ? 'selecting' : ''"  
+                                @click = "selectItem(index)">
+                                <i class = "dragBtn"></i>
+                                <i class = "delBtn" @click = "delCompent"></i>
+                                <span>{{item.attr_name}}</span>
+                                <span class = "handWriteBox">
+                                  
                                 </span>
                               </div>
                               <div 
@@ -1295,20 +1307,19 @@
               onMove(e, originalEvent) {
                   //console.log(e.relatedContext.component.$el.dataset);
                   if(typeof e.relatedContext.element == 'undefined'){
-                    if (e.draggedContext.element.type == 'childForm' && e.relatedContext.component.$el.dataset.type == 'childForm')return false;
-                    return true;
+                      if (e.draggedContext.element.type == 'childForm' && e.relatedContext.component.$el.dataset.type == 'childForm')
+                            return false;
+                      if (e.draggedContext.element.type == 'handWrite' && e.relatedContext.component.$el.dataset.type == 'childForm')
+                            return false;
+                      return true;
                   }
                   this.moveId = e.relatedContext.element.id;
                   //不允许停靠
-                  // if (e.draggedContext.element.id != 1 && e.relatedContext.element.id == 1) return false;
-                  // if (e.draggedContext.element.id != 2 && e.relatedContext.element.id == 2) return false;
-                  // if (e.draggedContext.element.id != 3 && e.relatedContext.element.id == 3) return false;
-                  // if (e.draggedContext.element.id != 4 && e.relatedContext.element.id == 4) return false;
-                  // if (e.draggedContext.element.id != 5 && e.relatedContext.element.id == 5) return false;
                   if (e.draggedContext.element.id != e.relatedContext.element.id && e.relatedContext.element.belongTo == 'componentBox')
-                    return false;
+                      return false;
 
-                  if (e.draggedContext.element.type == 'childForm' && e.relatedContext.element.belongTo == 'formItem')return false;
+                  if (e.draggedContext.element.type == 'childForm' && e.relatedContext.element.belongTo == 'formItem')
+                      return false;
                   return true;
               },
               onAdd(e){
@@ -1822,6 +1833,13 @@
       line-height:100px;
       padding:0;
     }
+  }
+  .handWriteBox{
+    width: 0;
+    flex-grow: 1;
+    height:240px;
+    background:#fff;
+    border:1px solid #efefef;
   }
 }
 

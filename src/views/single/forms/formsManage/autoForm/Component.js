@@ -55,12 +55,13 @@ let componentInput = [
         attr_placeholder:'请输入',
         type:'inputNumber'
     },
-    // { 
-    //     attr_name: '单行输入框',
-    //     attr_value:'',
-    //     attr_placeholder:'请输入',
-    //     type:'input'
-    // },
+    { 
+        attr_name: '手写签名',
+        data_url:'',
+        //attr_value:'',
+        //attr_placeholder:'请输入',
+        type:'handWrite'
+    },
     //{ id: 99, attr_name: '按钮',type:'button',belongTo:'componentBox'},
 ]
 

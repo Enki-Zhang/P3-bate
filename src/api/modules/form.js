@@ -135,6 +135,10 @@ export function formSourceSelectList(id) {
     return ajax.get(`userServer/customForm/dynamicSelect/findById/${id}`, null);
 }
 
+// 上传base64图片
+export function formUploadBase64(data) {
+    return ajax.upload('backServer/file/base64/uploadFile', data);
+}
 
 // 流程图
 

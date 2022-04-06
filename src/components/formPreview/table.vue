@@ -21,6 +21,9 @@
                     <div v-else-if = "v.type == 'UPLOAD'">
                         <el-link @click = "downloadFn(scope.row[v.key])" style = "font-size:12px;" type="primary">{{scope.row[v.key]}}</el-link>
                     </div>
+                    <div v-else-if = "v.type == 'HAND_WRITE'">
+                        <img v-if = "scope.row[v.key]" :src = "scope.row[v.key]"/>
+                    </div>
                     <div v-else-if = "v.type == 'LINK_SELECT'">
                         {{scope.row[v.key] != null && typeof scope.row[v.key] == 'object' ? scope.row[v.key].join('/') : scope.row[v.key]}}
                     </div>
