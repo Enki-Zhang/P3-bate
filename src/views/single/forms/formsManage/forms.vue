@@ -119,6 +119,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''" 
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <div class = "label">{{item.attr_name}}</div>
                                 <div class = "area">
@@ -140,6 +141,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div>
@@ -158,6 +160,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "inputNumberBox">
@@ -175,6 +178,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div>
@@ -193,6 +197,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "selectBox">
@@ -211,6 +216,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "selectBox">
@@ -224,6 +230,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "radioBox">
@@ -246,6 +253,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "checkBox">
@@ -267,6 +275,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "switchBox" :class = "item2.attr_boolean_value ? 'on' : ''">
@@ -280,6 +289,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div>
@@ -293,6 +303,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div>
@@ -306,6 +317,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "timeRangeBox">
@@ -321,6 +333,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "timeRangeBox">
@@ -336,6 +349,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <div class = "uploadBox">
@@ -348,6 +362,7 @@
                                         class = "formItem" 
                                         @click = "selectItem(index,index2)">
                                         <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
                                         <p class = "defaultValue">{{item2.attr_value}}</p>
@@ -364,6 +379,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                               </div>
@@ -374,6 +390,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <input 
@@ -389,6 +406,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "inputBox">
@@ -406,6 +424,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <textarea 
@@ -421,6 +440,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "selectBox">
@@ -439,6 +459,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "radioBox">
@@ -461,6 +482,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "checkBox">
@@ -483,6 +505,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "switchBox" :class = "item.attr_boolean_value ? 'on' : ''">
@@ -496,6 +519,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <input type="time" step = "1" v-model = "item.attr_time_value"/>
@@ -507,6 +531,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "timeRangeBox">
@@ -522,6 +547,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <input type="date" v-model = "item.attr_date_value"/>
@@ -533,6 +559,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "dateRangeBox">
@@ -548,6 +575,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "handWriteBox">
@@ -561,6 +589,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "selectBox">
@@ -574,6 +603,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                                 <span class = "uploadBox">
@@ -588,6 +618,7 @@
                                 :class = "item.id == selectingId ? 'selecting' : ''"  
                                 @click = "selectItem(index)">
                                 <i class = "dragBtn"></i>
+                                <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                               </div>
@@ -1356,6 +1387,44 @@
                 this.$set(this.formBox, parentIndex, obj);
                 //console.log(this.formBox);
               },
+              copyCompent(){
+                event.preventDefault();
+        　　    event.stopPropagation();
+                if(this.selectingIndex.length == 1){
+                    const index = this.selectingIndex[0];
+                    //console.log(this.selectingIndex);
+                    let arr = JSON.parse(JSON.stringify(this.formBox));
+                    let tempObj = JSON.parse(JSON.stringify(arr[index]));
+                    tempObj.id = 'module_' + new Date().getTime();
+                    if(tempObj.type == 'childForm'){
+                        tempObj.arr.forEach((e,index) => {
+                            e.id = 'module_' + (new Date().getTime() + (index + 1));
+                        })
+                    }
+                    //console.log(tempObj);
+                    arr.splice(index + 1,0,tempObj);
+
+                    this.selectingId = tempObj.id;
+                    this.selectingIndex = [index+1];
+                    this.formBox = arr;
+                    this.attrObj = this.formBox[index + 1];
+
+                }
+                else if(this.selectingIndex.length == 2){
+                    const index = this.selectingIndex[0];
+                    const index2 = this.selectingIndex[1];
+                    let obj = JSON.parse(JSON.stringify(this.formBox))[index];
+                    let tempObj = JSON.parse(JSON.stringify(obj.arr[index2]));
+                    tempObj.id = 'module_' + new Date().getTime();
+                    obj.arr.splice(index2 + 1,0,tempObj);
+                    obj.dataList = [];
+
+                    this.selectingId = tempObj.id;
+                    this.selectingIndex = [index,index2 + 1];
+                    this.$set(this.formBox,index,obj);
+                    this.attrObj = this.formBox[index].arr[index2 + 1];
+                }
+              },
               delCompent(){
                 event.preventDefault();
         　　    event.stopPropagation();
@@ -1651,6 +1720,19 @@
     background-size: 16px;
     background-color:@mainColor;
   }
+  &>.copyBtn{
+    cursor: pointer;
+    display: none;
+    position: absolute;
+    z-index: 100;
+    bottom:-2px;
+    right: 18px;
+    width: 20px;
+    height: 20px;
+    background:url('../../../../assets/image/form/icon_copy.png')  no-repeat center center;
+    background-size: 12px;
+    background-color:@mainColor;
+  }
   &>.delBtn{
     cursor: pointer;
     display: none;
@@ -1671,6 +1753,7 @@
 .selecting{
   border:3px solid @mainColor;
   &>.dragBtn,
+  &>.copyBtn,
   &>.delBtn{
     display: block;
   }
@@ -1873,6 +1956,7 @@
       .selecting{
         border:3px solid @mainColor !important;
         &>.dragBtn,
+        &.copyBtn,
         &>.delBtn{
           display: block;
         }
