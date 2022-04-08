@@ -1542,7 +1542,7 @@
     flex-grow: 1;
     padding: 10px;
     width: 0;
-    height:453px;
+    height:496px;
     overflow:auto;
   }
   .rightBox {
