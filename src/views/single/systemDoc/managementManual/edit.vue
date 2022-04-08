@@ -222,6 +222,7 @@
                     linkedDocumentIds: [],
                     linkedTableIds: [],
                 },
+                fileRealName: '',
                 btnLoadingSave: false,
 
                 tbDataRelatedOrigin: [],
@@ -246,12 +247,13 @@
                         that.form = {
                             ...res.data.data,
                             files: [{
-                                name: res.data.data.filePath,
+                                name: res.data.data.fileRealName ? res.data.data.fileRealName : res.data.data.name,
                                 fileUrl: res.data.data.filePath,
                             }]
                         };
                         that.tbDataRelatedOrigin = [...res.data.data.systemDocumentList];
                         that.tbDataFormsOrigin = [...res.data.data.customFormList];
+                        that.fileRealName = res.data.data.fileRealName;
                         // console.log(that.form);
                         this.getTableDataRelated();
                         this.getTableDataForms();
@@ -298,7 +300,7 @@
 
             chooseUploadFile: function(file, fileList, ref, refIsArray = true) {
                 let that = this;
-                // console.log(file.raw);
+                // console.log(file.raw);return;
 
                 /*let fileNameArr = file.name.split('.');
                 if(fileNameArr.length < 2 || !that.man.fast.inArray(fileNameArr[fileNameArr.length - 1], ['xls', 'xlsx', 'csv', 'XLS', 'XLSX', 'CSV'])) {
@@ -326,6 +328,7 @@
                         } else {
                             that.form[ref] = res.data.data;
                         }
+                        that.fileRealName = file.row.name;
 
                         that.$toast.success({
                             message: '上传完成',
@@ -456,6 +459,7 @@
                                 documentNo: that.form.documentNo,
                                 name: that.form.name,
                                 version: that.form.version,
+                                fileRealName: that.fileRealName,
                                 filePath: that.form.files[0].fileUrl,
                                 status: that.form.status,
                                 documentType: that.form.documentType,
@@ -478,6 +482,7 @@
                                 documentNo: that.form.documentNo,
                                 name: that.form.name,
                                 version: that.form.version,
+                                fileRealName: that.fileRealName,
                                 filePath: that.form.files[0].fileUrl,
                                 status: that.form.status,
                                 documentType: folderDetail.id,

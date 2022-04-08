@@ -64,8 +64,6 @@
                 dlEditVisible: false,
 
                 folderList: [],
-
-                invalidClick: false,
             }
         },
         created() {
@@ -90,7 +88,7 @@
             navByBlockName: function(block) {
                 let that = this;
 
-                if(!that.invalidClick) {
+                if(1) {
                     that.$router.push({
                         path: `/system-doc/management-manual`,
                         query: {

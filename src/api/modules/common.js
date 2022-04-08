@@ -1,5 +1,9 @@
 import ajax from "@plugins/ajax";
 
+export function all(apiArr = []) {
+    return ajax.all(apiArr);
+}
+
 
 /**
  * 文件上传

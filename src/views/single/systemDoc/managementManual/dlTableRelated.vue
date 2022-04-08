@@ -4,6 +4,66 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" class="_root_page" append-to-body>
         <el-row>
+            <!-- 筛选 -->
+            <el-form ref="fmTbFilter" :model="tbFilter" size="small">
+                <el-row class="filters">
+                    <el-form-item prop="type">
+                        <el-row class="item mg-l-10">
+                            <el-row class="lb lb-unmgl">文件类型</el-row>
+                            <el-row>
+                                <el-select v-model="tbFilter.type" class="inp">
+                                    <el-option label="全部" value=""></el-option>
+                                    <el-option label="普通管理员" :value="0"></el-option>
+                                    <el-option label="超级管理员" :value="1"></el-option>
+                                </el-select>
+                            </el-row>
+                        </el-row>
+                    </el-form-item>
+                    <!--<el-form-item prop="name">
+                        <el-row class="item">
+                            <el-row class="lb lb-unmgl">名称</el-row>
+                            <el-row><el-input v-model="tbFilter.name" placeholder="名称查询" class="inp-small"></el-input></el-row>
+                        </el-row>
+                    </el-form-item>-->
+                    <!--<el-form-item prop="auditStatus">
+                        <el-row class="item mg-l-10">
+                            <el-row class="lb lb-unmgl">使用状态</el-row>
+                            <el-row>
+                                <el-select v-model="tbFilter.auditStatus" class="inp">
+                                    <el-option label="全部" value=""></el-option>
+                                    <el-option label="活动" :value="0"></el-option>
+                                    <el-option label="冻结" :value="1"></el-option>
+                                </el-select>
+                            </el-row>
+                        </el-row>
+                    </el-form-item>-->
+                    <!--<el-form-item prop="createTime">
+                        <el-row class="item">
+                            <el-row class="lb">创建时间</el-row>
+                            <el-row>
+                                <el-date-picker v-model="tbFilter.createTime"
+                                                type="daterange" size="small"
+                                                start-placeholder="开始日期" range-separator="至" end-placeholder="结束日期"
+                                                format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                                                style="width: 230px !important;">
+                                </el-date-picker>
+                            </el-row>
+                        </el-row>
+                    </el-form-item>-->
+                    <el-form-item>
+                        <el-row class="item mg-l-10">
+                            <el-row class="btn">
+                                <el-button type="primary" size="small" icon="el-icon-search"
+                                           :loading="btnLoadingFilter" @click="filterTableData(true)">查询</el-button>
+                            </el-row>
+                            <el-row class="btn">
+                                <el-button type="default" size="small" icon="el-icon-refresh"
+                                           @click="() => {$refs.fmTbFilter.resetFields(); filterTableData(false);}">重置</el-button>
+                            </el-row>
+                        </el-row>
+                    </el-form-item>
+                </el-row>
+            </el-form>
             <el-table ref="tbRelated" :data="tbData.records" tooltip-effect="dark"
                       :max-height="460" size="small"
                       @selection-change="handleSelectionChange"
@@ -62,7 +122,7 @@
 
                 tbSelectedArr: [],
                 tbFilter: {
-                    name: '',
+
                     createTime: [],
                 },
                 tbData: {records: []},
@@ -89,6 +149,7 @@
             opened: function() {
                 let that = this;
 
+                that.initSeloptsFolder();
                 that.getTableData();
             },
 
@@ -118,6 +179,22 @@
             handlePaginationChange: function(page) {
                 this.getTableData(page);
             },
+            filterTableData: function(isFilter = true) {
+                let that = this;
+
+                if(isFilter) {
+                    that.tbDataFilter = {
+                        ...that.tbFilter,
+                        // startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
+                        // endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
+                    };
+                    delete that.tbDataFilter.createTime;
+                } else {
+                    that.tbDataFilter = {};
+                }
+
+                that.getTableData(1);
+            },
             handleSelectionChange: function(chooseArr) {
                 this.tbSelectedArr = chooseArr;
             },
@@ -145,6 +222,19 @@
                 that.dialogVisible = false;
                 // that.$message.success('操作成功');
                 that.$emit('changeTableData', that.tbSelectedArr);
+            },
+
+            initSeloptsFolder: function() {
+                let that = this;
+                that.$toast.loading('加载中');
+
+                api.systemDocumentTypePage().then((res) => {
+                    that.$toast.clear();
+
+                    if(res.data.status === 200) {
+                        that.seloptsFolder = {...res.data.data.records};
+                    }
+                });
             },
 
             beforeClose: function(done) {

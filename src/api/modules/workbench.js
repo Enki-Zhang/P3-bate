@@ -25,6 +25,9 @@ export function workbenchUpdateInfoPage(params) {
 export function workbenchRnningStartedByMePage(params) {
     return ajax.get(`backServer/workbench/running/startedByMe/page`, params);
 }
+export function camundaCancel(data) {
+    return ajax.post(`backServer/camunda/cancel/${data}`);
+}
 
 
 // 申请历史记录
