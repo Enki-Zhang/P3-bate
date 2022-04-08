@@ -53,6 +53,9 @@ export function systemDocumentVersions(params) {
 export function systemDocumentSetManVersion(data) {
     return ajax.post(`backServer/systemDocument/setMainVersion/${data}`);
 }
+export function systemDocumentDelete(data) {
+    return ajax.post(`backServer/systemDocument/delete/${data}`);
+}
 
 // 查阅
 
@@ -65,6 +68,6 @@ export function customFormInfoSave(data) {
 
 // 删除
 
-export function systemDocumentDelete(data) {
-    return ajax.post(`backServer/systemDocument/delete/${data}`);
+export function systemDocumentDeleteAllVersion(data) {
+    return ajax.post(`backServer/systemDocument/deleteAllVersion/${data}`);
 }

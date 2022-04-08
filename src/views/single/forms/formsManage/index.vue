@@ -432,13 +432,14 @@
                 //     that.$message.warning('您无权限进行此操作');
                 //     return;
                 // }
+                // console.log(row);return;
 
                 this.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,
                     confirmButtonText: '删除',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    api.formDel(row.id).then((res) => {
+                    api.customFormDeleteAllVersion(row.formNumber).then((res) => {
                         if(res.data.status === 200) {
                             this.$message.success('删除成功');
                             this.getTableData(this.tbData.current);

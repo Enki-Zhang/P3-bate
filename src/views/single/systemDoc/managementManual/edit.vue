@@ -328,7 +328,7 @@
                         } else {
                             that.form[ref] = res.data.data;
                         }
-                        that.fileRealName = file.row.name;
+                        that.fileRealName = file.raw.name;
 
                         that.$toast.success({
                             message: '上传完成',

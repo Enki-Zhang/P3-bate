@@ -90,13 +90,9 @@ export function formInfo(id) {
     return ajax.get(`userServer/customForm/find/${id}`,null);
 }
 
-/**
- * 删除
- * @param id
- * @returns {void|*}
- */
-export function formDel(id) {
-    return ajax.post(`userServer/customForm/del/${id}`,null);
+// 删除
+export function customFormDeleteAllVersion(data) {
+    return ajax.post(`userServer/customForm/deleteAllVersion/${data}`);
 }
 
 /**

@@ -315,7 +315,7 @@
                     confirmButtonText: '删除',
                     cancelButtonText: '取消'
                 }).then(() => {
-                    api.systemDocumentDelete(row.id).then((res) => {
+                    api.systemDocumentDeleteAllVersion(row.documentNo).then((res) => {
                         if(res.data.status === 200) {
                             that.$message.success('保存成功');
                             that.getTableData();
