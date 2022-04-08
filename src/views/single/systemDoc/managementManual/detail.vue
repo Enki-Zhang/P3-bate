@@ -97,8 +97,11 @@
                         <el-table-column label="操作" fixed="right" show-overflow-tooltip width="80">
                             <template slot-scope="scope">
                                 <el-row type="flex">
-                                    <el-link v-if="!!!scope.row.isApply" type="primary" :underline="false" @click="showApplyForm(scope.row)" class="fs-12">申请</el-link>
-                                    <el-link v-else type="success" :underline="false" disabled class="fs-12">已申请</el-link>
+                                    <el-link type="primary" :underline="false" @click="showApplyForm(scope.row)" class="fs-12">
+                                        {{ !!scope.row.activitiId ? '填写' : '申请' }}
+                                    </el-link>
+                                    <!--  v-if="!!!scope.row.isApply" -->
+<!--                                    <el-link v-else type="success" :underline="false" disabled class="fs-12">已申请</el-link>-->
                                 </el-row>
                             </template>
                         </el-table-column>

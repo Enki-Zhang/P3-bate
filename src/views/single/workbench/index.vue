@@ -140,9 +140,12 @@
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" width="80">
+                        <el-table-column label="操作" width="120">
                             <template slot-scope="scope">
-                                <el-link type="primary" :underline="false" @click.native="showDLViewProcess(scope.row)">查看进度</el-link>
+                                <el-row type="flex" justify="space-around">
+                                    <el-link type="primary" :underline="false" @click.native="showDLViewProcess(scope.row)">查看进度</el-link>
+                                    <el-link type="primary" :underline="false" @click.native="cancelProcess(scope.row)">删除</el-link>
+                                </el-row>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -179,6 +182,13 @@
                         <el-table-column prop="createTime" label="审批时间">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                         </el-table-column>
+                        <el-table-column label="操作" width="80">
+                            <template slot-scope="scope">
+                                <el-row type="flex" justify="space-around">
+                                    <el-link type="primary" :underline="false" @click.native="cancelProcess(scope.row, false)">删除</el-link>
+                                </el-row>
+                            </template>
+                        </el-table-column>
                     </el-table>
                 </el-row>
             </el-row>
@@ -205,7 +215,6 @@
     import dayjs from 'dayjs';
     import ICountUp from 'vue-countup-v2';
     import api from '@api';
-    import ajax from '@plugins/ajax';
 
     import dlTablePending from "@views/single/workbench/dlTablePending";
     import dlTableUpdating from "@views/single/workbench/dlTableUpdating";
@@ -382,7 +391,7 @@
                 let that = this;
                 // console.log(row);
 
-                ajax.all([
+                api.all([
                     api.workbenchGetDetail(row.processInstanceId),
                     api.camundaGetProcessInstanceState(row.processInstanceId),
                 ]).then((res) => {
@@ -401,7 +410,7 @@
             showDLViewProcess: function(row) {
                 let that = this;
 
-                ajax.all([
+                api.all([
                     api.workbenchGetDetail(row.processInstanceId),
                     api.camundaGetProcessInstanceState(row.processInstanceId),
                 ]).then((res) => {
@@ -411,6 +420,18 @@
                             processData: {...res[1].data.data},
                         };
                         that.dlVisibleViewProgress = true;
+                    }
+                });
+            },
+            cancelProcess: function(row, isProcessing = true) {
+                let that = this;
+                // console.log(row);return;
+
+                api.camundaCancel(row.processInstanceId).then((res) => {
+                    if(res.data.status === 200) {
+                        that.$message.success('操作成功');
+                        if(isProcessing) that.getTableDataProcessing();
+                        else that.getTableDataApply();
                     }
                 });
             },
