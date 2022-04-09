@@ -5,13 +5,14 @@
     <script>
         /* 移动端禁止缩放 */
         (function(window) {
-            // android 2.3
+            document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">');
+            /*// android 2.3
             if (/Android (\d+\.\d+)/.test(navigator.userAgent) && parseFloat(RegExp.$1) <= 2.3) {
                 document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">');
             } else {
                 const phoneScale = parseInt(window.screen.width) / 750;
                 document.write('<meta name="viewport" content="width=device-width, initial-scale='+phoneScale+', minimum-scale='+phoneScale+', maximum-scale='+phoneScale+',user-scalable=no, minimal-ui">');
-            }
+            }*/
         })(window);
     </script>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">

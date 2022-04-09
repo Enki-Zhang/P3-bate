@@ -105,7 +105,7 @@
                                       :show-header="true">
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
-                                        {{ scope.row.operation }}
+                                        {{ `${scope.row.operation}${scope.row.module}` }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="更新时间" sortable>
@@ -368,24 +368,28 @@
                 let that = this;
                 // console.log(row);
 
-                switch (row.type) {
-                    case 'CUSTOM_FORM':
-                        that.$router.push({
-                            path: '/forms/forms-forms-edit',
-                            query: {
-                                id: row.id,
-                            }
-                        });
-                        break;
-                    case 'SYSTEM_DOCUMENT':
-                        that.$router.push({
-                            path: '/system-doc/management-manual/detail',
-                            query: {
-                                id: row.id,
-                            }
-                        });
-                        break;
-                }
+                api.workbenchUpdateInfoFindById(row.id).then((res) => {
+                    if(res.data.status === 200) {
+                        switch (row.type) {
+                            case 'CUSTOM_FORM':
+                                that.$router.push({
+                                    path: '/forms/forms-forms-edit',
+                                    query: {
+                                        id: row.operationId,
+                                    }
+                                });
+                                break;
+                            case 'SYSTEM_DOCUMENT':
+                                that.$router.push({
+                                    path: '/system-doc/management-manual/detail',
+                                    query: {
+                                        id: row.operationId,
+                                    }
+                                });
+                                break;
+                        }
+                    }
+                });
             },
             showDLApprovalProcess: function(row) {
                 let that = this;
