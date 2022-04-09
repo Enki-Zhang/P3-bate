@@ -192,7 +192,7 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 900px) {
         .layout {
             .m-layout-aside {display: unset;}
 

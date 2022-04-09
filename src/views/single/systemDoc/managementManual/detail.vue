@@ -98,7 +98,7 @@
                             <template slot-scope="scope">
                                 <el-row type="flex">
                                     <el-link type="primary" :underline="false" @click="showApplyForm(scope.row)" class="fs-12">
-                                        {{ !!scope.row.activitiId ? '填写' : '申请' }}
+                                        {{ !!scope.row.activitiId ? '申请' : '填写' }}
                                     </el-link>
                                     <!--  v-if="!!!scope.row.isApply" -->
 <!--                                    <el-link v-else type="success" :underline="false" disabled class="fs-12">已申请</el-link>-->

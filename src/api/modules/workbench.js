@@ -18,6 +18,9 @@ export function camundaComplete(data) {
 export function workbenchUpdateInfoPage(params) {
     return ajax.get(`backServer/workbench/updateInfo/page`, params);
 }
+export function workbenchUpdateInfoFindById(params) {
+    return ajax.get(`backServer/workbench/updateInfo/findById/${params}`);
+}
 
 
 // 办理中
