@@ -92,7 +92,7 @@
         methods: {
             opened: function() {
                 let that = this;
-                console.log(that.params);
+                // console.log(that.params);
 
                 that.$refs.formPreview.showFn(that.params.formData.formInfo);
                 that.mergeProcess();
@@ -110,7 +110,8 @@
                     };
                     that.timeLineData.details.push(tmp);
                 });
-                console.log(that.timeLineData);
+                that.$forceUpdate();
+                // console.log(that.timeLineData);
             },
             showDLApprovalConfirm: function() {
                 let that = this;
