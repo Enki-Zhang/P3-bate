@@ -21,6 +21,7 @@ export default {
     'activity': _import('single/activity'),
     'activity|bsl': _import('single/activity/bsl'),
     'activity|subject': _import('single/activity/subject'),
+    'activity|equipment': _import('single/activity/equipment'),
 
     // 物资管理
     'assets':_import('single/supplies'),

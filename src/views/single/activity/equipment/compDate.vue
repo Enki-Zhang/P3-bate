@@ -69,7 +69,7 @@
                                 <div 
                                     :style = "{color:'rgb(' + v2.color + ')'}"
                                     class = "dateRange">
-                                    {{v2.startDate | dateStrFormat}}{{v2.startTime | timeStrFormat}} - {{v2.endDate | dateStrFormat}}{{v2.endTime | timeStrFormat}}
+                                    {{v2.startDate | dateStr}}
                                 </div>
                             </div>
                         </li>
@@ -124,20 +124,9 @@
                 let minute = formal(d.getMinutes());
                 let second = formal(d.getSeconds());
                 //return `${year}-${month}-${date} ${hour}:${minute}:${second}`;   
-                return `${date}日${hour}:${minute}`;   
+                //return `${date}日${hour}:${minute}`;
+                return `${date}日`;   
                 //1日8:00
-            },
-            dateStrFormat(str){
-                if(str == null || str == '')
-                    return '';
-                let arr = str.split('-');
-                return `${arr[2]}日`;
-            },
-            timeStrFormat(str){
-                if(str == null || str == '')
-                    return '';
-                let arr = str.split(':');
-                return `${arr[0]}:${arr[1]}`;
             },
             nameStr(str){
                 return str[0];
@@ -197,7 +186,7 @@
 
                         eventList.forEach(e => {
                             let start = getDay(e.startDate);
-                            let end = getDay(e.endDate);
+                            let end = getDay(e.startDate);
                             e.color = e.name == 'fix' ? colorFix : colorArr[colorIndex];
                             if(e.name != 'fix' && colorIndex < colorArr.length)
                                 colorIndex++;
