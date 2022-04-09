@@ -89,7 +89,8 @@
 
                 api.camundaComplete(params).then((res) => {
                     if(res.data.status === 200) {
-
+                        that.$emit('done', true);
+                        that.closed();
                     }
                 });
             },

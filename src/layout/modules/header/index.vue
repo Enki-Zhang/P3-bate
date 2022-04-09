@@ -194,7 +194,7 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 1024px) {
         .layout-header {
             height: 160px !important;
 

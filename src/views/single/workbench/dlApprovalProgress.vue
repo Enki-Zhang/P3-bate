@@ -17,7 +17,7 @@
                     <el-row class="current-process">
                         <el-row class="_title">流程进度</el-row>
                         <el-timeline>
-                            <el-timeline-item v-for="(v, k) in timeLineData" :key="k"
+                            <el-timeline-item v-for="(v, k) in timeLineData.details" :key="k"
                                               :type="v.type" :color="v.color"
                                               :icon="v.icon" size="large"
                                               :timestamp="v.timestamp">
@@ -36,7 +36,7 @@
         </el-row>
 
         <!-- 组件：审批确认 -->
-        <dl-approval-confirm v-model="dlVisibleApprovalConfirm" :params="dlParams"></dl-approval-confirm>
+        <dl-approval-confirm v-model="dlVisibleApprovalConfirm" :params="dlParams" @done="closed"></dl-approval-confirm>
     </el-dialog>
 
 </template>
@@ -92,7 +92,7 @@
         methods: {
             opened: function() {
                 let that = this;
-                // console.log(that.params);
+                console.log(that.params);
 
                 that.$refs.formPreview.showFn(that.params.formData.formInfo);
                 that.mergeProcess();
@@ -110,7 +110,7 @@
                     };
                     that.timeLineData.details.push(tmp);
                 });
-                // console.log(that.timeLineData);
+                console.log(that.timeLineData);
             },
             showDLApprovalConfirm: function() {
                 let that = this;

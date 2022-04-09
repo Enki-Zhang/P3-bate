@@ -15,7 +15,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="80">
                     <template slot-scope="scope">
-                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">详情</el-link>
+                        <el-link type="primary" :underline="false" @click.native="showDLApprovalProcess(scope.row)">审批</el-link>
                     </template>
                 </el-table-column>
             </el-table>
@@ -35,6 +35,9 @@
                            background>
             </el-pagination>
         </el-row>
+
+        <!-- 组件：审批 -->
+        <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams"></dl-approval-progress>
     </el-dialog>
 
 </template>
@@ -43,6 +46,7 @@
 
     import dayjs from 'dayjs';
     import api from "@api";
+    import dlApprovalProgress from "@views/single/workbench/dlApprovalProgress";
 
     export default {
         name: "dlTablePending",
@@ -50,11 +54,16 @@
             value: Boolean,
             params: Object,
         },
+        components: {
+            dlApprovalProgress,
+        },
         data() {
             return {
                 dayjs,
 
                 dialogVisible: false,
+                dlParams: {},
+                dlVisibleApprovalProcess: false,
 
                 tbData: {records: [], total: 0},
             }
@@ -90,6 +99,26 @@
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
+            },
+            showDLApprovalProcess: function(row) {
+                let that = this;
+                // console.log(row);
+
+                api.all([
+                    api.workbenchGetDetail(row.processInstanceId),
+                    api.camundaGetProcessInstanceState(row.processInstanceId),
+                ]).then((res) => {
+                    if(res[0].data.status === 200 && res[1].data.status === 200) {
+                        that.dlParams = {
+                            formData: {
+                                processInstanceId: row.processInstanceId,
+                                ...res[0].data.data,
+                            },
+                            processData: {...res[1].data.data},
+                        };
+                        that.dlVisibleApprovalProcess = true;
+                    }
+                });
             },
 
             beforeClose: function(done) {
