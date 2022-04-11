@@ -75,7 +75,7 @@
         methods: {
             opened: function() {
                 let that = this;
-                // console.log(that.params);
+                console.log(that.params);
             },
             save: function() {
                 let that = this;
@@ -84,7 +84,8 @@
                     processInstanceId: that.params.processInstanceId,
                     value: {},
                 };
-                params.value[that.params.gateWayValue] = !!that.form.status;
+                params.value[that.params.gateWayValue[0]] = !!that.form.status;
+                // console.log(params);return;
 
                 api.camundaComplete(params).then((res) => {
                     if(res.data.status === 200) {
