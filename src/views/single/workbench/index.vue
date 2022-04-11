@@ -412,7 +412,7 @@
             showDLApprovalProcess: function(row) {
                 let that = this;
                 // console.log(row);
-                that.asShow = true;
+                // that.asShow = true;
 
                 api.all([
                     api.workbenchGetDetail(row.processInstanceId),
@@ -447,7 +447,7 @@
             cancelProcess: function(row, isProcessing = true) {
                 let that = this;
                 // console.log(row);return;
-                
+
                 that.$confirm('确认要删除所选数据吗？', '确认信息', {
                     distinguishCancelAndClose: true,
                     confirmButtonText: '删除',
