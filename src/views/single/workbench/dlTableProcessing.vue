@@ -73,7 +73,6 @@
 
                 that.getTableData(1);
             },
-
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
 

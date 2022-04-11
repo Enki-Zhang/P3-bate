@@ -3,7 +3,7 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row :gutter="20" class="statistics">
-                <el-col :span="8" :xs="24">
+                <el-col :span="8" :xs="8">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>待我审批</span>
@@ -18,7 +18,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
-                <el-col :span="8" :xs="24">
+                <el-col :span="8" :xs="8">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>更新信息</span>
@@ -33,7 +33,7 @@
                         </el-row>
                     </el-row>
                 </el-col>
-                <el-col :span="8" :xs="24">
+                <el-col :span="8" :xs="8">
                     <el-row class="block">
                         <el-row type="flex" justify="space-between" class="title mg-tb-10">
                             <span>办理中</span>
@@ -105,7 +105,7 @@
                                       :show-header="true">
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
-                                        {{ `${scope.row.operation}${scope.row.module}` }}
+                                        {{ `${scope.row.operation}${scope.row.type === 'CUSTOM_FORM' ? '表格' : '文件'} ${scope.row.name}` }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="更新时间" sortable>
@@ -203,7 +203,7 @@
         <!-- 组件：申请历史记录 -->
         <dl-table-apply v-model="dlVisibleTableApply" :params="dlParams"></dl-table-apply>
         <!-- 组件：审批 -->
-        <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams"></dl-approval-progress>
+        <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams" @done="getTableDataPending(5)"></dl-approval-progress>
         <!-- 组件：查看进度 -->
         <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>
     </el-row>
@@ -401,10 +401,8 @@
                 ]).then((res) => {
                     if(res[0].data.status === 200 && res[1].data.status === 200) {
                         that.dlParams = {
-                            formData: {
-                                processInstanceId: row.processInstanceId,
-                                ...res[0].data.data,
-                            },
+                            processInstanceId: row.processInstanceId,
+                            formData: {...res[0].data.data},
                             processData: {...res[1].data.data},
                         };
                         that.dlVisibleApprovalProcess = true;
@@ -539,13 +537,9 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 1200px) {
         ._root_page {
             .statistics {
-                .el-col-8:not(:first-child) {
-                    margin-top: 15px;
-                }
-
                 .block {
                     height: 220px;
                     padding: 20px;
@@ -560,11 +554,11 @@
                         }
                     }
 
-                    .icon {width: 60px; margin-top: -5px; margin-right: 10px;}
+                    .icon {width: 50px; margin-top: -5px; margin-right: 10px;}
 
                     .bg-count-up {
                         height: 100px;
-                        .count-up {font-size: 80px;}
+                        .count-up {font-size: 60px;}
                     }
                 }
             }
@@ -597,7 +591,66 @@
                 }
             }
         }
+    }
 
+    /* 移动端适配 */
+    @media screen and (max-width: 420px) {
+        ._root_page {
+            .statistics {
+                /*.el-col-8:not(:first-child) {margin-top: 15px;}*/
+
+                .block {
+                    width: 110px;
+                    height: 120px;
+                    padding: 2px;
+                    border-radius: 20px;
+
+                    .title {
+                        font-size: 16px;
+                        font-weight: 600;
+
+                        .more {
+                            font-size: 16px;
+                        }
+                    }
+
+                    .icon {width: 20px; margin-top: 0; margin-right: 10px;}
+
+                    .bg-count-up {
+                        height: 50px;
+                        .count-up {font-size: 30px;}
+                    }
+                }
+            }
+
+            .table-has-title {
+                padding: 18px;
+                border-radius: 20px;
+
+                .title {
+                    font-size: 28px;
+                    line-height: 60px;
+
+                    .more {
+                        font-size: 24px;
+                    }
+                }
+
+                ::v-deep {
+                    .el-table {
+                        tr {
+                            th {font-size: 26px; line-height: 60px;}
+                            td .cell {
+                                line-height: 40px;
+
+                                .el-link--inner {font-size: 22px;}
+                            }
+                        }
+                        .el-table__body-wrapper {font-size: 22px;}
+                    }
+                }
+            }
+        }
     }
 
 </style>

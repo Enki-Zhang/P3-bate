@@ -37,7 +37,7 @@
         </el-row>
 
         <!-- 组件：审批 -->
-        <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams"></dl-approval-progress>
+        <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams" @done="getTableData(1)"></dl-approval-progress>
     </el-dialog>
 
 </template>
@@ -82,7 +82,6 @@
 
                 that.getTableData(1);
             },
-
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
 
@@ -110,10 +109,8 @@
                 ]).then((res) => {
                     if(res[0].data.status === 200 && res[1].data.status === 200) {
                         that.dlParams = {
-                            formData: {
-                                processInstanceId: row.processInstanceId,
-                                ...res[0].data.data,
-                            },
+                            processInstanceId: row.processInstanceId,
+                            formData: {...res[0].data.data},
                             processData: {...res[1].data.data},
                         };
                         that.dlVisibleApprovalProcess = true;

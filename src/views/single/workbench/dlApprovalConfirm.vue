@@ -75,8 +75,7 @@
         methods: {
             opened: function() {
                 let that = this;
-
-                console.log(that.params);
+                // console.log(that.params);
             },
             save: function() {
                 let that = this;
@@ -89,6 +88,7 @@
 
                 api.camundaComplete(params).then((res) => {
                     if(res.data.status === 200) {
+                        that.$message.success('操作成功');
                         that.$emit('done', true);
                         that.closed();
                     }

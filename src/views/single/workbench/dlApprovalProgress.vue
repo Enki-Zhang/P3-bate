@@ -36,7 +36,7 @@
         </el-row>
 
         <!-- 组件：审批确认 -->
-        <dl-approval-confirm v-model="dlVisibleApprovalConfirm" :params="dlParams" @done="closed"></dl-approval-confirm>
+        <dl-approval-confirm v-model="dlVisibleApprovalConfirm" :params="dlParams" @done="closed(true)"></dl-approval-confirm>
     </el-dialog>
 
 </template>
@@ -67,7 +67,7 @@
                 dlVisibleApprovalConfirm: false,
 
                 timeLineData: [
-                    {
+                    /*{
                         content: '张三申请了钢笔',
                         timestamp: '2018-04-12 20:46',
                         icon: 'el-icon-check',
@@ -77,7 +77,7 @@
                         content: '工厂开始生产（审批中）',
                         timestamp: '2018-04-12 20:56',
                         color: '#1DC084'
-                    },
+                    },*/
                 ],
             }
         },
@@ -127,7 +127,8 @@
             beforeClose: function(done) {
                 done();
             },
-            closed: function() {
+            closed: function(needUpdate = false) {
+                if(needUpdate) this.$emit('done', true);
                 if(this.$refs.fm !== undefined) this.$refs.fm.resetFields();
                 this.dialogVisible = false;
             },

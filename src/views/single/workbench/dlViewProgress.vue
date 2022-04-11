@@ -68,7 +68,7 @@
                 timeLineData: {
                     formName: '',
                     details: [
-                        {
+                        /*{
                             content: '张三申请了钢笔',
                             timestamp: '2018-04-12 20:46',
                             icon: 'el-icon-check',
@@ -78,7 +78,7 @@
                             content: '工厂开始生产（审批中）',
                             timestamp: '2018-04-12 20:56',
                             color: '#1DC084'
-                        },
+                        },*/
                     ],
                 },
             }
