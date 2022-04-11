@@ -66,7 +66,7 @@
             </el-row>
             <el-row :gutter="20">
                 <!-- 待我审批 -->
-                <el-col :span="12" :xs="24">
+                <el-col :span="12" :sm="24" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
                             <span>待我审批 (<span class="yellow">{{ tbDataPending.total }}</span>)</span>
@@ -81,7 +81,7 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="时间" sortable>
-                                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                                    <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
@@ -93,7 +93,7 @@
                     </el-row>
                 </el-col>
                 <!-- 更新信息 -->
-                <el-col :span="12" :xs="24">
+                <el-col :span="12" :sm="24" :xs="24">
                     <el-row class="table-has-title mg-t-20">
                         <el-row type="flex" justify="space-between" class="title">
                             <span>更新信息 (<span class="purple">{{ tbDataUpdating.total }}</span>)</span>
@@ -109,7 +109,7 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="createTime" label="更新时间" sortable>
-                                    <template slot-scope="scope">{{ scope.row.operationDate ? dayjs(scope.row.operationDate).format('YYYY-MM-DD') : '' }}</template>
+                                    <template slot-scope="scope">{{ scope.row.operationDate ? dayjs(scope.row.operationDate).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                                 </el-table-column>
                                 <el-table-column label="操作" width="80">
                                     <template slot-scope="scope">
@@ -138,7 +138,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                         </el-table-column>
                         <el-table-column label="操作" width="120">
                             <template slot-scope="scope">
@@ -163,24 +163,26 @@
                         <el-table-column prop="createUserName" label="发起人" width="100"></el-table-column>
                         <el-table-column prop="formName" label="事项"></el-table-column>
                         <el-table-column prop="createTime" label="申请时间" sortable>
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                         </el-table-column>
                         <el-table-column prop="state" label="审批结果">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.state === 0" class="status-blue">待审批</span>
+                                {{ scope.row.state }}
+                                <!--<span v-if="scope.row.state === 0" class="status-blue">待审批</span>
                                 <span v-else-if="scope.row.state === 1" class="status-green">已通过</span>
-                                <span v-else-if="scope.row.state === -1" class="status-red">未通过</span>
+                                <span v-else-if="scope.row.state === -1" class="status-red">未通过</span>-->
                             </template>
                         </el-table-column>
                         <el-table-column prop="auditUserName" label="审批人">
                             <template slot-scope="scope">
-                                <span v-for="(v, k) in scope.row.approve" :key="k">
+                                {{ scope.row.auditUserName }}
+                                <!--<span v-for="(v, k) in scope.row.approve" :key="k">
                                     {{ v }}
-                                </span>
+                                </span>-->
                             </template>
                         </el-table-column>
-                        <el-table-column prop="createTime" label="审批时间">
-                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
+                        <el-table-column prop="endTime" label="审批时间">
+                            <template slot-scope="scope">{{ scope.row.endTime ? dayjs(scope.row.endTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                         </el-table-column>
                         <el-table-column label="操作" width="80">
                             <template slot-scope="scope">
@@ -206,6 +208,14 @@
         <dl-approval-progress v-model="dlVisibleApprovalProcess" :params="dlParams" @done="getTableDataPending(5)"></dl-approval-progress>
         <!-- 组件：查看进度 -->
         <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>
+
+        <!-- 列表操作 -->
+        <van-action-sheet v-model="asShow"
+                          :description="asOptions.description"
+                          :actions="asOptions.actions"
+                          :cancel-text="asOptions.cancelText"
+                          @select="choosedAction"
+                          close-on-click-action/>
     </el-row>
 
 </template>
@@ -250,6 +260,13 @@
                     prefix: '',
                     suffix: ''
                 },
+                asShow: false,
+                asOptions: {
+                    row: null,
+                    description: '操作选项',
+                    actions: [],
+                    cancelText: '关闭',
+                },
 
                 dlParams: {},
                 dlVisibleTablePending: false,
@@ -267,6 +284,7 @@
         },
         created() {
             // console.log((new Date('2021-6-6 12:18:12')).getTime());
+            // console.log(this.man.fast.browserSystemIsPC());
 
             this.getTableDataPending();
             this.getTableDataUpdating();
@@ -394,6 +412,7 @@
             showDLApprovalProcess: function(row) {
                 let that = this;
                 // console.log(row);
+                that.asShow = true;
 
                 api.all([
                     api.workbenchGetDetail(row.processInstanceId),
@@ -428,18 +447,57 @@
             cancelProcess: function(row, isProcessing = true) {
                 let that = this;
                 // console.log(row);return;
-
-                api.camundaCancel(row.processInstanceId).then((res) => {
-                    if(res.data.status === 200) {
-                        that.$message.success('操作成功');
-                        if(isProcessing) that.getTableDataProcessing();
-                        else that.getTableDataApply();
-                    }
-                });
+                
+                that.$confirm('确认要删除所选数据吗？', '确认信息', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '删除',
+                    cancelButtonText: '取消'
+                }).then(() => {
+                    api.camundaCancel(row.processInstanceId).then((res) => {
+                        if(res.data.status === 200) {
+                            that.$message.success('操作成功');
+                            if(isProcessing) that.getTableDataProcessing();
+                            else that.getTableDataApply();
+                        }
+                    });
+                }).catch();
             },
 
-            removeRow: function(index, row) {
-                console.log(row);
+
+            showAsOperate: function(row) {
+                let that = this;
+
+                that.asOptions.row = row;
+                that.asOptions.actions = [
+                    {name: '版本'},
+                    {name: '发布', color: '#1DC084'},
+                    {name: '详情'},
+                    {name: '撤下'},
+                    {name: '编辑', color: '#E6A23C'},
+                    {name: '删除', color: '#F56C6C'},
+                ];
+                that.asShow = true;
+            },
+            choosedAction: function(action, index) {
+                let that = this;
+                // console.log(action);
+                // console.log(that.asOptions.row);
+
+                switch (action.name) {
+                    case '版本':
+                        break;
+                    case '发布':
+                        break;
+                    case '详情':
+                        that.detail()
+                        break;
+                    case '撤下':
+                        break;
+                    case '编辑':
+                        break;
+                    case '删除':
+                        break;
+                }
             },
         }
     }
@@ -598,9 +656,10 @@
         ._root_page {
             .statistics {
                 /*.el-col-8:not(:first-child) {margin-top: 15px;}*/
+                .el-col-8 {padding: 0 3px !important;}
 
                 .block {
-                    width: 110px;
+                    width: 115px;
                     height: 120px;
                     padding: 2px;
                     border-radius: 20px;

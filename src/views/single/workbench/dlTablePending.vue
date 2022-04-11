@@ -1,6 +1,6 @@
 <template>
 
-    <el-dialog top="20vh" width="588px" :title="`待我审批`" :visible.sync="dialogVisible"
+    <el-dialog top="20vh" width="688px" :title="`待我审批`" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>

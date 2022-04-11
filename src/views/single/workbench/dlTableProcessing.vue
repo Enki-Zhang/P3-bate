@@ -1,6 +1,6 @@
 <template>
 
-    <el-dialog top="20vh" width="588px" :title="`办理中`" :visible.sync="dialogVisible"
+    <el-dialog top="20vh" width="688px" :title="`办理中`" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
@@ -13,9 +13,12 @@
                 <el-table-column prop="createTime" label="申请/更新时间" sortable>
                     <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                 </el-table-column>
-                <el-table-column label="操作" width="80">
+                <el-table-column label="操作" width="120">
                     <template slot-scope="scope">
-                        <el-link type="primary" :underline="false" @click.native="removeRow(scope.$index, scope.row)">查看进度</el-link>
+                        <el-row type="flex" justify="space-around">
+                            <el-link type="primary" :underline="false" @click.native="showDLViewProcess(scope.row)">查看进度</el-link>
+                            <el-link type="primary" :underline="false" @click.native="cancelProcess(scope.row)">删除</el-link>
+                        </el-row>
                     </template>
                 </el-table-column>
             </el-table>
@@ -35,6 +38,9 @@
                            background>
             </el-pagination>
         </el-row>
+
+        <!-- 组件：查看进度 -->
+        <dl-view-progress v-model="dlVisibleViewProgress" :params="dlParams"></dl-view-progress>
     </el-dialog>
 
 </template>
@@ -43,6 +49,7 @@
 
     import dayjs from 'dayjs';
     import api from "@api";
+    import dlViewProgress from "@views/single/workbench/dlViewProgress";
 
     export default {
         name: "dlTableProcessing",
@@ -50,11 +57,16 @@
             value: Boolean,
             params: Object,
         },
+        components: {
+            dlViewProgress,
+        },
         data() {
             return {
                 dayjs,
 
                 dialogVisible: false,
+                dlParams: {},
+                dlVisibleViewProgress: false,
 
                 tbData: {records: [], total: 0},
             }
@@ -89,6 +101,34 @@
             },
             handlePaginationChange: function(page) {
                 this.getTableData(page);
+            },
+            showDLViewProcess: function(row) {
+                let that = this;
+
+                api.all([
+                    api.workbenchGetDetail(row.processInstanceId),
+                    api.camundaGetProcessInstanceState(row.processInstanceId),
+                ]).then((res) => {
+                    if(res[0].data.status === 200 && res[1].data.status === 200) {
+                        that.dlParams = {
+                            formData: {...res[0].data.data},
+                            processData: {...res[1].data.data},
+                        };
+                        that.dlVisibleViewProgress = true;
+                    }
+                });
+            },
+            cancelProcess: function(row, isProcessing = true) {
+                let that = this;
+                // console.log(row);return;
+
+                api.camundaCancel(row.processInstanceId).then((res) => {
+                    if(res.data.status === 200) {
+                        that.$message.success('操作成功');
+                        if(isProcessing) that.getTableDataProcessing();
+                        else that.getTableDataApply();
+                    }
+                });
             },
 
             beforeClose: function(done) {

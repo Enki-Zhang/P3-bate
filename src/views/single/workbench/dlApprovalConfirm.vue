@@ -75,7 +75,7 @@
         methods: {
             opened: function() {
                 let that = this;
-                console.log(that.params);
+                // console.log(that.params);
             },
             save: function() {
                 let that = this;

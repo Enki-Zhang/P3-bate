@@ -1,13 +1,13 @@
 <template>
 
-    <el-dialog top="20vh" width="588px" :title="`更新信息`" :visible.sync="dialogVisible"
+    <el-dialog top="20vh" width="688px" :title="`更新信息`" :visible.sync="dialogVisible"
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body>
         <el-row>
             <el-table :data="tbData.records" size="small">
                 <el-table-column prop="operation" label="事项">
                     <template slot-scope="scope">
-                        {{ `${scope.row.operation}` }}
+                        {{ `${scope.row.operation}${scope.row.type === 'CUSTOM_FORM' ? '表格' : '文件'} ${scope.row.name}` }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="更新时间" sortable>
