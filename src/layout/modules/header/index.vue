@@ -194,15 +194,15 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1200px) {
         .layout-header {
-            height: 160px !important;
+            height: 100px !important;
 
             .logo {
-                width: 630px;
-                height: 160px;
+                width: 600px;
+                height: 100px;
             }
-            .logo-img {width: 600px; height: 70px;}
+            .logo-img {width: 560px; height: 65px;}
 
             .fast {display: none;}
             .m-fast {
@@ -212,19 +212,106 @@
                 position: absolute;
 
                 .zs-img {
-                    width: 400px;
-                    height: 160px;
+                    width: 320px;
+                    height: 130px;
                     margin-left: 400px;
                 }
 
                 .menu {
                     position: absolute;
-                    top: 60px;
-                    right: 25px;
+                    top: 55px;
+                    right: 30px;
 
                     span {
                         color: rgba(255,255,255, .8);
                         font-size: 50px;
+                    }
+                }
+
+                .block {
+                    @include bgc-main-light;
+                    width: 136px;
+                    height: 59px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    color: #393d49d9;
+                    @include fs-15;
+                    @include fw-600;
+                    letter-spacing: 1.2px;
+                    @include cursor-pointer;
+                    @include unable-select;
+                }
+                .block-not-active {
+                    background-color: white !important;
+                }
+
+                .user {
+                    //@include bgc-main;
+                    min-width: 108px;
+                    height: 52px;
+                    display: block;
+                }
+                .user .name {
+                    //@include fc-main-active;
+                    @include cursor-pointer;
+                    padding-left: 10px;
+                }
+
+                .logged-info {
+                    width: max-content;
+                    height: 80px;
+                    /*justify-content: space-evenly;*/
+                    @include fc-white-light;
+
+                    .avatar {width: 20px; padding-top: 3px;}
+                    .user-name,
+                    .logout {
+                        transition: .8s;
+
+                        &:hover {
+                            transition: .6s;
+                            color: #e8b57b;
+                        }
+                    }
+                    .jg {
+                        width: 0;
+                        height: 20px;
+                        border: 1px solid #FFFFFF;
+                        opacity: 0.3;
+                    }
+                }
+            }
+        }
+    }
+
+    /* 移动端适配 */
+    @media screen and (max-width: 420px) {
+        .layout-header {
+            height: 100px !important;
+
+            .logo {
+                width: 340px;
+                height: 100px;
+            }
+            .logo-img {width: 340px; height: 40px;}
+
+            .fast {display: none;}
+            .m-fast {
+                width: 100vw;
+                height: 160px;
+                display: unset;
+                position: absolute;
+
+                .menu {
+                    position: absolute;
+                    top: 62px;
+                    right: 20px;
+
+                    span {
+                        color: rgba(255,255,255, .8);
+                        font-size: 35px;
                     }
                 }
 

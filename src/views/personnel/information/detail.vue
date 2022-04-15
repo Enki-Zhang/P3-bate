@@ -4,7 +4,7 @@
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white-default-h">
                 <el-row type="flex" justify="space-between">
-                    <el-row style="font-size: 16px; font-weight: 600;">详情</el-row>
+                    <el-row class="page-title">详情</el-row>
                     <el-row>
                         <el-button type="primary" icon="el-icon-edit" size="small" @click="navEdit">编辑</el-button>
                     </el-row>
@@ -190,6 +190,7 @@
 <style lang="scss" scoped>
 
     ._root_page {
+        .page-title {font-size: 16px; font-weight: 600;}
 
         ._table {
             .name {
@@ -228,6 +229,53 @@
             .mg-b-60 {margin-bottom: 60px;}
         }
 
+    }
+
+
+    /* 移动端适配 */
+    @media screen and (max-width: 1200px) {
+        ._root_page {
+            .page-title {font-size: 24px;}
+            ._table {
+                .el-row--flex {flex-wrap: wrap;}
+                .name {
+                    margin-bottom: 15px;
+                    font-size: 24px;
+                    font-weight: 600;
+                }
+                ._title {
+                    background-color: #FAFDFF;
+                    width: 200px;
+                    height: 80px;
+                    text-align: center;
+                }
+                ._val {
+                    width: 500px;
+                    height: 80px;
+                    padding: 0 15px;
+                    border-right: 1px solid #F0F0F0;
+                }
+                ._title, ._val {
+                    font-size: 24px;
+                    line-height: 80px;
+                    border-top: 1px solid #F0F0F0;
+                    border-left: 1px solid #F0F0F0;
+                }
+
+                .bt {border-top: 1px solid #F0F0F0;}
+                .br {border-right: unset;}
+                .bb {border-bottom: 1px solid #F0F0F0;}
+                .bl {border-left: 1px solid #F0F0F0;}
+
+                ._hr {
+                    width: 100%;
+                    margin: 30px 0;
+                    border-top: 1px solid #F0F0F0;
+                }
+
+                .mg-b-60 {margin-bottom: 60px;}
+            }
+        }
     }
 
 </style>

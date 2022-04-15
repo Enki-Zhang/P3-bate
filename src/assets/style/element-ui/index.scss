@@ -132,30 +132,31 @@
 
 
 /* 移动端适配 */
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 1200px) {
     // 表单
     .fm {
         ::v-deep {
+            .el-form-item {
+                margin-bottom: 35px;
+                .el-form-item__error {font-size: 18px;}
+            }
             .el-input {
-                font-size: 28px;
+                font-size: 20px;
 
                 .el-input__inner {
-                    height: 80px;
+                    height: 60px;
                     padding: 0 60px;
                     border-radius: 12px;
-                    line-height: 80px;
+                    line-height: 60px;
                 }
 
                 .el-input__icon {
-                    font-size: 32px;
-                    line-height: 80px;
+                    font-size: 28px;
+                    line-height: 60px;
                 }
 
                 .el-input__prefix {left: 15px;}
-                .el-input__suffix {
-                    top: 3px;
-                    right: 25px;
-                }
+                .el-input__suffix {top: 2px; right: 25px;}
             }
             .el-button {
                 padding: 24px 20px;
@@ -163,7 +164,7 @@
                 font-size: 28px;
                 letter-spacing: 3px;
             }
-            .el-form-item__label {font-size: 22px; line-height: 80px;}
+            .el-form-item__label {font-size: 18px; line-height: 60px;}
             .el-switch {
                 line-height: 75px;
                 .el-switch__label * {font-size: 28px;}
@@ -176,7 +177,7 @@
     }
     // 确认框
     .el-message-box {
-        width: 600px !important;
+        width: 680px;
         .el-message-box__title,
         .el-message-box__headerbtn {font-size: 36px;}
         .el-message-box__content {
@@ -220,18 +221,34 @@
         font-size: 22px;
         border-radius: 6px;
     }
+    // dl弹窗
+    .el-dialog {
+        margin-top: 80px !important;
+        width: 100vw !important;
+        max-height: calc(100vh - 160px) !important;
+        .el-dialog__header {
+            padding: 30px 20px;
+            .el-dialog__title {font-size: 24px;}
+            .el-dialog__headerbtn {font-size: 28px;}
+        }
+    }
+
     ::v-deep {
         // 列表
         .el-table {
             tr {
-                th {font-size: 26px !important; line-height: 60px;}
-                td .cell {
-                    line-height: 40px;
-                    .el-link--inner {font-size: 22px;}
+                th {background: #FAFAFA; padding: 15px 0; line-height: 60px;}
+                td {
+                    padding: 16px 0;
+                    .cell {
+                        line-height: 40px;
+                        .el-link--inner {font-size: 22px;}
+                    }
                 }
                 .cell.el-tooltip {font-size: 22px;}
             }
             .el-table__body-wrapper {font-size: 22px;}
+            .el-row--flex.is-justify-space-around {flex-wrap: wrap;}
         }
         // 分页
         .el-pagination {

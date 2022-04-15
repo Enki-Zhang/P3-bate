@@ -235,12 +235,13 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 1200px) {
         ._root_page {
             .file-manage {
                 width: 290px;
                 height: 80px;
-                margin-top: -20px;
+                margin-top: 0;
+                margin-left: 10px;
                 font-size: 26px;
                 line-height: 80px;
 
@@ -249,11 +250,10 @@
 
             .block-list {
                 .block {
-                    width: 330px;
-                    height: 330px;
+                    width: 365px;
+                    height: 365px;
                     margin: 12px;
                     border-radius: 15px;
-                    img {width: 200px; height: 200px;}
 
                     .bg-setting {
                         width: 80px;
@@ -267,6 +267,7 @@
                     .con {
                         .title {font-size: 28px; line-height: 50px;}
                         .desc {font-size: 22px; line-height: 30px;}
+                        img {width: 220px; height: 220px;}
                     }
                 }
             }

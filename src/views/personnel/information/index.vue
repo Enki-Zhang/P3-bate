@@ -507,11 +507,11 @@
 
     ._root_page {
         ::v-deep {
-            .el-table tr th {
+            /*.el-table tr th {
                 background: #FAFAFA;
                 padding: 15px 0;
                 font-size: 14px;
-            }
+            }*/
         }
     }
 

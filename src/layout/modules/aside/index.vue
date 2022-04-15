@@ -11,12 +11,13 @@
                 </a>
             </transition>
         </el-row>-->
-        <el-scrollbar style="height: calc(100vh - 80px);">
+        <el-scrollbar class="elsb">
             <el-menu :default-active="activeMenu"
-                 :collapse="isCollapse"
-                 background-color="#000C17"
-                 text-color="#EEEEEE"
-                 active-text-color="#FFF">
+                     :collapse="isCollapse"
+                     background-color="#000C17"
+                     text-color="#EEEEEE"
+                     active-text-color="#FFF"
+                     unique-opened>
                 <!-- unique-opened -->
                 <template v-for="v in menus">
                     <template v-if="!v.hidden && !!v.meta">
@@ -79,7 +80,6 @@
             return {
                 isCollapse: false,
                 elMenuWidth: '256px',
-                webSite: Number(this.man.db.load('sys.webSite')),
             }
         },
         created() {
@@ -89,6 +89,11 @@
                 this.isCollapse = res.isCollapse;
                 this.elMenuWidth = res.elMenuWidth;
             });
+
+            /*document.onkeydown = function (event) {
+                let e = event || window.event;
+                console.log(e, e.keyCode || e.which);
+            }*/
         },
         computed: {
             ...mapState(['userInfo']),
@@ -165,6 +170,8 @@
         background-color: #000C17;
         min-height: 100vh;
         transition: .6s;
+
+        .elsb {height: calc(100vh - 80px);}
     }
 
     .el-menu--collapse {display: none;}
@@ -210,7 +217,7 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 1200px) {
         .layout-aside {
             .logged-info {
                 background-color: #009688;
@@ -223,7 +230,7 @@
                     .el-submenu:first-child {display: unset;}
                     .el-menu-item {
                         height: 100px;
-                        font-size: 28px;
+                        font-size: 24px;
                         line-height: 100px;
                     }
                     .el-submenu {
@@ -233,24 +240,74 @@
                             padding-left: 40px !important;
                         }
                         .el-submenu__title {
-                            font-size: 28px;
+                            font-size: 24px;
                             i {
                                 margin-top: -10px;
-                                font-size: 28px;
+                                font-size: 24px;
                                 font-weight: 600;
                             }
                         }
                     }
                     .el-submenu__title {
                         height: 100px;
-                        font-size: 28px;
+                        font-size: 24px;
                         line-height: 100px;
                     }
                 }
             }
             .aside-icon {
-                width: 40px;
-                height: 40px;
+                width: 30px;
+                height: 30px;
+                margin: 0 16px 3px 16px;
+            }
+        }
+
+    }
+
+    /* 移动端适配 */
+    @media screen and (max-width: 420px) {
+        .layout-aside {
+            .elsb {height: calc(100vh - 100px);}
+
+            .logged-info {
+                background-color: #009688;
+                width: 100%;
+                height: 200px;
+            }
+
+            .el-menu {
+                ::v-deep {
+                    .el-submenu:first-child {display: unset;}
+                    .el-menu-item {
+                        height: 80px;
+                        font-size: 20px;
+                        line-height: 80px;
+                    }
+                    .el-submenu {
+                        .el-menu-item {
+                            height: 70px;
+                            line-height: 70px;
+                            padding-left: 40px !important;
+                        }
+                        .el-submenu__title {
+                            font-size: 20px;
+                            i {
+                                margin-top: -10px;
+                                font-size: 20px;
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                    .el-submenu__title {
+                        height: 80px;
+                        font-size: 20px;
+                        line-height: 80px;
+                    }
+                }
+            }
+            .aside-icon {
+                width: 20px;
+                height: 20px;
                 margin: 0 16px 3px 16px;
             }
         }

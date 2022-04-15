@@ -34,16 +34,20 @@
     .layout-footer {
         @include bgc-main-light;
         min-width: 560px;
-    }
 
-    .copyright {height: 30px;}
+        .copyright {height: 30px;}
+    }
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 1200px) {
         .layout-footer {
             width: 100vw;
             min-width: unset;
+            height: 60px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            .copyright {font-size: 16px;}
         }
     }
 

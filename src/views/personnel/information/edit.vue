@@ -3,7 +3,7 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white-default-h">
-                <el-row style="margin-bottom: 40px; font-size: 16px; font-weight: 600;">编辑人员档案</el-row>
+                <el-row class="page-title">编辑人员档案</el-row>
                 <el-row class="fm fm-max-w">
                     <el-form ref="fm" :model="form" label-position="right" size="small" label-width="140px">
                         <template v-if="isMySelf">
@@ -526,6 +526,25 @@
             ::v-deep {
                 .el-input--small .el-input__inner {width: 220px;}
             }
+        }
+    }
+
+    /* 移动端适配 */
+    @media screen and (max-width: 1200px) {
+        ._root_page {
+            .page-title {margin-bottom: 40px; font-size: 24px; font-weight: 600;}
+            .fm {
+                ._hr {
+                    width: calc(100vw - 340px);
+                    margin: 15px auto 30px auto;
+                    border: 1px solid #E0E0E0;
+                }
+
+                ::v-deep {
+                    .el-input--small .el-input__inner {width: 220px;}
+                }
+            }
+            .edit-page-options-btn .btn {width: max-content;}
         }
     }
 

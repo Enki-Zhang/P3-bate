@@ -4,7 +4,7 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body class="_root_page">
         <el-row>
-            <el-form ref="fm" :model="form" size="small" label-position="right" label-width="100px">
+            <el-form ref="fm" :model="form" size="small" label-position="right" label-width="100px" class="fm">
                 <el-row>
                     <el-form-item prop="name" label="姓名"
                                   :rules="[

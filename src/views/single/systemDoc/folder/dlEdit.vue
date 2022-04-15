@@ -4,7 +4,7 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body class="_root_page">
         <el-row>
-            <el-form ref="fm" :model="form" label-position="right" label-width="120px">
+            <el-form ref="fm" :model="form" label-position="right" label-width="160px" class="fm">
                 <el-row>
                     <el-form-item prop="name" label="文件类型名称" size="small" :rules="[
                             {required: true, message: '请填写文件类型名称'},

@@ -31,11 +31,8 @@ const inLayout = {
             meta: {title: '测试页', isShowBreadcrumb: 0,},
             hidden: 1,
         },
-
-
-
-        /*{
-            /!* 移动端菜单登录信息 *!/
+        {
+            /* 移动端菜单登录信息 */
             path: 'logged-info',
             name: 'logged-info',
             icon: 'avatar',
@@ -49,7 +46,9 @@ const inLayout = {
                     hidden: 0,
                 },
             ]
-        },*/
+        },
+
+
         /*{
             path: 'workbench',
             name: 'workbench',

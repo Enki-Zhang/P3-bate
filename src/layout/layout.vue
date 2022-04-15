@@ -61,8 +61,6 @@
                         <el-row class="breadcrumb-hr"></el-row>
                     </el-row>
 
-
-
                     <!-- 页面内容 -->
                     <router-view :key="routerKey"></router-view>
                 </el-main>
@@ -192,7 +190,7 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 1200px) {
         .layout {
             .m-layout-aside {display: unset;}
 
@@ -203,13 +201,59 @@
 
             .main-scrollbar {
                 width: 100vw;
-                height: calc(100vh - 180px);
+                height: calc(100vh - 100px);
 
                 .my-breadcrumb {
                     height: 120px;
 
                     .breadcrumb {
                         padding: 49px 20px;
+                    }
+                    .breadcrumb-current {
+                        font-size: 28px;
+                        @include fw-600;
+                        line-height: 44px;
+                    }
+
+                    .breadcrumb-single {
+                        padding: 20px;
+                        font-size: 28px;
+                    }
+
+                    .breadcrumb-hr {border: 1px solid #CBDDF0; margin: 0 20px;}
+
+                    ::v-deep {
+                        .el-breadcrumb {
+                            font-size: 28px;
+                            @include fw-600;
+
+                            .el-breadcrumb__inner {font-size: 28px; line-height: 44px;}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* 移动端适配 */
+    @media screen and (max-width: 420px) {
+        .layout {
+            .m-layout-aside {display: unset;}
+
+            .layout-main {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .main-scrollbar {
+                width: 100vw;
+                height: calc(100vh - 100px);
+
+                .my-breadcrumb {
+                    height: 90px;
+
+                    .breadcrumb {
+                        padding: 35px 20px;
                     }
                     .breadcrumb-current {
                         font-size: 28px;
