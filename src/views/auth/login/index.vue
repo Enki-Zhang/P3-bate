@@ -4,7 +4,7 @@
         <el-row v-if="!needChoosePlatform" class="fm">
             <el-form ref="fmLogin" :model="fmLogin"
                      label-position="right"
-                     class="fm-login pd-t-25"
+                     class="fm"
                      @submit.native.prevent>
                 <el-form-item prop="username" :rules="[
                             {required: true, message: '请填写帐号'},
@@ -271,14 +271,29 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 1200px) {
         .login {
             margin-top: 30px;
             margin-bottom: 30px;
 
             .fm {
                 width: 500px;
-                height: 330px;
+                height: 280px;
+
+                .el-button {padding: 18px 20px;}
+            }
+        }
+    }
+    @media screen and (max-width: 420px) {
+        .login {
+            margin-top: 30px;
+            margin-bottom: 30px;
+
+            .fm {
+                width: 389px;
+                height: 280px;
+
+                .el-button {padding: 18px 20px;}
             }
         }
     }

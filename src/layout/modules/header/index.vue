@@ -77,6 +77,10 @@
         created() {
             this.isCollapseMenu = !!this.man.db.load('sys.collapseMenu');
             this.isCollapseMenu = !this.man.fast.browserSystemIsPC();
+
+            this.man.bus.$on('autoCollapseMenu', () => {
+                this.isCollapseMenu = true;
+            });
         },
         computed: {
             ...mapState(['userInfo']),

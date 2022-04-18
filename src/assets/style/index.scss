@@ -123,9 +123,13 @@
 /* 移动端适配 */
 .dp-pc {display: block;}
 .dp-m {display: none;}
+.dp-pc-dl-pager {display: block;}
+.dp-m-dl-pager {display: none;}
 @media screen and (max-width: 1200px) {
   //.dp-pc {display: none;}
   //.dp-m {display: block;}
+  .dp-pc-dl-pager {display: none;}
+  .dp-m-dl-pager {display: block;}
   /* 列表筛选项 */
   .filters {
     .item {
@@ -170,6 +174,61 @@
             .el-link--inner {font-size: 20px;}
           }
           .cell.el-tooltip {font-size: 20px;}
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 420px) {
+  //.dp-pc {display: none;}
+  //.dp-m {display: block;}
+  .dp-pc-dl-pager {display: none;}
+  .dp-m-dl-pager {display: block;}
+  /* 列表筛选项 */
+  .filters {
+    .item {
+      margin-top: 5px;
+      margin-left: -5px;
+      line-height: 45px;
+      .lb {width: max-content; font-size: 16px; margin-left: 10px; margin-right: 5px;}
+      .lb-unmgl {margin-left: unset;}
+      .inp {width: 160px;}
+      .inp-small {width: 200px;}
+      .btn {width: min-content;}
+      .el-input--small {font-size: 16px;}
+      .el-input--small .el-input__inner {width: 200px; height: 45px;}
+    }
+  }
+  .fn-btns {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .fn-btn {min-width: min-content; max-width: max-content; margin-bottom: 15px;}
+  }
+  // 列表缩略 tips
+  .el-tooltip__popper {font-size: 16px !important;}
+  // dropdown
+  .el-dropdown-menu {
+    .el-dropdown-menu__item {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
+  }
+
+  ::v-deep {
+    /* 列表 */
+    .el-table {
+      tr {
+        th {font-size: 15px;}
+        td {
+          padding: 14px 0;
+          .cell {
+            font-size: 14px;
+            line-height: 40px;
+            .el-link--inner {font-size: 14px;}
+          }
+          .cell.el-tooltip {font-size: 14px;}
         }
       }
     }

@@ -200,9 +200,16 @@
                 </el-row>
 
                 <!-- 分页 -->
-                <el-row v-if="tbData.total" class="mg-t-20 mg-b-10 txt-c">
+                <el-row v-if="tbData.total" class="dp-pc-dl-pager mg-t-20 mg-b-10 txt-c">
                     <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="10"
                                    layout="total, prev, pager, next, jumper"
+                                   @current-change="handlePaginationChange"
+                                   background>
+                    </el-pagination>
+                </el-row>
+                <el-row v-if="tbData.total" class="dp-m-dl-pager mg-t-20 mg-b-10 txt-c">
+                    <el-pagination :total="tbData.total" :current-page="tbData.current" :page-size="5"
+                                   layout="total, prev, next, jumper"
                                    @current-change="handlePaginationChange"
                                    background>
                     </el-pagination>

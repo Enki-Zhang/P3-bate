@@ -68,10 +68,19 @@
 
 
     /* 移动端适配 */
-    @media screen and (max-width: 750px) {
+    @media screen and (max-width: 1200px) {
         .auth {
             .logo {
-                .logo-img {width: 620px; height: 76px; margin-top: -20px;}
+                .logo-img {width: 620px; height: 76px; margin-top: -120px;}
+            }
+
+            .copyright {font-size: 20px;}
+        }
+    }
+    @media screen and (max-width: 420px) {
+        .auth {
+            .logo {
+                .logo-img {width: 370px; height: 45px; margin-top: -120px;}
             }
 
             .copyright {font-size: 20px;}

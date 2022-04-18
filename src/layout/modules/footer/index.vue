@@ -50,5 +50,15 @@
             .copyright {font-size: 16px;}
         }
     }
+    @media screen and (max-width: 420px) {
+        .layout-footer {
+            width: 100vw;
+            min-width: unset;
+            height: 80px;
+            margin-bottom: 40px;
+            font-size: 12px;
+            .copyright {font-size: 12px;}
+        }
+    }
 
 </style>

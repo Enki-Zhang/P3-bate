@@ -317,3 +317,191 @@
         }
     }
 }
+@media screen and (max-width: 420px) {
+    // 表单
+    .fm {
+        ::v-deep {
+            .el-form-item {
+                margin-bottom: 35px;
+                .el-form-item__error {font-size: 14px;}
+            }
+            .el-input {
+                font-size: 14px;
+
+                .el-input__inner {
+                    height: 60px;
+                    padding: 0 15px;
+                    border-radius: 12px;
+                    line-height: 60px;
+                }
+
+                .el-input__icon {
+                    font-size: 16px;
+                    line-height: 40px;
+                }
+
+                .el-input__prefix {left: 15px;}
+
+                .el-input__suffix {top: 0; right: -30px;}
+            }
+            .el-button {
+                padding: 12px 12px;
+                border-radius: 8px;
+                font-size: 16px;
+                letter-spacing: 3px;
+            }
+            .el-form-item__label {font-size: 14px; line-height: 60px;}
+            .el-switch {
+                line-height: 75px;
+                .el-switch__label * {font-size: 14px;}
+                .el-switch__core {
+                    width: 80px !important; height: 40px; margin-top: 45px; border-radius: 40px;
+                    &:after {width: 30px; height: 30px; top: 4px;}
+                }
+            }
+        }
+    }
+    // 确认框
+    .el-message-box {
+        width: 100vw;
+        .el-message-box__title,
+        .el-message-box__headerbtn {font-size: 22px;}
+        .el-message-box__content {
+            padding: 20px;
+            font-size: 16px;
+            .el-message-box__message p {line-height: 40px;}
+        }
+        .el-message-box__btns {
+            padding: 15px 20px 5px;
+            .el-button--small {
+                width: max-content;
+                padding: 18px 25px;
+                font-size: 16px;
+                border-radius: 6px;
+            }
+            button:nth-child(2) {margin-left: 20px;}
+        }
+    }
+    // 消息提示
+    .el-message {
+        top: 30px !important;
+        .el-message__content {
+            padding: 10px;
+            font-size: 18px;
+        }
+        .el-message__icon {font-size: 20px;}
+    }
+    // 全屏加载的圆圈
+    .el-loading-mask.is-fullscreen .el-loading-spinner .circular {width: 120px !important; height: 120px !important;}
+    // 下拉框选项
+    .el-select-dropdown.el-popper {
+        .el-select-dropdown__item {
+            font-size: 16px;
+            height: 50px;
+            line-height: 50px;
+        }
+    }
+    // 按钮
+    .el-button--small {
+        padding: 10px;
+        font-size: 15px;
+        border-radius: 6px;
+    }
+    // dl弹窗
+    .el-dialog {
+        margin-top: 0 !important;
+        width: 100vw !important;
+        height: max-content;
+        max-height: unset !important;
+        .el-dialog__header {
+            padding: 30px 20px;
+            .el-dialog__title {font-size: 20px;}
+            .el-dialog__headerbtn {font-size: 28px;}
+        }
+    }
+
+    ::v-deep {
+        // 列表
+        .el-table {
+            tr {
+                th {background: #FAFAFA; padding: 15px 0; line-height: 40px;}
+                td {
+                    padding: 16px 0;
+                    .cell {
+                        line-height: 40px;
+                        .el-link--inner {font-size: 20px;}
+                    }
+                }
+                .cell.el-tooltip {font-size: 16px;}
+            }
+            .el-table__body-wrapper {font-size: 16px;}
+            .el-row--flex.is-justify-space-around {flex-wrap: wrap;}
+        }
+        // 分页
+        .el-pagination {
+            .el-pagination__total,
+            .el-pagination__jump {
+                height: 30px;
+                font-size: 14px;
+                line-height: 30px;
+            }
+            .btn-next .el-icon,
+            .btn-prev .el-icon {font-size: 14px;}
+            .btn-next,
+            .btn-prev {
+                width: 30px; height: 30px; line-height: 30px;
+            }
+            .el-pager li {
+                width: max-content;
+                height: 30px;
+                padding: 0 10px;
+                font-size: 14px;
+                line-height: 30px;
+            }
+            .el-pagination__editor.el-input .el-input__inner {height: 30px; font-size: 14px;}
+        }
+        // action sheet
+        .van-popup--bottom.van-popup--round {
+            border-radius: 15px 15px 0 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            .van-action-sheet__description {
+                position: relative;
+                padding: 20px 16px;
+                color: #969799;
+                font-size: 28px;
+                line-height: 60px;
+                text-align: left;
+            }
+            .van-action-sheet__item {
+                background-color: #fff;
+                padding: 25px 16px;
+                color: #0a78de;
+                font-size: 28px;
+                cursor: pointer;
+                line-height: 50px;
+                &:not(:first-child) {
+                    border-top: 0.1px solid #C1C1C1 !important;
+                }
+                &:hover,
+                &:active {
+                    background-color: #E8F4FF;
+                }
+                .van-action-sheet__subname {
+                    margin-top: 8px;
+                    color: #969799;
+                    font-size: 22px;
+                    line-height: 30px;
+                }
+            }
+            .van-action-sheet__cancel {
+                padding: 25px 16px;
+                font-size: 28px;
+                cursor: pointer;
+                line-height: 55px;
+            }
+        }
+    }
+}

@@ -129,6 +129,7 @@
                 // 移动端自动折回
                 if(!that.browserSystemIsPC) {
                     that.isCollapse = true;
+                    this.man.bus.$emit('autoCollapseMenu', true);
                     // 退出登录
                     if(routeName === 'logged-info|logout') {
                         that.logout();
@@ -267,7 +268,7 @@
     /* 移动端适配 */
     @media screen and (max-width: 420px) {
         .layout-aside {
-            .elsb {height: calc(100vh - 100px);}
+            .elsb {height: calc(100vh - 120px);}
 
             .logged-info {
                 background-color: #009688;
@@ -311,7 +312,6 @@
                 margin: 0 16px 3px 16px;
             }
         }
-
     }
 
 </style>

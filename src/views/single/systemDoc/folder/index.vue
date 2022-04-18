@@ -273,5 +273,45 @@
             }
         }
     }
+    @media screen and (max-width: 420px) {
+        ._root_page {
+            .file-manage {
+                width: 150px;
+                height: 56px;
+                margin-top: 0;
+                margin-left: 10px;
+                font-size: 16px;
+                line-height: 80px;
+
+                img {width: 18px; height: 18px; margin: 2px 5px 0;}
+            }
+
+            .block-list {
+                .block {
+                    width: 162px;
+                    height: 162px;
+                    margin: 12px;
+                    border-radius: 15px;
+
+                    .bg-setting {
+                        width: 80px;
+                        height: 50px;
+                        top: -6px;
+                        right: -16px;
+                        .setting {
+                            font-size: 26px;
+                            line-height: 50px;
+                        }
+                    }
+
+                    .con {
+                        .title {font-size: 16px; line-height: 30px;}
+                        .desc {font-size: 14px; line-height: 30px;}
+                        img {width: 80px; height: 80px;}
+                    }
+                }
+            }
+        }
+    }
 
 </style>

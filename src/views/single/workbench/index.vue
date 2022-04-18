@@ -124,7 +124,7 @@
                 </el-col>
             </el-row>
             <!-- 办理中 -->
-            <el-row class="table-has-title mg-t-20">
+            <el-row class="table-has-title mg-t-20 processing">
                 <el-row type="flex" justify="space-between" class="title">
                     <span>办理中 (<span class="green">{{ tbDataProcessing.total }}</span>)</span>
                     <span @click="showDLTableProcessing" class="more">更多</span>
@@ -140,7 +140,7 @@
                         <el-table-column prop="createTime" label="申请/更新时间" sortable>
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</template>
                         </el-table-column>
-                        <el-table-column label="操作" width="120">
+                        <el-table-column label="操作" width="119">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click.native="showDLViewProcess(scope.row)">查看进度</el-link>
@@ -593,7 +593,6 @@
         .mg-lr--10 {margin-left: -10px; margin-right: -10px;}
     }
 
-
     /* 移动端适配 */
     @media screen and (max-width: 1200px) {
         ._root_page {
@@ -656,7 +655,7 @@
         ._root_page {
             .statistics {
                 /*.el-col-8:not(:first-child) {margin-top: 15px;}*/
-                .el-col-8 {padding: 0 3px !important;}
+                .el-col-8 {padding: 0 7px !important;}
 
                 .block {
                     width: 115px;
@@ -683,31 +682,34 @@
             }
 
             .table-has-title {
-                padding: 18px;
+                padding: 12px 5px;
                 border-radius: 20px;
 
                 .title {
-                    font-size: 28px;
+                    font-size: 22px;
                     line-height: 60px;
 
-                    .more {
-                        font-size: 24px;
-                    }
+                    span {font-size: 18px;}
+                    .more {font-size: 18px; margin-right: 5px;}
                 }
 
                 ::v-deep {
                     .el-table {
                         tr {
-                            th {font-size: 26px; line-height: 60px;}
+                            th {font-size: 18px; line-height: 40px;}
                             td .cell {
                                 line-height: 40px;
 
-                                .el-link--inner {font-size: 22px;}
+                                .el-link--inner {font-size: 16px;}
                             }
                         }
-                        .el-table__body-wrapper {font-size: 22px;}
+                        .el-table__body-wrapper {font-size: 16px;}
                     }
                 }
+            }
+
+            .processing {
+                .el-link.el-link--primary {width: 100px;}
             }
         }
     }

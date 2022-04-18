@@ -256,24 +256,24 @@
                         padding: 35px 20px;
                     }
                     .breadcrumb-current {
-                        font-size: 28px;
+                        font-size: 20px;
                         @include fw-600;
                         line-height: 44px;
                     }
 
                     .breadcrumb-single {
                         padding: 20px;
-                        font-size: 28px;
+                        font-size: 20px;
                     }
 
                     .breadcrumb-hr {border: 1px solid #CBDDF0; margin: 0 20px;}
 
                     ::v-deep {
                         .el-breadcrumb {
-                            font-size: 28px;
+                            font-size: 20px;
                             @include fw-600;
 
-                            .el-breadcrumb__inner {font-size: 28px; line-height: 44px;}
+                            .el-breadcrumb__inner {font-size: 16px; line-height: 44px;}
                         }
                     }
                 }
