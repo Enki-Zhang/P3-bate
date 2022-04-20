@@ -357,6 +357,23 @@
                                         </div>
                                       </div>
                                       <div 
+                                        :key="item2.id" 
+                                        v-else-if = "item2.type == 'handWrite'"
+                                        :class = "item2.id == selectingId ? 'selecting' : ''" 
+                                        class = "formItem" 
+                                        @click = "selectItem(index,index2)">
+                                        <i class = "dragBtn"></i>
+                                        <i class = "copyBtn" @click = "copyCompent"></i>
+                                        <i class = "delBtn" @click = "delCompent"></i>
+                                        <p>{{item2.attr_name}}</p>
+                                        <div>
+                                          <textarea 
+                                            readonly 
+                                            style = "resize:none" 
+                                            rows = "4" /></textarea>
+                                        </div>
+                                      </div>
+                                      <div 
                                         v-else
                                         :class = "item2.id == selectingId ? 'selecting' : ''" 
                                         class = "formItem" 
@@ -1340,8 +1357,6 @@
                   if(typeof e.relatedContext.element == 'undefined'){
                       if (e.draggedContext.element.type == 'childForm' && e.relatedContext.component.$el.dataset.type == 'childForm')
                             return false;
-                      if (e.draggedContext.element.type == 'handWrite' && e.relatedContext.component.$el.dataset.type == 'childForm')
-                            return false;
                       return true;
                   }
                   this.moveId = e.relatedContext.element.id;
@@ -1920,7 +1935,7 @@
   .handWriteBox{
     width: 0;
     flex-grow: 1;
-    height:240px;
+    height:120px;
     background:#fff;
     border:1px solid #efefef;
   }

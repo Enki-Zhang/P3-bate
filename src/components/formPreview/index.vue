@@ -521,6 +521,12 @@ export default {
                             </el-upload>
                         </div>
 
+                        <div v-else-if = "v2.type == 'handWrite'" @click = "setCompIndex(${i},index,index2)">
+                            <div style = "padding-top:10px;">
+                                <handWriteComp v-if = "v[index2].use"  @successFn = "handleHandWriteSuccess" :dataUrl = "v[index2].value"/>
+                            </div>
+                        </div>
+
                         <div v-else>{{v[index2].value}}</div>
                       </td>
                     </tr>
@@ -706,7 +712,7 @@ export default {
                   if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
                       self.preview.data[self.preview.compIndex].data_url = res.data;
                   else
-                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
+                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].data_url = res.data;
                   self.preview.$forceUpdate();
                   self.$message.success('上传成功');
               },
@@ -791,6 +797,14 @@ export default {
                           value:obj.arr[i].data_url
                       });
                   }
+                  else if(obj.arr[i].type == 'handWrite'){
+                          tempArr.push({
+                              use:true,
+                              type:obj.arr[i].type,
+                              label:obj.arr[i].attr_name,
+                              value:obj.arr[i].data_url
+                          });
+                      }
                   else{
                       tempArr.push({
                           type:obj.arr[i].type,
@@ -804,8 +818,18 @@ export default {
               },
               delRow(index,index2){
                 var obj = JSON.parse(JSON.stringify(this.data[index]));
-                obj.dataList.splice(index2,1);
+                obj.dataList[index2].forEach(e => {
+                    if(e.type == 'handWrite'){
+                        e.use = false;
+                    }
+                });
                 this.$set(this.data,index,obj);
+
+                let _this = this;
+                setTimeout(function(){
+                    obj.dataList.splice(index2,1);
+                    _this.$set(_this.data,index,obj);
+                },100);
               }
             }
  

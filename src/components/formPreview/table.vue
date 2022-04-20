@@ -39,6 +39,18 @@
                                 </span>
                                 <span v-else-if = "obj2.type == 'linkSelect'">{{obj2.value != null && typeof obj2.value == 'object' ? obj2.value.join('/') : obj2.value}}
                                 </span>
+                                <span v-else-if = "obj2.type == 'handWrite'">
+                                    <el-popover
+                                        placement="top"
+                                        width="200"
+                                        trigger="hover">
+                                        <div>
+                                            <img :src = "obj2.value"/>
+                                        </div>
+                                        <el-link slot="reference" style = "font-size:12px;" type="primary">查看签名</el-link>
+                                    </el-popover>
+                                    
+                                </span>
                                 <span v-else>{{obj2.value != null && typeof obj2.value == 'object' ? obj2.value.join('、') : obj2.value}}
                                 </span> 
                             </span>
@@ -82,6 +94,11 @@
             
         },
         methods: {
+            showImg(img){
+                // if(img){
+                //     this.
+                // }
+            },
             downloadFn(fileName){
                 const self = this;
                 let fileUrl = self.man.fast.getResourcePath(fileName);

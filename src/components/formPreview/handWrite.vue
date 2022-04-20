@@ -1,13 +1,14 @@
 <template>
     <div>
         <div class = "signBox" ref = "canvasBox">
-            <canvas height = "300" v-if = "imgUrl == ''" id = "js_handSign"/>
+            <canvas height = "300" v-if = "imgUrl == ''" :id = "id"/>
             <img v-else :src = "imgUrl"/>
         </div>
         <div class = "btnBox" v-show = "!disabled">
             <a v-if = "imgUrl != ''" @click = "sign">重新签名</a>
             <a v-if = "imgUrl == ''" @click = "clear">清除</a>
             <a v-if = "imgUrl == ''" @click = "submit">提交</a>
+            <!-- <span>{{id}}</span> -->
         </div>
     </div>
 </template>
@@ -39,6 +40,7 @@ import api from "@api";
         },
         data(){
             return{
+                id:-1,
                 imgUrl:'',
                 signaturePad:null,
                 config:{
@@ -47,10 +49,20 @@ import api from "@api";
                 }
             }
         },
+        created(){
+            let id = 'canvas_' + parseInt(Math.random() * 1000000);
+            this.id = id;
+        },
         mounted() {
-            if(!this.disabled)
-                this.getCanvas();
+            let _this = this;
+            if(!this.disabled){
+                setTimeout(function(){
+                    _this.getCanvas();
+
+                },100);
+            }
             this.imgUrl = this.dataUrl;
+            
             //this.imgUrl = 'http://192.168.10.33:7000/backServer/resources/20220406172510.jpg';
         },
         watch: {
@@ -84,7 +96,7 @@ import api from "@api";
                 this.imgUrl = '';
                 const _this = this;
                 Vue.nextTick(function () {
-                    var canvas = document.querySelector('#js_handSign');
+                    var canvas = document.querySelector('#' + _this.id);
                     _this.signaturePad = new SignaturePad(canvas, _this.config);
                     canvas.width = _this.$refs.canvasBox.clientWidth;
                     canvas.height = 300;
@@ -94,10 +106,13 @@ import api from "@api";
                 this.signaturePad.clear();
             },
             getCanvas() {
-                var canvas = document.querySelector('#js_handSign');
+                var canvas = document.querySelector('#' + this.id);
+                //console.log(canvas);
+                if(canvas == null)return;
                 this.signaturePad = new SignaturePad(canvas, this.config);
                 canvas.height = 300;
                 canvas.width = this.$refs.canvasBox.clientWidth;
+                //console.log(this.$refs.canvasBox.clientWidth);
             }
         },
     }
