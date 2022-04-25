@@ -7,15 +7,11 @@
             <!-- 筛选 -->
             <el-form ref="fmTbFilter" :model="tbFilter" size="small">
                 <el-row class="filters">
-                    <el-form-item prop="type">
+                    <el-form-item prop="typeId" label="">
                         <el-row class="item mg-l-10">
                             <el-row class="lb lb-unmgl">文件类型</el-row>
                             <el-row>
-                                <el-select v-model="tbFilter.type" class="inp">
-                                    <el-option label="全部" value=""></el-option>
-                                    <el-option label="普通管理员" :value="0"></el-option>
-                                    <el-option label="超级管理员" :value="1"></el-option>
-                                </el-select>
+                                <el-cascader v-model="tbFilter.typeId" :props="props" placeholder="请选择所属文件夹" clearable></el-cascader>
                             </el-row>
                         </el-row>
                     </el-form-item>
@@ -120,9 +116,17 @@
 
                 dialogVisible: false,
 
+                seloptsDir: [],
+                props: {
+                    lazy: true,
+                    checkStrictly: true,
+                    multiple: false,
+                    lazyLoad: this.lazyLoadSeloptsDir,
+                },
+
                 tbSelectedArr: [],
                 tbFilter: {
-
+                    typeId: [],
                     createTime: [],
                 },
                 tbData: {records: []},
@@ -149,10 +153,30 @@
             opened: function() {
                 let that = this;
 
-                that.initSeloptsFolder();
+                that.initSeloptsDir();
                 that.getTableData();
             },
+            lazyLoadSeloptsDir: function(node, resolve) {
+                let that = this;
+                // console.log(node);
 
+                api.systemDocumentTypeFindChildById({
+                    id: node.value,
+                    onlyShowEmpty: true,
+                }).then((res) => {
+                    if(res.data.status === 200) {
+                        let tmp = [];
+                        res.data.data.map(v => {
+                            tmp.push({
+                                value: Number(v.id),
+                                label: v.name,
+                                // leaf: level >= 2
+                            });
+                        });
+                        resolve(tmp);
+                    }
+                });
+            },
             getTableData: function(page = 1, pageSize = 5) {
                 let that = this;
                 that.btnLoadingFilter = true;
@@ -185,6 +209,7 @@
                 if(isFilter) {
                     that.tbDataFilter = {
                         ...that.tbFilter,
+                        typeId: that.tbFilter.typeId[that.tbFilter.typeId.length - 1],
                         // startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
                         // endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
                     };
@@ -224,15 +249,19 @@
                 that.$emit('changeTableData', that.tbSelectedArr);
             },
 
-            initSeloptsFolder: function() {
+            initSeloptsDir: function() {
                 let that = this;
-                that.$toast.loading('加载中');
 
-                api.systemDocumentTypePage().then((res) => {
-                    that.$toast.clear();
-
+                api.systemDocumentTypeFindChildById().then((res) => {
                     if(res.data.status === 200) {
-                        that.seloptsFolder = {...res.data.data.records};
+                        that.seloptsDir = [];
+                        res.data.data.map(v => {
+                            that.seloptsDir.push({
+                                value: v.id,
+                                label: v.name,
+                                // leaf: level >= 2
+                            });
+                        });
                     }
                 });
             },

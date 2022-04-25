@@ -2,6 +2,9 @@ import ajax from "@plugins/ajax";
 
 // 组织架构
 
+export function menuPermission(params) {
+    return ajax.get('userServer/menu/permission', params);
+}
 export function menuTree(params) {
     return ajax.get('userServer/menu/tree', params);
 }

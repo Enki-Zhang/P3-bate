@@ -2,13 +2,18 @@
 
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
-
-            <el-row>
+            <el-row type="flex">
                 <el-row type="flex" justify="center" align="middle"
                         @click.native="create"
                         class="file-manage">
                     <img src="../../../../assets/image/systemDoc/btn-file-manage.png">
                     <span>新增文件类型</span>
+                </el-row>
+                <el-row v-if="level > 0" type="flex" justify="center" align="middle"
+                        @click.native="goBack"
+                        class="back-dir">
+                    <img src="../../../../assets/image/systemDoc/btn-file-manage.png">
+                    <span>返回上一层</span>
                 </el-row>
             </el-row>
 
@@ -64,6 +69,8 @@
                 dlEditVisible: false,
 
                 folderList: [],
+                level: 0,
+                levelParentIdArr: ['',],
             }
         },
         created() {
@@ -77,27 +84,75 @@
                 let that = this;
                 that.$toast.loading('加载中');
 
-                api.systemDocumentTypePage().then((res) => {
+                api.systemDocumentTypeFindChildById({
+                    onlyShowEmpty: false,
+                }).then((res) => {
                     that.$toast.clear();
 
                     if(res.data.status === 200) {
-                        that.folderList = {...res.data.data.records};
+                        that.folderList = [...res.data.data];
                     }
                 });
             },
             navByBlockName: function(block) {
                 let that = this;
+                that.$toast.loading('加载中');
+                // console.log(block);
 
-                if(1) {
-                    that.$router.push({
-                        path: `/system-doc/management-manual`,
-                        query: {
-                            folderTitle: JSON.stringify({
-                                id: block.id,
-                                title: block.name
-                            }),
+                api.systemDocumentTypeFindChildById({
+                    id: block.id,
+                    onlyShowEmpty: false,
+                }).then((res) => {
+                    that.$toast.clear();
+                    if(res.data.status === 200) {
+                        that.level += 1;
+                        that.levelParentIdArr.push(block.id);
+                        // console.log(that.levelParentIdArr);
+                        if(res.data.data.length) that.folderList = [...res.data.data];
+                        else {
+                            that.$router.push({
+                                path: `/system-doc/management-manual`,
+                                query: {
+                                    folderTitle: JSON.stringify({
+                                        id: block.id,
+                                        title: block.name
+                                    }),
+                                }
+                            });
+                        }
+                    }
+                });
+            },
+            goBack: function() {
+                let that = this;
+
+                if(that.level > 0) {
+                    that.$toast.loading('加载中');
+
+                    api.systemDocumentTypeFindChildById({
+                        id: that.levelParentIdArr[that.level - 1],
+                        onlyShowEmpty: false,
+                    }).then((res) => {
+                        that.$toast.clear();
+                        if(res.data.status === 200) {
+                            that.levelParentIdArr.splice(that.level, 1);
+                            that.level -= 1;
+                            // console.log(that.levelParentIdArr);
+                            if(res.data.data.length) that.folderList = [...res.data.data];
+                            else {
+                                that.$router.push({
+                                    path: `/system-doc/management-manual`,
+                                    query: {
+                                        folderTitle: JSON.stringify({
+                                            id: block.id,
+                                            title: block.name
+                                        }),
+                                    }
+                                });
+                            }
                         }
                     });
+
                 }
             },
             create: function() {
@@ -109,7 +164,8 @@
 
                 that.dlParams = {
                     mode: 'create',
-                    detail: {id: 0}
+                    id: 0,
+                    detail: {id: 0, parentId: 0,}
                 };
                 that.dlEditVisible = true;
             },
@@ -124,7 +180,8 @@
                     if(res.data.status === 200) {
                         that.dlParams = {
                             mode: 'edit',
-                            detail: row
+                            id: row.id,
+                            detail: res.data.data
                         };
                         that.dlEditVisible = true;
                     }
@@ -187,6 +244,25 @@
             line-height: 22px;
             @include cursor-pointer;
             @include unable-select;
+
+            img {width: 18px; height: 18px; margin: 0 5px;}
+        }
+        .back-dir {
+            width: 149px;
+            height: 50px;
+            margin-left: 15px;
+            background: linear-gradient(180deg, #8879FA 0%, #8879FA 0%, #8879FA 100%);
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+            border-radius: 25px;
+            color: white;
+            line-height: 22px;
+            @include cursor-pointer;
+            @include unable-select;
+
+            &.disabled {
+                background: linear-gradient(180deg, #ccc 0%, #ccc 0%, #ccc 100%);
+                cursor: no-drop;
+            }
 
             img {width: 18px; height: 18px; margin: 0 5px;}
         }

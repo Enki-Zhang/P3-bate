@@ -17,6 +17,16 @@ export function upload(data, needFormat) {
 }
 
 /**
+ * base64 上传
+ *
+ * @param data
+ * @returns {*|void}
+ */
+export function uploadBase64(data) {
+    return ajax.upload('/backServer/file/base64/uploadFile', data);
+}
+
+/**
  * 删除上传的文件
  *
  * @param data

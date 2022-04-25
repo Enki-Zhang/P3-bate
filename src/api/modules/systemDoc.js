@@ -10,6 +10,9 @@ export function systemDocumentTypePage(params) {
 export function systemDocumentTypeFindById(params) {
     return ajax.get(`backServer/systemDocumentType/findById/${params}`);
 }
+export function systemDocumentTypeFindChildById(params) {
+    return ajax.get(`backServer/systemDocumentType/findChildById`, params);
+}
 export function systemDocumentTypeSave(data) {
     return ajax.post('backServer/systemDocumentType/save', data);
 }

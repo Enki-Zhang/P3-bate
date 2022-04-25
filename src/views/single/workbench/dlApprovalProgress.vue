@@ -6,7 +6,7 @@
                @opened="opened" @closed="closed"
                append-to-body>
         <el-row>
-            <el-row type="flex">
+            <el-row type="flex" style="flex-wrap: wrap;">
                 <el-scrollbar class="elsb-pf">
                     <el-row class="preview-form">
                         <!-- 组件：自定义表单填写 -->
@@ -31,7 +31,10 @@
         <el-row slot="footer" class="dialog-footer">
             <el-row type="flex" justify="center" align="middle">
 <!--                <el-button type="default" size="small" @click="closed" class="fn-btn">关 闭</el-button>-->
-                <el-button type="primary" size="small" @click="showDLApprovalConfirm" class="fn-btn">审 批</el-button>
+                <el-button type="primary" size="small"
+                           @click="showDLApprovalConfirm"
+                           class="fn-btn"
+                           style="position: relative; bottom: 10px;">审 批</el-button>
             </el-row>
         </el-row>
 
@@ -116,12 +119,17 @@
             showDLApprovalConfirm: function() {
                 let that = this;
 
-                api.camundaFindByProcessInstanceId(that.params.processInstanceId).then((res) => {
+                that.dlParams = {
+                    processInstanceId: that.params.processInstanceId,
+                };
+                that.dlVisibleApprovalConfirm = true;
+
+                /*api.camundaFindByProcessInstanceId(that.params.processInstanceId).then((res) => {
                     if(res.data.status === 200) {
                         that.dlParams = {...res.data.data};
                         that.dlVisibleApprovalConfirm = true;
                     }
-                });
+                });*/
             },
 
             beforeClose: function(done) {
@@ -139,17 +147,17 @@
 
 <style lang="scss" scoped>
 
-    .elsb-pf {width: 640px; height: 600px; flex-shrink: 0;}
+    .elsb-pf {width: 640px; max-height: 600px; flex-shrink: 0;}
     .preview-form {
         background-color: #009688;
         width: 640px;
     }
 
-    .elsb-cp {width: 320px; height: 600px; flex-shrink: 0;}
+    .elsb-cp {width: 320px; max-height: 600px; flex-shrink: 0;}
     .current-process {
         /*background-color: #003A71;*/
         width: 320px;
-        height: 600px;
+        max-height: 600px;
         padding: 20px 30px;
 
         ._title {

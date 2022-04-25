@@ -4,7 +4,7 @@
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white-default-h">
                 <el-row class="fm fm-max-w">
-                    <el-form ref="fm" :model="form" label-position="right" label-width="200px">
+                    <el-form ref="fm" :model="form" label-position="right" label-width="160px">
                         <el-row>
                             <el-form-item prop="id" label="角色编号" size="small"
                                           :rules="[
@@ -43,16 +43,22 @@
                                               // {required: true, message: '至少勾选一项'},
                                               // {validator: validateNullArray, message: '至少勾选一项'}
                                       ]">
-                                <el-table ref="multipleTable" :data="allRoles" tooltip-effect="dark"
+                                <el-table ref="multipleTable" :data="rolesTree" tooltip-effect="dark"
                                           :height="screenHeight - 460" size="small"
                                           row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
                                           highlight-current-row border default-expand-all>
                                     <el-table-column label="模块标题" fixed="left" show-overflow-tooltip min-width="120">
                                         <template slot-scope="scope">{{ scope.row.title }}</template>
                                     </el-table-column>
-                                    <el-table-column label="功能权限" show-overflow-tooltip min-width="280">
+                                    <el-table-column label="" show-overflow-tooltip min-width="280">
+                                        <template slot="header" slot-scope="scope">
+                                            <el-row type="flex" justify="space-between" align="middle">
+                                                <el-row>功能权限</el-row>
+                                                <el-checkbox :indeterminate="isIndeterminateTree" @change="handleCheckedAll">全选</el-checkbox>
+                                            </el-row>
+                                        </template>
                                         <template slot-scope="scope">
-                                            <el-checkbox-group v-model="form.permission">
+                                            <el-checkbox-group v-model="form.permission" @change="handleChangePermissions">
                                                 <el-checkbox v-for="(v, k) in scope.row.permissions" :key="v.id" :label="v.value">{{ v.name }}</el-checkbox>
                                             </el-checkbox-group>
                                         </template>
@@ -96,7 +102,9 @@
                     permission: [],
                 },
                 btnLoadingSave: false,
-                allRoles: [],
+                isIndeterminateTree: false,
+                allPermissionsArr: [],
+                rolesTree: [],
             }
         },
         beforeCreate() {
@@ -106,7 +114,7 @@
             this.$store.commit('setPageTitle', `${this.$route.query.id ? '编辑' : '新增'}权限`);
 
             if(this.$route.query.id) this.getDetail(this.$route.query.id);
-            this.getAllPermissions();
+            this.getPermissionsTree();
             // this.testTbData();
         },
         computed: {
@@ -115,7 +123,7 @@
         methods: {
             save: function() {
                 let that = this;
-                // console.log(that.form);
+                // console.log(that.form); return;
 
                 that.$refs["fm"].validate(valid => {
                     if (valid) {
@@ -162,7 +170,6 @@
                     that.$router.push({path: listRoutePath, query: {_lpq: JSON.parse(that.$route.query._lpq)}});
                 }).catch();
             },
-
             getDetail: function(id) {
                 let that = this;
 
@@ -177,21 +184,49 @@
             getAllPermissions: function() {
                 let that = this;
 
+                api.menuPermission().then((res) => {
+                    // console.log(res);
+                    if(res.data.status === 200) {
+                        that.allPermissionsArr = [...res.data.data];
+
+
+                        that.handleChangePermissions();
+                    }
+                });
+            },
+            getPermissionsTree: function() {
+                let that = this;
+
                 api.menuTree({}).then((res) => {
                     // console.log(res);
                     if(res.data.status === 200) {
-                        that.allRoles = [...res.data.data];
+                        that.rolesTree = [...res.data.data];
+                        this.getAllPermissions();
                         that.$toast.clear();
                     }
                 });
             },
+            handleCheckedAll: function(val) {
+                let that = this;
+                // console.log(val);
+                // console.log(that.rolesTree);
 
+                that.form.permission = val ? [...that.allPermissionsArr] : [];
+                that.handleChangePermissions();
+            },
+            handleChangePermissions: function() {
+                let that = this;
+
+                if(that.form.permission.length === 0) that.isIndeterminateTree = false;
+                else if(that.form.permission.length < that.allPermissionsArr.length) that.isIndeterminateTree = true;
+                else that.isIndeterminateTree = false;
+            },
 
             // 静态数据测试用
             testTbData: function() {
                 let that = this;
 
-                that.allRoles = [
+                that.rolesTree = [
                     {
                         id: 1,
                         title: '内容管理',

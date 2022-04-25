@@ -17,6 +17,10 @@ import MyProcessDesigner from "~package/index.js";
 Vue.use(MyProcessDesigner);
 import '~package/theme/index.scss';
 
+// 签名
+import vueEsign from 'vue-esign';
+Vue.use(vueEsign);
+
 // vant
 import '@plugins/vant';
 

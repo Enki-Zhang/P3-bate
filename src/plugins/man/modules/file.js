@@ -1,6 +1,26 @@
 const file = {};
 
 /**
+ * base64 转图片文件
+ *
+ * @param dataUrl
+ * @param name
+ * @returns {File} 文件
+ */
+file.base64ToFile = function(dataUrl, name = 'file') {
+    const dataUrlConArr = dataUrl.split(',');
+    const mime = dataUrlConArr[0].match(/:(.*?);/)[1];
+    const suffix = mime.split('/')[1];
+    const bstr = atob(dataUrlConArr[1]);
+
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {u8arr[n] = bstr.charCodeAt(n);}
+
+    return new File([u8arr], `${name}.${suffix}`, {type: mime});
+};
+
+/**
  * blob 格式转 base64
  *
  * @param blob

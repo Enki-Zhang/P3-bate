@@ -4,28 +4,45 @@
                @opened="opened" @closed="closed" :before-close="beforeClose"
                :close-on-click-modal="false" append-to-body class="_root_page">
         <el-row>
-            <el-form ref="fm" :model="form" label-position="right" label-width="160px" class="fm">
+            <el-form ref="fm" :model="form" size="small" label-position="right" label-width="160px" class="fm">
                 <el-row>
-                    <el-form-item prop="name" label="文件类型名称" size="small" :rules="[
-                            {required: true, message: '请填写文件类型名称'},
-                            {type: 'string', min: 2, max: 8, message: '长度应为 2 ~ 8 个字符'},
-                        ]">
+                    <el-form-item prop="parentId" label="所属文件夹"
+                                  :rules="[
+                                      {required: true, message: '请选择所属文件夹'},
+                                      {type: 'array', min: 1, message: '请选择所属文件夹'},
+                                  ]">
+                        <el-cascader v-model="form.parentId"
+                                     :options="seloptsDir"
+                                     :props="props"
+                                     placeholder="请选择所属文件夹"
+                                     clearable>
+                        </el-cascader>
+                    </el-form-item>
+                </el-row>
+                <el-row>
+                    <el-form-item prop="name" label="文件类型名称"
+                                  :rules="[
+                                      {required: true, message: '请填写文件类型名称'},
+                                      {type: 'string', min: 1, max: 8, message: '长度应为 1 ~ 8 个字符'},
+                                  ]">
                         <el-input v-model="form.name" placeholder="文件类型名称" clearable></el-input>
                     </el-form-item>
                 </el-row>
                 <el-row>
-                    <el-form-item prop="description" label="文件类型描述" size="small" :rules="[
-                            {required: true, message: '请填写文件类型描述'},
-                            {type: 'string', min: 2, max: 12, message: '长度应为 2 ~ 12 个字符'},
-                        ]">
+                    <el-form-item prop="description" label="文件类型描述"
+                                  :rules="[
+                                      {required: true, message: '请填写文件类型描述'},
+                                      {type: 'string', min: 1, max: 12, message: '长度应为 1 ~ 12 个字符'},
+                                  ]">
                         <el-input v-model="form.description" placeholder="文件类型描述" clearable></el-input>
                     </el-form-item>
                 </el-row>
                 <el-row>
-                    <el-form-item prop="icon" label="选择图标" size="small" :rules="[
-                            {required: true, message: '请选择图标'},
-                            {validateAnnex, message: '请选择图标'}
-                        ]">
+                    <el-form-item prop="icon" label="选择图标"
+                                  :rules="[
+                                      {required: true, message: '请选择图标'},
+                                      {validateAnnex, message: '请选择图标'}
+                                  ]">
                         <el-row type="flex" class="icons">
                             <el-row v-for="(v, k) in iconArr" :key="k"
                                     @click.native="choosedIcon = v"
@@ -64,7 +81,16 @@
                 validateAnnex,
                 dialogVisible: false,
 
+                seloptsDir: [],
+                props: {
+                    lazy: true,
+                    checkStrictly: true,
+                    multiple: false,
+                    lazyLoad: this.lazyLoadSeloptsDir,
+                },
+
                 form: {
+                    parentId: -1,
                     name: '',
                     icon: '',
                     description: ''
@@ -89,14 +115,22 @@
         },
         methods: {
             opened: function() {
-                this.form = {...this.params.detail};
-                this.choosedIcon = this.form.icon;
-            },
+                let that = this;
 
+                if(that.params.id > 0) {
+                    that.form = {
+                        ...that.params.detail,
+                        parentId: that.params.detail.parentId === 0 ? -1 : that.params.detail.parentId,
+                    };
+                    // console.log(that.params, that.form);
+                }
+                that.choosedIcon = that.form.icon;
+                that.initSeloptsDir();
+            },
             save: function() {
                 let that = this;
                 that.form.icon = this.choosedIcon;
-                // console.log(that.form);
+                // console.log(that.form); return;
 
                 that.$refs.fm.validate(valid => {
                     if(valid) {
@@ -105,6 +139,7 @@
                         if(that.params.detail.id) {
                             api.systemDocumentTypeUpdate({
                                 ...that.form,
+                                parentId: that.form.parentId === -1 ? 0 : that.form.parentId[that.form.parentId.length - 1],
                             }).then((res) => {
                                 // console.log(res);
                                 that.btnLoadingSave = false;
@@ -118,6 +153,7 @@
                         } else {
                             api.systemDocumentTypeSave({
                                 ...that.form,
+                                parentId: that.form.parentId === -1 ? 0 : that.form.parentId[that.form.parentId.length - 1],
                             }).then((res) => {
                                 // console.log(res);
                                 that.btnLoadingSave = false;
@@ -130,6 +166,50 @@
                             });
                         }
                     } else {return false;}
+                });
+            },
+            lazyLoadSeloptsDir: function(node, resolve) {
+                let that = this;
+                // console.log(node);
+
+                if(node.value === 0) resolve([]);
+                else {
+                    api.systemDocumentTypeFindChildById({
+                        id: node.value,
+                        onlyShowEmpty: true,
+                    }).then((res) => {
+                        if(res.data.status === 200) {
+                            let tmp = [];
+                            res.data.data.map(v => {
+                                tmp.push({
+                                    value: Number(v.id),
+                                    label: v.name,
+                                    // leaf: level >= 2
+                                });
+                            });
+                            resolve(tmp);
+                        }
+                    });
+                }
+            },
+
+            initSeloptsDir: function() {
+                let that = this;
+
+                api.systemDocumentTypeFindChildById().then((res) => {
+                    if(res.data.status === 200) {
+                        that.seloptsDir = [{
+                            label: '-- 自身为根目录 --',
+                            value: -1,
+                        }];
+                        res.data.data.map(v => {
+                            that.seloptsDir.push({
+                                value: v.id,
+                                label: v.name,
+                                // leaf: level >= 2
+                            });
+                        });
+                    }
                 });
             },
 
