@@ -12,6 +12,12 @@
                                 <el-row><el-input v-model="tbFilter.name" placeholder="文件名查询" class="inp-small"></el-input></el-row>
                             </el-row>
                         </el-form-item>
+                        <el-form-item prop="documentNo">
+                            <el-row class="item">
+                                <el-row class="lb">文件编号</el-row>
+                                <el-row><el-input v-model="tbFilter.documentNo" placeholder="文件编号查询" class="inp-small"></el-input></el-row>
+                            </el-row>
+                        </el-form-item>
                         <!--<el-form-item prop="type">
                             <el-row class="item mg-l-10">
                                 <el-row class="lb lb-unmgl">类型</el-row>
@@ -24,7 +30,7 @@
                                 </el-row>
                             </el-row>
                         </el-form-item>-->
-                        <el-form-item prop="status">
+                        <!--<el-form-item prop="status">
                             <el-row class="item mg-l-10">
                                 <el-row class="lb lb-unmgl">发布状态</el-row>
                                 <el-row>
@@ -35,7 +41,7 @@
                                     </el-select>
                                 </el-row>
                             </el-row>
-                        </el-form-item>
+                        </el-form-item>-->
                         <!--<el-form-item prop="createTime">
                             <el-row class="item">
                                 <el-row class="lb">创建时间</el-row>
@@ -124,6 +130,35 @@
                             </template>
                         </el-table-column>
                     </el-table>
+                    <el-table ref="multipleTable" :data="tbData.records" tooltip-effect="dark"
+                              :min-height="460" size="small"
+                              highlight-current-row class="dp-m">
+                        <el-table-column label="文件编号" fixed="left" show-overflow-tooltip min-width="180">
+                            <template slot-scope="scope">{{ scope.row.documentNo }}</template>
+                        </el-table-column>
+                        <el-table-column label="文件名称" show-overflow-tooltip min-width="320">
+                            <template slot-scope="scope">{{ scope.row.name }}</template>
+                        </el-table-column>
+                        <el-table-column label="更新时间" show-overflow-tooltip min-width="160">
+                            <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="操作人" show-overflow-tooltip min-width="120">
+                            <template slot-scope="scope">{{ scope.row.updateUser }}</template>
+                        </el-table-column>
+                        <el-table-column label="操作" fixed="right" show-overflow-tooltip min-width="260">
+                            <template slot-scope="scope">
+                                <el-row type="flex" justify="space-around">
+                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="detail(scope.row)" class="fs-12">查阅</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="primary" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                </el-row>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-row>
 
                 <!-- 分页 -->
@@ -179,6 +214,7 @@
                 tbSelectedArr: [],
                 tbFilter: {
                     name: '',
+                    documentNo: '',
                     createTime: [],
                 },
                 tbData: {list: []},
@@ -234,8 +270,8 @@
                 if(isFilter) {
                     that.tbDataFilter = {
                         ...that.tbFilter,
-                        startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
-                        endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
+                        // startDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[0]} 00:00:00` : '',
+                        // endDate: that.tbFilter.createTime && that.tbFilter.createTime.length > 0 ? `${that.tbFilter.createTime[1]} 23:59:59` : '',
                     };
                     delete that.tbDataFilter.createTime;
                 } else {

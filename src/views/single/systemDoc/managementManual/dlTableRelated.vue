@@ -11,7 +11,11 @@
                         <el-row class="item mg-l-10">
                             <el-row class="lb lb-unmgl">文件类型</el-row>
                             <el-row>
-                                <el-cascader v-model="tbFilter.typeId" :props="props" placeholder="请选择所属文件夹" clearable></el-cascader>
+                                <el-cascader v-model="tbFilter.typeId"
+                                             :options="seloptsDir"
+                                             :props="props"
+                                             placeholder="请选择所属文件夹"
+                                             clearable></el-cascader>
                             </el-row>
                         </el-row>
                     </el-form-item>

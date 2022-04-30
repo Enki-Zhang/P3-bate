@@ -126,8 +126,8 @@
 .dp-pc-dl-pager {display: block;}
 .dp-m-dl-pager {display: none;}
 @media screen and (max-width: 1200px) {
-  //.dp-pc {display: none;}
-  //.dp-m {display: block;}
+  .dp-pc {display: none;}
+  .dp-m {display: block;}
   .dp-pc-dl-pager {display: none;}
   .dp-m-dl-pager {display: block;}
   /* 列表筛选项 */
@@ -161,6 +161,17 @@
       padding: 20px 40px;
     }
   }
+
+  // vant - 加载中
+  /*.van-toast--unclickable {
+    .van-toast--loading {
+      width: 160px;
+      height: 160px;
+      padding: 18px;
+      font-size: 28px;
+      .van-toast__text {margin-top: 28px;}
+    }
+  }*/
 
   ::v-deep {
     /* 列表 */

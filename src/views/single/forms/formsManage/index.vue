@@ -110,16 +110,16 @@
                 <el-row>
                     <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
                               :min-height="460" size="small"
-                              highlight-current-row border>
+                              highlight-current-row border class="dp-pc">
                         <el-table-column label="编号" fixed="left" show-overflow-tooltip width="180">
                             <template slot-scope="scope">{{ scope.row.formNumber }}</template>
                         </el-table-column>
-                        <el-table-column label="名称" show-overflow-tooltip min-width="160">
+                        <el-table-column label="名称" show-overflow-tooltip min-width="400">
                             <template slot-scope="scope">{{ scope.row.formName }}</template>
                         </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="160">
+                        <!--<el-table-column label="版本" show-overflow-tooltip min-width="160">
                             <template slot-scope="scope">{{ scope.row.versions }}</template>
-                        </el-table-column>
+                        </el-table-column>-->
                         <!--<el-table-column label="创建日期" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
@@ -129,7 +129,44 @@
                                 <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
                             </template>
                         </el-table-column>-->
-                        <el-table-column label="操作" show-overflow-tooltip width="380">
+                        <el-table-column label="操作" show-overflow-tooltip width="320">
+                            <template slot-scope="scope">
+                                <el-row type="flex" justify="space-around">
+                                    <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="info" :underline="false" @click="prevManage(scope.row)" class="fs-12">前置表单</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="warning" :underline="false" @click="edit(scope.row)" class="fs-12">编辑</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="danger" :underline="false" @click="remove(scope.row)" class="fs-12">删除</el-link>
+                                    <el-row class="fg">|</el-row>
+                                    <el-link type="success" :underline="false" @click="processDesign(scope.row)" class="fs-12" style="color: #009688;">流程设计</el-link>
+                                </el-row>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-table ref="multipleTable" :data="tbData.content" tooltip-effect="dark"
+                              :min-height="460" size="small"
+                              highlight-current-row border class="dp-m">
+                        <el-table-column label="编号" fixed="left" show-overflow-tooltip width="200">
+                            <template slot-scope="scope">{{ scope.row.formNumber }}</template>
+                        </el-table-column>
+                        <el-table-column label="名称" show-overflow-tooltip min-width="500">
+                            <template slot-scope="scope">{{ scope.row.formName }}</template>
+                        </el-table-column>
+                        <!--<el-table-column label="版本" show-overflow-tooltip min-width="160">
+                            <template slot-scope="scope">{{ scope.row.versions }}</template>
+                        </el-table-column>-->
+                        <!--<el-table-column label="创建日期" show-overflow-tooltip min-width="90">
+                            <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
+                        </el-table-column>
+                        <el-table-column label="使用状态" show-overflow-tooltip min-width="80">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.status === 0" class="status-green">活动</span>
+                                <span v-else-if="scope.row.status === 1" class="status-red">冻结</span>
+                            </template>
+                        </el-table-column>-->
+                        <el-table-column label="操作" show-overflow-tooltip width="400">
                             <template slot-scope="scope">
                                 <el-row type="flex" justify="space-around">
                                     <el-link type="primary" :underline="false" @click="versionManage(scope.row)" class="fs-12">版本管理</el-link>
