@@ -25,7 +25,7 @@
                         <img v-if = "scope.row[v.key]" :src = "scope.row[v.key]"/>
                     </div>
                     <div v-else-if = "v.type == 'LINK_SELECT'">
-                        {{scope.row[v.key] != null && typeof scope.row[v.key] == 'object' ? scope.row[v.key].join('/') : scope.row[v.key]}}
+                        <span style="padding-right:10px;" v-for = "v2,index2 in scope.row[v.key]" :key = "index2">{{v2.join('/')}}</span>
                     </div>
                     <div v-else-if = "v.type == 'CHILD_FORM'" class = "childFormBox">
                         <div class = "c_row" v-for = "obj,objIndex in scope.row[v.key]" :key = "objIndex">
@@ -37,7 +37,10 @@
                                 <span v-else-if = "obj2.type == 'upload'">
                                     <el-link @click = "downloadFn(obj2.value)" style = "font-size:12px;" type="primary">{{obj2.value}}</el-link>
                                 </span>
-                                <span v-else-if = "obj2.type == 'linkSelect'">{{obj2.value != null && typeof obj2.value == 'object' ? obj2.value.join('/') : obj2.value}}
+                                <span v-else-if = "obj2.type == 'linkSelect'">
+                                    <span style = "padding-right:10px;" v-for = "obj3,index3 in obj2.value" :key = "index3">
+                                        {{obj3.join('/')}}
+                                    </span>
                                 </span>
                                 <span v-else-if = "obj2.type == 'handWrite'">
                                     <el-popover

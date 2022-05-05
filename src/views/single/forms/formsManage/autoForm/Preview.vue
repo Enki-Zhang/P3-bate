@@ -159,6 +159,7 @@ export default {
 
                   <el-cascader
                     size="small"
+                    :props="{multiple:true}"
                     clearable
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     :placeholder="data[${i}].attr_placeholder"
@@ -299,6 +300,7 @@ export default {
 
                         <el-cascader
                           size="small"
+                          :props="{multiple:true}"
                           clearable
                           v-else-if = "v2.type == 'linkSelect'"
                           :placeholder="v2.attr_placeholder"

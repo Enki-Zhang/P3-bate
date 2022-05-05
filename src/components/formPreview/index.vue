@@ -141,24 +141,30 @@ export default {
       return JSON.stringify(arr);
     },
     getLinkSelectName(arr,value){
-        if(value.length == 0){
-            return [];
-        }
-        else if(value.length == 1){
-            let findObj = arr.find(e => e.value == value[0]);
-            return [findObj.label];
-        }
-        else if(value.length == 2){
-            let findObj = arr.find(e => e.value == value[0]);
-            let findObj2 = findObj.children.find(e => e.value == value[1]);
-            return [findObj.label,findObj2.label];
-        }
-        else if(value.length == 3){
-            let findObj = arr.find(e => e.value == value[0]);
-            let findObj2 = findObj.children.find(e => e.value == value[1]);
-            let findObj3 = findObj2.children.find(e => e.value == value[2]);
-            return [findObj.label,findObj2.label,findObj3.label];
-        }
+        console.log(arr);
+        console.log(value);
+
+        value.forEach(valueObj => {
+            if(valueObj.length == 1){
+                let findObj = arr.find(e => e.value == valueObj[0]);
+                valueObj[0] = findObj.label;
+            }
+            else if(valueObj.length == 2){
+                let findObj = arr.find(e => e.value == valueObj[0]);
+                let findObj2 = findObj.children.find(e => e.value == valueObj[1]);
+                valueObj[0] = findObj.label;
+                valueObj[1] = findObj2.label;
+            }
+            else if(valueObj.length == 3){
+                let findObj = arr.find(e => e.value == valueObj[0]);
+                let findObj2 = findObj.children.find(e => e.value == valueObj[1]);
+                let findObj3 = findObj2.children.find(e => e.value == valueObj[2]);
+                valueObj[0] = findObj.label;
+                valueObj[1] = findObj2.label;
+                valueObj[2] = findObj3.label;
+            }
+        });
+        return value;
     },
     getText(i){
       return `<div :style = "{fontWeight:data[${i}].attr_label_weight,textAlign:data[${i}].attr_label_align,fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
@@ -273,6 +279,7 @@ export default {
                   <el-cascader
                     :disabled = "!canEdit"
                     size="small"
+                    :props="{multiple:true}"
                     clearable
                     :style = "{width:calWidth(data[${i}].attr_input_width)}" 
                     :placeholder="data[${i}].attr_placeholder"
@@ -422,6 +429,7 @@ export default {
 
                         <el-cascader
                           :disabled = "!canEdit"
+                          :props="{multiple:true}"
                           size="small"
                           clearable
                           v-else-if = "v2.type == 'linkSelect'"

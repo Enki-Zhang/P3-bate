@@ -798,6 +798,7 @@
 
                       <el-dialog
                         title="设置选项"
+                        :close-on-click-modal="false"
                         :visible.sync="linkSelectPop"
                         width="50%">
                         <div class = "linkSelectBox">
