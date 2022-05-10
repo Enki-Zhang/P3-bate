@@ -141,8 +141,8 @@ export default {
       return JSON.stringify(arr);
     },
     getLinkSelectName(arr,value){
-        console.log(arr);
-        console.log(value);
+        // console.log(arr);
+        // console.log(value);
 
         value.forEach(valueObj => {
             if(valueObj.length == 1){
@@ -714,14 +714,14 @@ export default {
               handleAvatarSuccess(res, file) {
                   // console.log(res);
                   // console.log(file);
-                  console.log(self.preview.compIndex);
-                  console.log(self.preview.compIndex2);
-                  console.log(self.preview.compIndex3);
+                  //console.log(self.preview.compIndex);
+                  //console.log(self.preview.compIndex2);
+                  //console.log(self.preview.compIndex3);
                   if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
                       self.preview.data[self.preview.compIndex].data_url = res.data;
                   else
                       self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
-                  console.log(self.preview.data);
+                  //console.log(self.preview.data);
                   self.preview.$forceUpdate();
                   self.$message.success('上传成功');
               },
