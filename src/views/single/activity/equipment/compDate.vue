@@ -41,7 +41,7 @@
                                     :key = "'user_' + index + '_' + index2"
                                     v-else
                                     :style = "{background:'rgb(' + v2.color + ')'}"
-                                    class = "name">{{v2.name | nameStr}}</span>
+                                    class = "name">{{v2.creater | nameStr}}</span>
                             </template>
                         </div>
                     </div>
@@ -50,28 +50,42 @@
                             v-for = "v2,index2 in v.event" 
                             :key = "'event_' + index + '_' + index2">
                             <div 
-                                :style = "{color:'rgb(' + v2.color + ')'}"
-                                class = "name" 
-                                v-if = "v2.name != 'fix'">
-                                {{v2.name}}
+                                class = "name">
+                                <span :style = "{color:'rgb(' + v2.color + ')'}">{{v2.creater}}</span>
+                                <a v-if = "v2.is_create_user" @click = "myPreFn(v2.process_instance_id,v2.is_completed)" :style = "{color:'rgb(' + v2.color + ')'}">我的预约</a>
+                                <a v-if = "v2.is_create_user" @click = "popDel(v2)">取消</a>
                             </div>
-                            <div class = "info" :style = "{background:'rgba(' + v2.color + ',0.1)',borderLeftColor:'rgb(' + v2.color + ')'}">
+                            <div 
+                                class = "info" 
+                                :style = "{background:'rgba(' + v2.color + ',0.1)',borderLeftColor:'rgb(' + v2.color + ')'}">
                                 <div class = "title">
-                                    <img 
-                                        v-if = "v2.name == 'fix'" 
-                                        :src = "require('@/assets/image/activity/icon_fix.png')" />
                                     <span 
-                                        :style = "{color:'rgb(' + v2.color + ')'}" 
-                                        :title = "v2.title">
-                                        {{v2.title}}
+                                        :style = "{color:'rgb(' + v2.color + ')'}" >
+                                        {{v2.content}}
                                     </span>
                                 </div>
                                 <div 
                                     :style = "{color:'rgb(' + v2.color + ')'}"
                                     class = "dateRange">
-                                    {{v2.startDate | dateStr}}
+                                    {{v2.startDate | dateStr}}{{v2.timeRange | timeRangeStr}}
                                 </div>
                             </div>
+
+                            <div class = "fixed">
+                                <div 
+                                    v-for = "v3,index3 in v2.areaEquipment"
+                                    :key = "'event_' + index + '_' + index2 + '_' + index3" 
+                                    class = "info"
+                                    :style = "{background:'rgba(' + v2.color + ',1)',borderLeftColor:'rgb(' + v2.color + ')'}">
+                                    <div class = "title">
+                                        <span
+                                            style = "color:#fff">
+                                            实验区域及设备: {{v3.join('/')}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                                
                         </li>
                     </ul>
                     <div class = 'dc_tip'>
@@ -84,14 +98,35 @@
             </div>
         </div>
 
+        <el-dialog
+            title="取消预约"
+            :visible.sync="cancelObj.sh"
+            width="30%">
+            <div>确定取消 <span style = "color:#1890ff">{{cancelObj.dateStr}}</span> 的预约吗</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelObj.sh = false">取 消</el-button>
+                <el-button type="primary" @click="doDel">确 定</el-button>
+            </span>
+        </el-dialog>
 
+        
+        <el-dialog
+            title="我的预约"
+            :visible.sync="myObj.sh"
+            width="60%">
+            <div>
+                <div style = "padding:0 20px;">流程状态：{{myObj.status}}</div>
+                <compView ref = "compView"/>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 
     import api from "@api";
-    
+    import compView from "@/components/formPreview/view";
+    import Vue from "vue";
 
     export default {
         name: "compDate",
@@ -101,14 +136,34 @@
                 curMonthList:[],
                 nextMonthList:[],
                 today:0,
-                formFieldId:''
+                formFieldId:'',
+                cancelObj:{
+                    sh:false,
+                    dateStr:'',
+                    curId:''
+                },
+                compYear:'',
+                compMonth:'',
+                myObj:{
+                    sh:false,
+                    status:''
+                }
             }
+        },
+        components:{
+            compView
         },
         mounted() {
             
             this.getFormFieldId();
         },
         filters:{
+            timeRangeStr(arr){
+                if(arr == null || arr.length == 0)return '';
+                let sStr = arr[0],eStr = arr[1];
+                let sArr = sStr.split(':'),eArr = eStr.split(':');
+                return `${sArr[0]}:${sArr[1]}~${eArr[0]}:${eArr[1]}`;
+            },
             dateStr(str){
                 function formal(str){
                     return parseInt(str) < 10 ? '0' + str : '' + str;
@@ -133,6 +188,61 @@
             }
         },
         methods: {
+            popDel(obj){
+                console.log(obj);
+                let date = obj.startDate;
+                let time = obj.timeRange;
+                let dateStr = '';
+                if(date != null){
+                    dateStr += date.split('-')[2] + '日';
+                }
+                if(time != null){
+                    dateStr += time[0].substring(0,time[0].length - 3) + '~' +  time[1].substring(0,time[1].length - 3);
+                }
+                this.cancelObj = {
+                    curId:obj.process_instance_id,
+                    sh:true,
+                    dateStr
+                }
+            },
+            doDel(){
+                api.camundaCancel(this.cancelObj.curId).then((res) => {
+                    if(res.data.status === 200) {
+                        this.$message.success('取消成功');
+                        let date = new Date();
+                        let year = date.getFullYear();
+                        let month = date.getMonth() + 1;
+
+                        this.cancelObj.sh = false;
+                        this.initTable(this.compYear,this.compMonth);
+                    }
+                });
+            },
+            myPreFn(id,status){
+                api.all([
+                    api.workbenchGetDetail(id),
+                    api.camundaGetProcessInstanceState(id),
+                ]).then((res) => {
+                    if(res[0].data.status === 200 && res[1].data.status === 200) {
+                        let obj = {
+                            formData: {...res[0].data.data},
+                            processData: {...res[1].data.data},
+                        };
+                        console.log(obj);
+                        let statusSet = {
+                            '1':'已完成',
+                            '0':'进行中',
+                            '-1':'已取消'
+                        }
+                        this.myObj.sh = true;
+                        this.myObj.status = statusSet[status];
+                        let _this = this;
+                        Vue.nextTick(function () {
+                            _this.$refs.compView.showFn(obj.formData.formInfo,obj.formData.formId);
+                        });
+                    }
+                });
+            },
             getFormFieldId(){
                 let menuId = this.getMenuId();
                 api.getFormHead(menuId).then((res) => {
@@ -144,6 +254,8 @@
                         let date = new Date();
                         let year = date.getFullYear();
                         let month = date.getMonth() + 1;
+                        this.compYear = year;
+                        this.compMonth = month;
 
                         this.initTable(year,month);
                     }
@@ -187,14 +299,14 @@
                         eventList.forEach(e => {
                             let start = getDay(e.startDate);
                             let end = getDay(e.startDate);
-                            e.color = e.name == 'fix' ? colorFix : colorArr[colorIndex];
-                            if(e.name != 'fix' && colorIndex < colorArr.length)
+                            e.color = colorArr[colorIndex];
+                            if(colorIndex < colorArr.length)
                                 colorIndex++;
                             //console.log(start + ':' + end);
                             for(let i = start - 1;i < end;i++){
                                 //console.log(i);
                                 curMonthList[i].sub.push(e);
-                                if(e.name != 'disinfect' && e.name != 'done' && i == start - 1){
+                                if(i == start - 1){
                                     curMonthList[i].event.push(e);
                                 }
                             }
@@ -238,6 +350,9 @@
                 // ];  
             },
             initTable(year,month){
+                this.compYear = year;
+                this.compMonth = month;
+
                 let prevMonthList = [];
                 let curStartDate = year + '-' + month + '-1';
                 let prevYearMonthObj = this.getPrevYearMonth(year,month);
@@ -419,11 +534,25 @@ $colorLight3: rgba(255, 229, 229, 0.39);
                 .dc_list{
                     padding:0 8px;
                     li{
+                        position:relative;
                         font-size:12px;
                         color:$colorDeep1;
                         margin-bottom:8px;
                         .name{
                             padding-bottom:4px;
+                            font-size:14px;
+                            display:flex;
+                            align-items:center;
+                            span{
+                                flex-grow:1;
+                                width:0;
+                            }
+                            a{
+                                color:#ccc;
+                                cursor:pointer;
+                                margin-left:6px;
+                                font-size:12px;
+                            }
                         }
                         .info{
                             border-left:2px solid $colorDeep1;
@@ -445,12 +574,34 @@ $colorLight3: rgba(255, 229, 229, 0.39);
                                     overflow:hidden;
                                     text-overflow:ellipsis;
                                     white-space:nowrap;
+                                    &.row2{
+                                        white-space:unset;
+                                    }
                                 }
                             }  
                             .dateRange{
                                 overflow:hidden;
                                 text-overflow:ellipsis;
                                 white-space:nowrap;
+                            }
+                        }
+                        .fixed{
+                            position:absolute;
+                            display:none;
+                            z-index:100;
+                            width:100%;
+                            .info{
+                                border-top:1px solid #ddd;
+                                .title{
+                                    span{
+                                        white-space:unset;
+                                    }
+                                }
+                            } 
+                        }
+                        &:hover{
+                            .fixed{
+                                display:block;
                             }
                         }
                     }

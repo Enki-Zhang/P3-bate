@@ -3,6 +3,7 @@
     <el-row class="_root_page">
         <el-row class="page-default-pd page-default-h-has-breadcrumb">
             <el-row class="page-default-pd-bgc-white">
+
                 <div class = "header">
                     <div class = "h_l">
                         <div class = "dateBox">
@@ -20,7 +21,7 @@
                             <span>计划消毒日期</span>
                         </span> -->
                     </div>
-                    <el-button @click = "toPre" v-show = "btnSet.pre.sh" style = "width:84px;" type = "primary" size = "mini">预约申请</el-button>
+                    <el-button @click = "toPre" v-show = "btnSet.pre.sh" style = "position:relative;top:6px;width:84px;" type = "primary" size = "mini">预约申请</el-button>
                 </div>
 
                 <compDate ref = "compDate"/>                
@@ -28,6 +29,7 @@
         </el-row>
 
         <compForm ref = "compForm" @success = "submitForm"/>
+
     </el-row>
 
 </template>
@@ -36,7 +38,7 @@
 
     import api from "@api";
     import compDate from './compDate';
-    import compForm from "@/components/formPreview";
+    import compForm from "@/components/formPreview/index";
 
     export default {
         name: "index",

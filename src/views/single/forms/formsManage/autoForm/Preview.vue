@@ -574,7 +574,7 @@ export default {
                       if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
                           self.preview.data[self.preview.compIndex].data_url = res.data;
                       else
-                          self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].data_url = res.data;
+                          self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
                       self.preview.$forceUpdate();
                       self.$message.success('上传成功');
                   },

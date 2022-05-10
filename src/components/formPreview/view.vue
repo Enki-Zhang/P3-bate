@@ -1,17 +1,12 @@
 <template>
-  <div class = "popBox" :class = "{popBoxNormal:!fixed}" v-show = "sh">
+  <div class = "popBox" :class = "{popBoxNormal:true}" v-show = "sh">
     <div class = "p_box">
-      <div class = "header" v-show = "submitBtn">
-        <p>申请</p>
-        <span @click = "closeFn">关闭</span>
-      </div>
-      
       <div class = "body" id = "preview_dialog">
       </div>
 
-      <div class = "footer" v-show = "submitBtn">
+      <!-- <div class = "footer" v-show = "submitBtn">
         <el-button @click = "submitFn" style = "width:100px;" type="primary">提交表单</el-button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -172,135 +167,62 @@ export default {
     getInput(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <el-input 
-                    :disabled = "!canEdit"
-                    size = "small" 
-                    v-model = "data[${i}].attr_value" 
-                    :placeholder="data[${i}].attr_placeholder">
-                  </el-input>
+                  <span>{{data[${i}].attr_value}}</span>
               </div>`;
     },
     getTime(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <el-time-picker
-                    :disabled = "!canEdit"
-                    size="small"
-                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
-                    value-format="HH:mm:ss"
-                    v-model="data[${i}].attr_time_value"
-                    :picker-options="{
-                      selectableRange: '00:00:00 - 23:59:59'
-                    }">
-                  </el-time-picker>
+                  <span>{{data[${i}].attr_time_value}}</span>
               </div>`;
     },
     getTimeRange(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-        
-                  <el-time-picker
-                    :disabled = "!canEdit"
-                    is-range
-                    size="small"
-                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
-                    v-model="data[${i}].attr_time_range_value"
-                    value-format="HH:mm:ss"
-                    range-separator="-"
-                  >
-                  </el-time-picker>
+                  <span>{{data[${i}].attr_time_range_value != null ? data[${i}].attr_time_range_value[0] + "-" + data[${i}].attr_time_range_value[1] : ""}}</span>
               </div>`;
     },
     getDateRange(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <el-date-picker
-                    :disabled = "!canEdit"
-                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
-                    size="small"
-                    value-format="yyyy-MM-dd"
-                    v-model="data[${i}].attr_date_range_value"
-                    type="daterange"
-                    range-separator="-">
-                  </el-date-picker>
+                  <span>{{data[${i}].attr_date_range_value != null ? data[${i}].attr_date_range_value[0] + "-" + data[${i}].attr_date_range_value[1] : ""}}</span>
               </div>`;
     },
     getDate(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <el-date-picker
-                    :disabled = "!canEdit"
-                    :style = "{width:calWidth(data[${i}].attr_input_width) + ' !important',flexGrow: 'initial'}" 
-                    size="small"
-                    value-format="yyyy-MM-dd"
-                    v-model="data[${i}].attr_date_value"
-                    type="date">
-                  </el-date-picker>
+                  <span>{{data[${i}].attr_date_value}}</span>
               </div>`;
     },
     getInputNumber(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <el-input-number 
-                    :disabled = "!canEdit"
-                    :style = "{width:calWidth(data[${i}].attr_input_width)}" 
-                    size = "small" 
-                    :min = "data[${i}].attr_min" 
-                    :max = "data[${i}].attr_max" 
-                    v-model = "data[${i}].attr_value" 
-                    :placeholder="data[${i}].attr_placeholder"
-                    controls-position="right">
-                  </el-input-number>
+                  <span>{{data[${i}].attr_value}}</span>
               </div>`;
     },
     getSelect(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
-                  <el-select 
-                    :disabled = "!canEdit"
-                    size = "small" 
-                    v-model="data[${i}].data_value" 
-                    :style = "{width:calWidth(data[${i}].attr_input_width)}" 
-                    :placeholder="data[${i}].attr_placeholder">
-                    <el-option
-                      v-for="v,index in (data[${i}].attr_data_source == 'default' ? data[${i}].attr_data_list : data[${i}].bind_list)"
-                      :key="index"
-                      :label="typeof(v.name) == 'object' ? v.name.join(',') : v.name"
-                      :value="typeof(v.name) == 'object' ? v.name.join(',') : v.name">
-                    </el-option>
-                  </el-select>
+                  <span>{{data[${i}].data_value}}</span>
               </div>`;
     },
     getLinkSelect(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
-                  <el-cascader
-                    :disabled = "!canEdit"
-                    size="small"
-                    :props="{multiple:true}"
-                    clearable
-                    :style = "{width:calWidth(data[${i}].attr_input_width)}" 
-                    :placeholder="data[${i}].attr_placeholder"
-                    v-model="data[${i}].attr_data_link_value"
-                    :options="data[${i}].attr_data_link_list">
-                  </el-cascader>
+                  <div>
+                      <p :key = "index" v-for = "v,index in data[${i}].attr_data_link_value ? data[${i}].attr_data_link_value : []">
+                          {{v.join('/')}}
+                      </p>
+                  </div>
               </div>`;
     },
     getRadio(i){
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <span>
-                    <span :key="index" v-for = "v,index in data[${i}].attr_data_list" :style = "{display:data[${i}].attr_layer,marginRight:'30px',marginTop:'4px',marginBottom:'4px',textAlign:'left'}">
-                      <el-radio
-                        :disabled = "!canEdit"
-                        v-model="data[${i}].data_value" 
-                        :label="v.name">
-                        {{v.name}}
-                        <input :disabled = "!canEdit" type = "text" v-if = "v.id == 999" v-model = "data[${i}].otherValue"/>
-                      </el-radio>
-                    </span>
+                      {{data[${i}].data_value}} 
                   </span>
               </div>`;
     },
@@ -308,17 +230,7 @@ export default {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
-                  <el-checkbox-group v-model = "data[${i}].data_value">
-                    <el-checkbox
-                      :disabled = "!canEdit"
-                      :style = "{display:data[${i}].attr_layer,marginTop:'4px',marginBottom:'4px',marginRight:'30px',textAlign:'left'}"
-                      v-for = "v,index in data[${i}].attr_data_check_list"
-                      :key = "index" 
-                      :label="v.name">
-                      <span style = "margin-right:10px">{{v.name}}</span>
-                      <input :disabled = "!canEdit" v-model = "data[${i}].otherValue" v-if = "v.id == 999" type = "text"/>
-                    </el-checkbox>
-                  </el-checkbox-group>
+                  <span>{{data[${i}].data_value.join(',')}}</span>
               </div>`;
     },
     getSwitch(i){
@@ -326,7 +238,7 @@ export default {
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
                   <el-switch
-                    :disabled = "!canEdit"
+                    :disabled = "true"
                     v-model="data[${i}].attr_boolean_value">
                   </el-switch>
               </div>`;
@@ -334,39 +246,21 @@ export default {
     getTextarea(i){
       return `<div class = "previewRow inputBox">
                   <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <el-input 
-                    :disabled = "!canEdit"
-                    size = "small" 
-                    resize = "none" 
-                    :placeholder="data[${i}].attr_placeholder"
-                    type="textarea" 
-                    v-model = "data[${i}].attr_value" 
-                    :rows="5">
-                  </el-input>
+                  <span>{{data[${i}].attr_value}}</span>
               </div>`;
     },
     getHandWrite(i){
       return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
                   <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <span style = "flex-grow:1;width:0;">
-                      <handWriteComp :disabled = "!canEdit" @successFn = "handleHandWriteSuccess" :dataUrl = "data[${i}].data_url"/>
+                      <handWriteComp :disabled = "true" @successFn = "handleHandWriteSuccess" :dataUrl = "data[${i}].data_url"/>
                   </span>
               </div>`;
     },
     getUpload(i){
       return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
-                  <span>{{data[${i}].data_url}}</span>
-                  <el-upload
-                    v-show = "canEdit"
-                    class="avatar-uploader"
-                    :action="data[${i}].attr_url"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :headers="{Token:token}"
-                   >
-                    <el-button size="mini" type="primary">点击上传</el-button>
-                  </el-upload>
+                  <el-link @click = "downloadFn(data[${i}].data_url)" type="primary">{{data[${i}].data_url}}</el-link>
               </div>`;
     },
     getBtn(i){
@@ -384,164 +278,34 @@ export default {
                     <tr v-for = "v,index in data[${i}].dataList" :key = "'childFormList' + index">
                       <td class = "col0" @click = "delRow(${i},index)">{{index+1}}</td>
                       <td v-for = "v2,index2 in data[${i}].arr" :key = "'childFormListTd' + index2">
-                        <el-input 
-                          :disabled = "!canEdit"
-                          v-if = "v2.type == 'input'" 
-                          size = "small" 
-                          :placeholder="v2.attr_placeholder"
-                          v-model = "v[index2].value">
-                        </el-input>
-
-                        <el-input-number 
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'inputNumber'" 
-                          v-model = "v[index2].value"
-                          :min = "v2.attr_min" 
-                          :max = "v2.attr_max" 
-                          :placeholder="v2.attr_placeholder" 
-                          size = "small">
-                        </el-input-number>
-
-                        <el-input 
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'textarea'"
-                          class = "formTextarea" 
-                          resize = "none" 
-                          type="textarea"  
-                          :rows = "5" 
-                          :placeholder="v2.attr_placeholder"
-                          v-model = "v[index2].value">
-                        </el-input>
-
-                        <el-select 
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'select'"
-                          size = "small" 
-                          v-model="v[index2].value" 
-                          :placeholder="v2.attr_placeholder">
-                          <el-option
-                              v-for="v3,index3 in (v2.attr_data_source == 'default' ? v2.attr_data_list : v2.bind_list)"
-                              :key="index3"
-                              :label="typeof(v3.name) == 'object' ? v3.name.join(',') : v3.name"
-                              :value="typeof(v3.name) == 'object' ? v3.name.join(',') : v3.name">
-                          </el-option>
-                        </el-select>
-
-                        <el-cascader
-                          :disabled = "!canEdit"
-                          :props="{multiple:true}"
-                          size="small"
-                          clearable
-                          v-else-if = "v2.type == 'linkSelect'"
-                          :placeholder="v2.attr_placeholder"
-                          v-model="v[index2].value"
-                          :options="v2.attr_data_link_list">
-                        </el-cascader>
-
-                        <div v-else-if = "v2.type == 'radio'" style = "text-align:left">
-                            <span :style = "{display:v2.attr_layer,textAlign:'left',marginRight:'20px',marginTop:'4px',marginBottom:'4px'}"
-                                    v-for = "v3,index3 in v2.attr_data_list" 
-                                    :key = "index3">
-                                <el-radio
-                                    :disabled = "!canEdit"
-                                    v-model="v[index2].value" 
-                                    :label="v3.name">
-                                    {{v3.name}}
-                                    <input :disabled = "!canEdit" v-model = "v[index2].otherValue" v-if = "v3.id == 999" type = "text"/>
-                                </el-radio>
-                            </span>
-                        </div>
-
-                        <el-date-picker
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'date'"
-                          size="small"
-                          value-format="yyyy-MM-dd"
-                          v-model="v[index2].value"
-                          type="date">
-                        </el-date-picker>
-
-                        <el-date-picker
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'dateRange'"
-                          size="small"
-                          value-format="yyyy-MM-dd"
-                          v-model="v[index2].value"
-                          type="daterange"
-                          range-separator="-">
-                        </el-date-picker>
-
-                        <el-time-picker
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'time'"
-                          size="small"
-                          value-format="HH:mm:ss"
-                          v-model="v[index2].value"
-                          :picker-options="{
-                            selectableRange: '00:00:00 - 23:59:59'
-                          }">
-                        </el-time-picker>
-
-                        <el-time-picker
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'timeRange'"
-                          is-range
-                          v-model="v[index2].value"
-                          value-format="HH:mm:ss"
-                          range-separator="-"
-                        >
-                        </el-time-picker>
-
-                        <el-checkbox-group
-                          :disabled = "!canEdit"
-                          style = "text-align:left"
-                          v-else-if = "v2.type == 'check'"
-                          v-model = "v[index2].value">
-                          <el-checkbox
-                            :style = "{display:v2.attr_layer,textAlign:'left'}"
-                            v-for = "v3,index3 in v2.attr_data_check_list"
-                            :key = "index3" 
-                            :label="v3.name">
-                            <span style = "margin-right:10px;">{{v3.name}}</span>
-                            <input :disabled = "!canEdit" v-model = "v[index2].otherValue" type = "text" v-if = "v3.id == 999"/>
-                          </el-checkbox>
-                        </el-checkbox-group>
-
-                        <el-switch
-                          :disabled = "!canEdit"
-                          v-else-if = "v2.type == 'switch'"
-                          v-model="v[index2].value">
-                        </el-switch>
-
-
-                        <div v-else-if = "v2.type == 'upload'" @click = "setCompIndex(${i},index,index2)">
-                            <span style = "display:inline-block;vertical-align:middle;">{{v[index2].value}}</span>
-                            <el-upload
-                              v-show = "canEdit"
-                              style = "display:inline-block;vertical-align:middle;"
-                              class="avatar-uploader"
-                              :action="v2.attr_url"
-                              :show-file-list="false"
-                              :on-success="handleAvatarSuccess"
-                              :headers="{Token:token}"
-                             >
-                              <el-button style = "width:80px;" size="mini" type="primary">点击上传</el-button>
-                            </el-upload>
-                        </div>
-
-                        <div v-else-if = "v2.type == 'handWrite'" @click = "setCompIndex(${i},index,index2)">
-                            <div style = "padding-top:10px;">
-                                <handWriteComp v-if = "v[index2].use"  @successFn = "handleHandWriteSuccess" :dataUrl = "v[index2].value"/>
-                            </div>
-                        </div>
-
-                        <div v-else>{{v[index2].value}}</div>
+                          <div v-if = "v2.type == 'linkSelect' && v[index2].value != null">
+                              <p v-for = "v3,index3 in v[index2].value" :key = "index3">
+                                  {{v3.join('/')}}
+                              </p>
+                          </div>
+                          <div v-else-if = "v2.type == 'check' && v[index2].value != null">
+                              {{v[index2].value.join(',')}}
+                          </div>
+                          <div v-else-if = "v2.type == 'upload' && v[index2].value != null">
+                              <el-link @click = "downloadFn(v[index2].value)" style = "font-size:12px;" type="primary">{{v[index2].value}}</el-link>
+                          </div>
+                          <div v-else-if = "v[index2].value != null && (v2.type == 'dateRange' || v2.type == 'timeRange')">
+                              {{v[index2].value.join('~')}}
+                          </div>
+                          <el-switch
+                            :disabled = "true"
+                            v-else-if = "v2.type == 'switch'"
+                            v-model="v[index2].value">
+                          </el-switch>
+                          <div v-else-if = "v2.type == 'handWrite'">
+                              <div style = "padding-top:10px;">
+                                  <handWriteComp :disabled = "true" :dataUrl = "v[index2].value"/>
+                              </div>
+                          </div>
+                          <span v-else>{{v[index2].value}}</span>
                       </td>
                     </tr>
                   </table>
-                </div>
-                <div v-show = "canEdit" class = "formBoxBtn" :style = "{paddingLeft:calWidth(data[${i}].label_width)}">
-                  <span @click = "addChildFormRow(${i})">+ 添加</span>
                 </div>
               </div>`;
     },
@@ -699,6 +463,53 @@ export default {
               test(e){
                 console.log(e);
               },
+              downloadFn(fileName){
+                  const self = this;
+                  let fileUrl = self.man.fast.getResourcePath(fileName);
+                  let msg = self.$message.warning({
+                      showClose: true,
+                      duration: 0,
+                      message: '正在下载...'
+                  });
+                  //const file = obj;
+                  function judgePort(url,name){
+                      var u = navigator.userAgent;
+                      if((u.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+                          var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                          var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                          // if(isAndroid)
+                          //     alert('android');
+                          // if(isiOS)
+                          //     alert('ios');
+                          let a = document.createElement('a');
+                          a.download = name;
+                          a.href = url;
+                          a.target = '_blank';
+                          a.click();
+                          return;
+                      }
+                  }
+                  judgePort(fileUrl,fileName);
+                  //console.log(self.staticPath)
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("GET", fileUrl, true);
+                  xhr.responseType = 'blob';
+                  xhr.onload = function(e) {
+                      var url = window.URL.createObjectURL(xhr.response)
+                      var a = document.createElement('a');
+                      a.href = url;
+                      a.download = fileName;
+                      a.click()
+                      if (xhr.status !== 200 && xhr.readyState === 4) {
+                          self.$message.error({
+                              duration: 3000,
+                              message: '下载失败！'
+                          })
+                      }
+                      msg.close();
+                  }
+                  xhr.send();
+              },
               setCompIndex(index,index2,index3){
                   //console.log(index);
                   self.preview.compIndex = index;
@@ -714,14 +525,13 @@ export default {
               handleAvatarSuccess(res, file) {
                   // console.log(res);
                   // console.log(file);
-                  console.log(self.preview.compIndex);
-                  console.log(self.preview.compIndex2);
-                  console.log(self.preview.compIndex3);
+                  // console.log(self.preview.compIndex);
+                  // console.log(self.preview.compIndex2);
+                  // console.log(self.preview.compIndex3);
                   if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
                       self.preview.data[self.preview.compIndex].data_url = res.data;
                   else
-                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
-                  console.log(self.preview.data);
+                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].data_url = res.data;
                   self.preview.$forceUpdate();
                   self.$message.success('上传成功');
               },
