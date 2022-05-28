@@ -70,7 +70,7 @@
 
                 folderList: [],
                 level: 0,
-                levelParentIdArr: ['',],
+                levelParentIdArr: [0,],
             }
         },
         created() {
@@ -152,7 +152,6 @@
                             }
                         }
                     });
-
                 }
             },
             create: function() {
@@ -178,10 +177,14 @@
 
                 api.systemDocumentTypeFindById(row.id).then((res) => {
                     if(res.data.status === 200) {
+                        let parentIdArr = [...that.levelParentIdArr];
+                        if(parentIdArr.length > 1) parentIdArr.shift();
+
                         that.dlParams = {
                             mode: 'edit',
                             id: row.id,
-                            detail: res.data.data
+                            detail: res.data.data,
+                            parentIdArr,
                         };
                         that.dlEditVisible = true;
                     }

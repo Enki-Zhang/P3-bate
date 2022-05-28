@@ -8,8 +8,8 @@
                 <el-row>
                     <el-form-item prop="parentId" label="所属文件夹"
                                   :rules="[
-                                      {required: true, message: '请选择所属文件夹'},
-                                      {type: 'array', min: 1, message: '请选择所属文件夹'},
+                                      // {required: true, message: '请选择所属文件夹'},
+                                      // {type: 'array', min: 1, message: '请选择所属文件夹'},
                                   ]">
                         <el-cascader v-model="form.parentId"
                                      :options="seloptsDir"
@@ -120,7 +120,9 @@
                 if(that.params.id > 0) {
                     that.form = {
                         ...that.params.detail,
-                        parentId: that.params.detail.parentId === 0 ? -1 : that.params.detail.parentId,
+                        parentId: that.params.detail.parentId > 0 ? that.params.parentIdArr : [-1],
+                        // parentId: that.params.parentIdArr[that.params.parentIdArr.length - 1],
+                        // parentId: [1, 28],
                     };
                     // console.log(that.params, that.form);
                 }

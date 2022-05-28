@@ -92,7 +92,7 @@
                         <el-table-column label="文件名称" show-overflow-tooltip min-width="200">
                             <template slot-scope="scope">{{ scope.row.name }}</template>
                         </el-table-column>
-                        <el-table-column label="版本" show-overflow-tooltip min-width="60">
+                        <!--<el-table-column label="版本" show-overflow-tooltip min-width="60">
                             <template slot-scope="scope">{{ scope.row.version }}</template>
                         </el-table-column>
                         <el-table-column label="修订次数" show-overflow-tooltip min-width="80">
@@ -106,13 +106,13 @@
                         </el-table-column>
                         <el-table-column label="创建时间" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</template>
-                        </el-table-column>
+                        </el-table-column>-->
                         <el-table-column label="更新时间" show-overflow-tooltip min-width="90">
                             <template slot-scope="scope">{{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD') : '' }}</template>
                         </el-table-column>
-                        <el-table-column label="创建者" show-overflow-tooltip min-width="80">
+                        <!--<el-table-column label="创建者" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.createUser }}</template>
-                        </el-table-column>
+                        </el-table-column>-->
                         <el-table-column label="操作人" show-overflow-tooltip min-width="80">
                             <template slot-scope="scope">{{ scope.row.updateUser }}</template>
                         </el-table-column>
