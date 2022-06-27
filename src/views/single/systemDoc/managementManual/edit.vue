@@ -19,7 +19,7 @@
                             <el-row>
                                 <el-form-item prop="name" label="文件名称" :rules="[
                                     {required: true, message: '请填写文件名称'},
-                                    {type: 'string', min: 1, max: 30, message: '长度应为 1 ~ 30 个字符'},
+                                    {type: 'string', min: 1, max: 100, message: '长度应为 1 ~ 100 个字符'},
                                 ]">
                                     <el-input v-model="form.name" placeholder="文件名称" clearable></el-input>
                                 </el-form-item>
