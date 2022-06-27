@@ -92,7 +92,7 @@
                 </el-table-column>
             </el-table>
         </el-row>
-        <el-row class="hr"></el-row>
+<!--        <el-row class="hr"></el-row>-->
         <el-row slot="footer" class="dialog-footer mg-b-10">
             <el-row type="flex" justify="center" align="middle">
                 <el-button type="default" size="small" icon="el-icon-refresh-left" @click="closed" class="btn">关 闭</el-button>
@@ -186,8 +186,8 @@
                 that.btnLoadingFilter = true;
 
                 let params = {
-                    // ...that.tbDataFilter,
-                    typeId: that.params.folderId,
+                    ...that.tbDataFilter,
+                    // typeId: that.params.folderId,
                     // pageCurrent: page,
                     // pageSize,
                 };
@@ -209,6 +209,9 @@
             },
             filterTableData: function(isFilter = true) {
                 let that = this;
+                // console.log(that.tbFilter.typeId);
+                // console.log(that.tbFilter.typeId[that.tbFilter.typeId.length - 1]);
+                // return;
 
                 if(isFilter) {
                     that.tbDataFilter = {
