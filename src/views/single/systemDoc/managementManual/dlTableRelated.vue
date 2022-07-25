@@ -166,7 +166,7 @@
 
                 api.systemDocumentTypeFindChildById({
                     id: node.value,
-                    onlyShowEmpty: true,
+                    onlyShowEmpty: false,
                 }).then((res) => {
                     if(res.data.status === 200) {
                         let tmp = [];
