@@ -521,8 +521,11 @@
                 that.$router.push({
                     path: `/forms/process-design`,
                     query: {
-                        id: row.id,
-                        processDefinitionId: row.activitiId,
+                        formId: row.id,
+                        processId: row.activitiId,
+                        formKey: row.formKey,
+                        formName: row.formName,
+                        formNumber: row.formNumber,
                     }
                 });
             },

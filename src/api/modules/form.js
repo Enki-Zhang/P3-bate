@@ -144,3 +144,12 @@ export function camundaFindByProcessDefinitionById(params) {
 export function camundaDeploy(data) {
     return ajax.post('backServer/camunda/deploy', data);
 }
+export function workflowDesigner(params) {
+    return ajax.get(`backServer/workflow/designer/${params}`);
+}
+export function sysUserInfoTree(params) {
+    return ajax.get(`userServer/sys/user/info/tree`, params);
+}
+export function workflowDesignerCreateOrUpdate(data) {
+    return ajax.post('backServer/workflow/designer/createOrUpdate', data);
+}

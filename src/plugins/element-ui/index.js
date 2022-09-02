@@ -61,6 +61,8 @@ import {
     Divider,
     Timeline,
     TimelineItem,
+    Tag,
+    Tree,
 } from 'element-ui';
 
 Vue.use(Scrollbar);
@@ -127,3 +129,5 @@ Vue.use(Drawer);
 Vue.use(Divider);
 Vue.use(Timeline);
 Vue.use(TimelineItem);
+Vue.use(Tag);
+Vue.use(Tree);

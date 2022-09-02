@@ -21,6 +21,14 @@ import '~package/theme/index.scss';
 import vueEsign from 'vue-esign';
 Vue.use(vueEsign);
 
+// 工作流
+// import Node from 'workflow-ui/src/components/Generator/node';
+// Vue.component('Node', Node);
+
+//workflow组织机构选择
+import FormControls from '@components/workflow/FormControls/index.js';
+Vue.use(FormControls);
+
 // vant
 import '@plugins/vant';
 

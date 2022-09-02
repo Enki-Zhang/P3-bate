@@ -2,30 +2,11 @@
 
     <el-row class="_root_page">
         <el-row type="flex" class="page-default-pd page-default-h-has-breadcrumb">
-            <my-process-designer ref="processDesigner"
-                                 :key="`designer-${reloadIndex}`"
-                                 v-model="xmlString"
-                                 v-bind="controlForm"
-                                 @element-click="elementClick"
-                                 @init-finished="initModeler"
-                                 keyboard/>
-            <my-properties-panel :key="`penal-${reloadIndex}`"
-                                 :bpmn-modeler="modeler"
-                                 :prefix="controlForm.prefix"
-                                 class="process-panel"/>
-            <!--<el-row type="flex" class="test-btns">
-                <el-button type="success" icon="el-icon-warning-outline" size="mini"
-                           @click="asAndConsole('xml')">显示画布内容
-                </el-button>
-                <el-upload ref="otherFiles"
-                           action="" accept=".xml, .bpmn"
-                           :auto-upload="false" :show-file-list="false"
-                           :on-change="(file, fileList) => {chooseUploadFile(file, fileList, 'files')}">
-                    <el-button type="primary" icon="el-icon-link" size="mini">渲染文件内容</el-button>
-                </el-upload>
-                <el-button type="warning" icon="el-icon-video-play" size="mini"
-                           @click="playCurrentDesign()">{{ simulationStatus ? '返回编辑' : '开始运行' }}</el-button>
-            </el-row>-->
+            <Process v-if="processDone"
+                     ref="processDesign"
+                     :conf="processData.processData"
+                     tabName="processDesign"
+                     class="process"/>
         </el-row>
         <el-row type="flex" justify="center" align="middle" class="page-default-pd-bgc-white edit-page-options-btn mg-b-20">
             <el-button type="default" size="small" icon="el-icon-refresh-left" @click="cancel" class="btn">返回列表</el-button>
@@ -37,79 +18,172 @@
 
 <script>
 
-    import "bpmn-js/dist/assets/diagram-js.css";
-    import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
-    import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
-    // 自定义渲染（隐藏了 label 标签）
-    // import CustomRenderer from "@/modules/custom-renderer";
-    // 自定义元素选中时的弹出菜单（修改 默认任务 为 用户任务）
-    import CustomContentPadProvider from "~package/process-designer/plugins/content-pad";
-    // 自定义左侧菜单（修改 默认任务 为 用户任务）
-    import CustomPaletteProvider from "~package/process-designer/plugins/palette";
-    import DefaultEmptyXML from "~package/process-designer/plugins/defaultEmpty";
-    // 模拟流转流程
-    import tokenSimulation from "bpmn-js-token-simulation";
+    import Process from '@/components/workflow/Process';
     import api from "@api";
     const listRoutePath = '/forms/forms-manage';
 
     export default {
         name: "index",
-        components: {},
+        components: {
+            Process,
+        },
         data() {
             return {
-                modeler: null,
-                processId: '',
-                processName: '',
-                reloadIndex: 0,
-                xmlString: '',
-                simulationStatus: false,
-
-                controlForm: {
-                    processId: '',
-                    processName: '',
-                    simulation: true,
-                    labelEditing: false,
-                    labelVisible: false,
-                    prefix: 'camunda',
-                    headerButtonSize: 'mini',
-                    additionalModel: [CustomContentPadProvider, CustomPaletteProvider]
+                mockData: {
+                    processData: {},
                 },
 
+                processDone: false,
+                originData: {},
+                originFormData: {},
+                processData: {},
                 btnLoadingSave: false,
             }
         },
+        created() {
+            // console.log(JSON.parse("{\"basicSetting\":{\"flowCode\":\"repair\",\"flowGroup\":0,\"flowIcon\":\"el-icon-lollipop\",\"flowIconBackground\":\"#FF8ACC\",\"flowName\":\"报修工单\",\"flowRemark\":null,\"id\":\"1477061296355643394\"},\"formData\":{\"formRef\":\"elForm\",\"gutter\":15,\"size\":\"medium\",\"formRules\":\"rules\",\"labelPosition\":\"right\",\"formBtns\":true,\"labelWidth\":100,\"disabled\":false,\"formModel\":\"formData\",\"fields\":[{\"formId\":103,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修人员\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645255796782,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修人员\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairUser\"},{\"formId\":106,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修人员显示名\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256716446,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修人员显示名\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairUserName\"},{\"formId\":105,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修状态\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256714995,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修状态\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairState\"},{\"formId\":102,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修材料费\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645079473571,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修材料费\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairMaterialsFee\"},{\"formId\":102,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修服务费\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645255785065,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入单行文本维修服务费\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairServiceFee\"},{\"formId\":104,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修备注\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256713803,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修备注\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairContent\"},{\"formId\":108,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"回访结果\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256899513,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入回访结果\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"returnResult\"},{\"formId\":107,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"回访备注\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256897514,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入回访备注\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"returnRemark\"}],\"span\":23},\"processData\":{\"childNode\":{\"childNode\":{\"childNode\":{\"childNode\":null,\"conditionNodes\":null,\"content\":\"工单负责人\",\"nodeId\":\"rWiszNC\",\"outerNodeId\":null,\"prevId\":\"zLKrxNC\",\"properties\":{\"approverRoles\":[{\"children\":null,\"hasChildren\":null,\"icon\":\"icon-ym icon-ym-tree-user2\",\"id\":\"workflowManager\",\"name\":\"工单负责人\",\"parentId\":\"-1\",\"type\":\"role\"}],\"approvers\":[],\"assigneeType\":\"role\",\"expression\":\"\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":false},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":false},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":false},{\"formId\":108,\"label\":\"回访结果\",\"read\":true,\"required\":true,\"vModel\":\"returnResult\",\"write\":true},{\"formId\":107,\"label\":\"回访备注\",\"read\":true,\"required\":true,\"vModel\":\"returnRemark\",\"write\":true}],\"optionalMultiUser\":\"orSign\",\"title\":\"结果确认\"},\"type\":\"approver\"},\"conditionNodes\":[{\"childNode\":null,\"conditionNodes\":null,\"content\":\"维修完成\",\"nodeId\":\"cQfsxNC\",\"prevId\":\"zLKrxNC\",\"properties\":{\"condition\":\"${repairState == 'repaired'}\",\"conditionLabel\":\"维修完成\",\"conditions\":[{\"condition\":\"${repairState == 'repaired'}\",\"conditonLabel\":\"维修完成\"}],\"initiator\":null,\"isDefault\":false,\"priority\":0,\"title\":\"现场直接修理\"},\"type\":\"condition\"},{\"childNode\":{\"childNode\":null,\"conditionNodes\":null,\"content\":\"自定义\",\"nodeId\":\"OexyxNC\",\"outerNodeId\":null,\"prevId\":\"REfsxNC\",\"properties\":{\"approverRoles\":[],\"approvers\":[],\"assigneeType\":\"input\",\"expression\":\"${repairAssignee}\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":true},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":true},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":true},{\"formId\":108,\"label\":\"回访结果\",\"read\":false,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":false,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"optionalMultiUser\":\"orSign\",\"title\":\"现场维修\"},\"type\":\"approver\"},\"conditionNodes\":null,\"content\":\"下次维修\",\"nodeId\":\"REfsxNC\",\"prevId\":\"zLKrxNC\",\"properties\":{\"condition\":\"${repairState == 'repairing'}\",\"conditionLabel\":\"下次维修\",\"conditions\":[{\"condition\":\"${repairState == 'repairing'}\",\"conditonLabel\":\"下次维修\"}],\"initiator\":null,\"isDefault\":false,\"priority\":1,\"title\":\"需要二次上门\"},\"type\":\"condition\"}],\"content\":\"自定义\",\"nodeId\":\"zLKrxNC\",\"outerNodeId\":null,\"prevId\":\"VKVFeNC\",\"properties\":{\"approverRoles\":[],\"approvers\":[],\"assigneeType\":\"input\",\"expression\":\"${repairAssignee}\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":true},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":true},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":true},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":true},{\"formId\":108,\"label\":\"回访结果\",\"read\":false,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":false,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"optionalMultiUser\":\"orSign\",\"title\":\"现场确认\"},\"type\":\"approver\"},\"conditionNodes\":null,\"content\":\"财务人员,肇新物业\",\"nodeId\":\"VKVFeNC\",\"outerNodeId\":null,\"prevId\":\"pDVFeNC\",\"properties\":{\"approverRoles\":[],\"approvers\":[{\"children\":null,\"hasChildren\":null,\"icon\":\"icon-ym icon-ym-tree-user2\",\"id\":\"finance\",\"name\":\"财务人员\",\"parentId\":\"dept106\",\"type\":\"user\"},{\"children\":null,\"hasChildren\":null,\"icon\":\"icon-ym icon-ym-tree-user2\",\"id\":\"admin\",\"name\":\"肇新物业\",\"parentId\":\"dept100\",\"type\":\"user\"}],\"assigneeType\":\"user\",\"expression\":\"\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":true},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":false,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":false,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":false,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":false},{\"formId\":102,\"label\":\"维修服务费\",\"read\":false,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":false},{\"formId\":104,\"label\":\"维修备注\",\"read\":false,\"required\":true,\"vModel\":\"repairContent\",\"write\":false},{\"formId\":108,\"label\":\"回访结果\",\"read\":false,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":false,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"optionalMultiUser\":\"counterSign\",\"title\":\"工单分配\"},\"type\":\"approver\"},\"conditionNodes\":null,\"content\":\"所有人\",\"nodeId\":\"pDVFeNC\",\"prevId\":null,\"properties\":{\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":false},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":false},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":false},{\"formId\":108,\"label\":\"回访结果\",\"read\":true,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":true,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"initiator\":\"all\",\"title\":\"发起人\"},\"type\":\"start\"}}"));
+            this.initProcess();
+
+            // this.mockData = JSON.parse("{\"basicSetting\":{\"flowCode\":\"repair\",\"flowGroup\":0,\"flowIcon\":\"el-icon-lollipop\",\"flowIconBackground\":\"#FF8ACC\",\"flowName\":\"报修工单\",\"flowRemark\":null,\"id\":\"1477061296355643394\"},\"formData\":{\"formRef\":\"elForm\",\"gutter\":15,\"size\":\"medium\",\"formRules\":\"rules\",\"labelPosition\":\"right\",\"formBtns\":true,\"labelWidth\":100,\"disabled\":false,\"formModel\":\"formData\",\"fields\":[{\"formId\":103,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修人员\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645255796782,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修人员\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairUser\"},{\"formId\":106,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修人员显示名\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256716446,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修人员显示名\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairUserName\"},{\"formId\":105,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修状态\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256714995,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修状态\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairState\"},{\"formId\":102,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修材料费\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645079473571,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修材料费\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairMaterialsFee\"},{\"formId\":102,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修服务费\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645255785065,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入单行文本维修服务费\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairServiceFee\"},{\"formId\":104,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"维修备注\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256713803,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入维修备注\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"repairContent\"},{\"formId\":108,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"回访结果\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256899513,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入回访结果\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"returnResult\"},{\"formId\":107,\"clearable\":true,\"maxlength\":null,\"document\":\"https://element.eleme.cn/#/zh-CN/component/input\",\"prepend\":\"\",\"labelWidth\":null,\"label\":\"回访备注\",\"prefix-icon\":\"\",\"required\":true,\"renderKey\":1645256897514,\"layout\":\"colFormItem\",\"tagIcon\":\"input\",\"readonly\":false,\"changeTag\":true,\"style\":{\"width\":\"100%\"},\"disabled\":false,\"tag\":\"el-input\",\"placeholder\":\"请输入回访备注\",\"show-word-limit\":false,\"suffix-icon\":\"\",\"regList\":[],\"append\":\"\",\"span\":23,\"vModel\":\"returnRemark\"}],\"span\":23},\"processData\":{\"childNode\":{\"childNode\":{\"childNode\":{\"childNode\":null,\"conditionNodes\":null,\"content\":\"工单负责人\",\"nodeId\":\"rWiszNC\",\"outerNodeId\":null,\"prevId\":\"zLKrxNC\",\"properties\":{\"approverRoles\":[{\"children\":null,\"hasChildren\":null,\"icon\":\"icon-ym icon-ym-tree-user2\",\"id\":\"workflowManager\",\"name\":\"工单负责人\",\"parentId\":\"-1\",\"type\":\"role\"}],\"approvers\":[],\"assigneeType\":\"role\",\"expression\":\"\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":false},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":false},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":false},{\"formId\":108,\"label\":\"回访结果\",\"read\":true,\"required\":true,\"vModel\":\"returnResult\",\"write\":true},{\"formId\":107,\"label\":\"回访备注\",\"read\":true,\"required\":true,\"vModel\":\"returnRemark\",\"write\":true}],\"optionalMultiUser\":\"orSign\",\"title\":\"结果确认\"},\"type\":\"approver\"},\"conditionNodes\":[{\"childNode\":null,\"conditionNodes\":null,\"content\":\"维修完成\",\"nodeId\":\"cQfsxNC\",\"prevId\":\"zLKrxNC\",\"properties\":{\"condition\":\"${repairState == 'repaired'}\",\"conditionLabel\":\"维修完成\",\"conditions\":[{\"condition\":\"${repairState == 'repaired'}\",\"conditonLabel\":\"维修完成\"}],\"initiator\":null,\"isDefault\":false,\"priority\":0,\"title\":\"现场直接修理\"},\"type\":\"condition\"},{\"childNode\":{\"childNode\":null,\"conditionNodes\":null,\"content\":\"自定义\",\"nodeId\":\"OexyxNC\",\"outerNodeId\":null,\"prevId\":\"REfsxNC\",\"properties\":{\"approverRoles\":[],\"approvers\":[],\"assigneeType\":\"input\",\"expression\":\"${repairAssignee}\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":true},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":true},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":true},{\"formId\":108,\"label\":\"回访结果\",\"read\":false,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":false,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"optionalMultiUser\":\"orSign\",\"title\":\"现场维修\"},\"type\":\"approver\"},\"conditionNodes\":null,\"content\":\"下次维修\",\"nodeId\":\"REfsxNC\",\"prevId\":\"zLKrxNC\",\"properties\":{\"condition\":\"${repairState == 'repairing'}\",\"conditionLabel\":\"下次维修\",\"conditions\":[{\"condition\":\"${repairState == 'repairing'}\",\"conditonLabel\":\"下次维修\"}],\"initiator\":null,\"isDefault\":false,\"priority\":1,\"title\":\"需要二次上门\"},\"type\":\"condition\"}],\"content\":\"自定义\",\"nodeId\":\"zLKrxNC\",\"outerNodeId\":null,\"prevId\":\"VKVFeNC\",\"properties\":{\"approverRoles\":[],\"approvers\":[],\"assigneeType\":\"input\",\"expression\":\"${repairAssignee}\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":true},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":true},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":true},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":true},{\"formId\":108,\"label\":\"回访结果\",\"read\":false,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":false,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"optionalMultiUser\":\"orSign\",\"title\":\"现场确认\"},\"type\":\"approver\"},\"conditionNodes\":null,\"content\":\"财务人员,肇新物业\",\"nodeId\":\"VKVFeNC\",\"outerNodeId\":null,\"prevId\":\"pDVFeNC\",\"properties\":{\"approverRoles\":[],\"approvers\":[{\"children\":null,\"hasChildren\":null,\"icon\":\"icon-ym icon-ym-tree-user2\",\"id\":\"finance\",\"name\":\"财务人员\",\"parentId\":\"dept106\",\"type\":\"user\"},{\"children\":null,\"hasChildren\":null,\"icon\":\"icon-ym icon-ym-tree-user2\",\"id\":\"admin\",\"name\":\"肇新物业\",\"parentId\":\"dept100\",\"type\":\"user\"}],\"assigneeType\":\"user\",\"expression\":\"\",\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":true},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":false,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":false,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":false,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":false},{\"formId\":102,\"label\":\"维修服务费\",\"read\":false,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":false},{\"formId\":104,\"label\":\"维修备注\",\"read\":false,\"required\":true,\"vModel\":\"repairContent\",\"write\":false},{\"formId\":108,\"label\":\"回访结果\",\"read\":false,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":false,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"optionalMultiUser\":\"counterSign\",\"title\":\"工单分配\"},\"type\":\"approver\"},\"conditionNodes\":null,\"content\":\"所有人\",\"nodeId\":\"pDVFeNC\",\"prevId\":null,\"properties\":{\"formOperates\":[{\"formId\":103,\"label\":\"维修人员\",\"read\":true,\"required\":true,\"vModel\":\"repairUser\",\"write\":false},{\"formId\":106,\"label\":\"维修人员显示名\",\"read\":true,\"required\":true,\"vModel\":\"repairUserName\",\"write\":false},{\"formId\":105,\"label\":\"维修状态\",\"read\":true,\"required\":true,\"vModel\":\"repairState\",\"write\":false},{\"formId\":102,\"label\":\"维修材料费\",\"read\":true,\"required\":true,\"vModel\":\"repairMaterialsFee\",\"write\":false},{\"formId\":102,\"label\":\"维修服务费\",\"read\":true,\"required\":true,\"vModel\":\"repairServiceFee\",\"write\":false},{\"formId\":104,\"label\":\"维修备注\",\"read\":true,\"required\":true,\"vModel\":\"repairContent\",\"write\":false},{\"formId\":108,\"label\":\"回访结果\",\"read\":true,\"required\":true,\"vModel\":\"returnResult\",\"write\":false},{\"formId\":107,\"label\":\"回访备注\",\"read\":true,\"required\":true,\"vModel\":\"returnRemark\",\"write\":false}],\"initiator\":\"all\",\"title\":\"发起人\"},\"type\":\"start\"}}")
+            // console.log(this.mockData);
+        },
+        destroyed() {
+            this.processDone = false;
+        },
         methods: {
-            initModeler(modeler) {
+            initProcess: function() {
                 let that = this;
+                // console.log(that.$route.query);
 
-                that.$nextTick(function() {
-                    that.modeler = modeler;
-                    // console.log(that.modeler);
-
-                    that.getBpmnContent();
+                that.processDone = false;
+                that.$toast.loading({
+                    message: '解析并渲染',
+                    forbidClick: true,
+                    loadingType: 'spinner',
                 });
-            },
-            elementClick(element) {
-                this.element = element;
-            },
 
-            save: async function() {
-                let that = this;
+                // 编辑
+                if(that.$route.query.processId) {
+                    const coreLogic = function(that, res) {
+                        that.processData = JSON.parse(res.data.data.stringJson);
+                        that.originData = {...res.data.data};
+                        // console.log(that.originData['json']);
+                        // console.log(that.processData);
+                        that.$store.commit('designer/updateFormItemList', that.processData.processData.properties.formOperates);
+                        // that.$store.commit('designer/updateFormItemList', that.processData.formData);
+                        setTimeout(function() {
+                            that.processDone = true;
+                            that.$toast.success({
+                                message: '渲染完成',
+                                duration: 888
+                            });
+                        }, 1288);
+                    };
 
-                try {
-                    const {err, xml} = await that.modeler.saveXML();
-                    // 读取异常时抛出异常
-                    if (err) {console.error(`[Process Designer Warn ]: ${err.message || err}`);}
-                    api.camundaDeploy({
-                        id: that.$route.query.id,
-                        data: xml,
-                    }).then((res) => {
+                    api.workflowDesigner(that.$route.query.processId).then((res) => {
                         if(res.data.status === 200) {
-                            that.$message.success('操作成功');
-                            that.$router.push({path: listRoutePath, query: {}});
+                            // 因为第一次经常拿不到值
+                            /*if(res.data.data.json === undefined) {
+                                api.workflowDesigner(that.$route.query.processId).then((res) => {
+                                    if (res.data.status === 200) {
+                                        // console.log(res.data.data);
+                                        coreLogic(that, res);
+                                    }
+                                });
+                            } else coreLogic(that, res);*/
+
+                            coreLogic(that, res);
                         }
                     });
-                } catch (e) {console.error(`[Process Designer Warn ]: ${e.message || e}`);}
+                }
+                // 新增
+                else {
+                    api.formInfo(this.$route.query.formId).then((res) => {
+                        if(res.data.status === 200) {
+                            that.originFormData = {...res.data.data};
+                            that.processData = {
+                                basicSetting: {},
+                                formData: [],
+                                processData: {},
+                            };
+                            let tmpFormData = JSON.parse(res.data.data.keyInfo);
+                            // let tmpFormData = JSON.parse('[{"attr_name":"嘎","type":"text","attr_size":14,"attr_label_weight":"normal","attr_label_align":"left","id":"module_1661848806361","label_width":150,"belongTo":"formBox"},{"attr_name":"开关","attr_boolean_value":true,"type":"switch","id":"module_1627529664697","label_width":100,"belongTo":"formBox"},{"attr_name":"单选框组","attr_data_list":[{"id":1,"name":"选项1"},{"id":2,"name":"选项2"}],"data_index":0,"data_value":"选项1","type":"radio","attr_layer":"inline-block","id":"module_1627529685723","label_width":100,"belongTo":"formBox"},{"attr_name":"多选框组","attr_data_check_list":[{"id":1,"name":"选项1","check":true},{"id":2,"name":"选项2","check":true}],"data_value":["选项1","选项2"],"type":"check","attr_layer":"inline-block","id":"module_1627529687170","label_width":100,"belongTo":"formBox"},{"attr_name":"子表单","type":"childForm","id":"module_1627529696921","label_width":100,"belongTo":"formBox","arr":[{"attr_name":"列1","attr_value":"","attr_placeholder":"请输入","type":"input","id":"module_1627529699840","label_width":100,"belongTo":"formItem"},{"attr_name":"列2","attr_value":"","attr_placeholder":"请输入","type":"input","id":"module_1627529705320","label_width":100,"belongTo":"formItem"},{"attr_name":"列3","attr_value":"","attr_placeholder":"请输入","type":"input","id":"module_1627529707983","label_width":100,"belongTo":"formItem"},{"attr_name":"手写签名","data_url":"","type":"handWrite","id":"module_1650351979722","label_width":150,"belongTo":"formItem"},{"attr_name":"手写签名","data_url":"","type":"handWrite","id":"module_1650425810267","label_width":150,"belongTo":"formItem"}],"dataList":[]},{"attr_name":"手写签名","data_url":"","type":"handWrite","id":"module_1649668387079","label_width":150,"belongTo":"formBox"}]');
+                            // console.log(tmpFormData);
+                            tmpFormData.map(v => {
+                                that.processData.formData.push({
+                                    formId: that.$route.query.formId,
+                                    label: v.attr_name,
+                                    read: true,
+                                    required: true,
+                                    vModel: v.id,
+                                    write: false,
+                                });
+                            });
+                            that.$store.commit('designer/updateFormItemList', that.processData.formData);
+
+                            setTimeout(function() {
+                                that.processDone = true;
+                                that.$toast.success({
+                                    message: '渲染完成',
+                                    duration: 888
+                                });
+                            }, 1288);
+                        }
+                    });
+                }
+            },
+            save: function() {
+                let that = this;
+                that.btnLoadingSave = true;
+
+                let processDesign = that.$refs['processDesign'].getData();
+                Promise.all([
+                    processDesign,
+                ]).then(res => {
+                    // console.log(res);
+
+                    let params = {
+                        basicSetting: {
+                            flowCode: that.$route.query.formId,
+                            flowGroup: 0,
+                            flowIcon: "el-icon-lollipop",
+                            flowIconBackground: "#FF8ACC",
+                            flowName: that.$route.query.formName,
+                            id: that.$route.query.processId,
+                        },
+                        formData: {
+                            disabled: false,
+                            fields: [],
+                            formBtns: true,
+                            formModel: "formData",
+                            formRef: "elForm",
+                            formRules: "rules",
+                            gutter: 15,
+                            labelPosition: "right",
+                            labelWidth: 100,
+                            size: "medium",
+                            span: 23,
+                        },
+                        processData: {...res[0].processData},
+                    };
+
+                    api.workflowDesignerCreateOrUpdate(params).then((res) => {
+                        if(res.data.status === 200) {
+                            api.formEdit({
+                                ...that.originFormData,
+                                activitiId: that.$route.query.processId ? that.$route.query.processId : res.data.data,
+                            }).then((res) => {
+                                if(res.data.status === 200) {
+                                    that.$message.success('操作成功');
+                                    that.$router.push({path: listRoutePath});
+                                } else that.btnLoadingSave = false;
+                            });
+                        } else that.btnLoadingSave = false;
+                    });
+                }).catch(err => {
+                    that.$message.warning('请完善流程图');
+                    that.btnLoadingSave = false;
+                });
             },
             cancel: function() {
                 let that = this;
@@ -122,140 +196,6 @@
                     that.$router.push({path: listRoutePath, query: {folderTitle: that.$route.query.folderTitle}});
                 }).catch();
             },
-
-
-            getBpmnContent: function() {
-                let that = this;
-                // console.log(that.$route.query);
-
-                if(!!that.$route.query.processDefinitionId) {
-                    api.camundaFindByProcessDefinitionById(that.$route.query.processDefinitionId).then((res) => {
-                        // console.log(res);
-                        if(res.data.status === 200) {
-                            that.$toast.loading({
-                                message: '解析并渲染',
-                                forbidClick: true,
-                                loadingType: 'spinner',
-                            });
-
-                            setTimeout(function() {
-                                // console.log(res.data.data);
-                                that.createNewDiagram(res.data.data.data);
-
-                                that.$toast.success({
-                                    message: '渲染完成',
-                                    duration: 888
-                                });
-                            }, 1288);
-                        }
-                    });
-                }
-            },
-
-
-            asAndConsole: async function(type) {
-                let that = this;
-
-                try {
-                    // 按需要类型创建文件并下载
-                    if (type === "xml" || type === "bpmn") {
-                        const {err, xml} = await that.modeler.saveXML();
-                        // 读取异常时抛出异常
-                        if (err) {
-                            console.error(`[Process Designer Warn ]: ${err.message || err}`);
-                        }
-                        console.log(xml);
-                        // let {href, filename} = that.setEncoded(type.toUpperCase(), name, xml);
-                        // console.log(href, filename);
-                    } else {
-                        const {err, svg} = await that.modeler.saveSVG();
-                        // 读取异常时抛出异常
-                        if (err) {
-                            return console.error(err);
-                        }
-                        console.log(svg);
-                        // let {href, filename} = that.setEncoded("SVG", name, svg);
-                        // console.log(href, filename);
-                    }
-                } catch (e) {
-                    console.error(`[Process Designer Warn ]: ${e.message || e}`);
-                }
-            },
-            chooseUploadFile: function(file, fileList, ref, refIsArray = true) {
-                let that = this;
-                // console.log(file.raw);
-
-                let fileNameArr = file.name.split('.');
-                if(fileNameArr.length < 2 || !that.man.fast.inArray(fileNameArr[fileNameArr.length - 1].toLowerCase(), ['xml', 'bpmn', ])) {
-                    that.$toast.fail({
-                        message: '不支持的格式',
-                        duration: 1888
-                    });
-                    return false;
-                }
-
-                that.$toast.loading({
-                    message: '解析并渲染',
-                    forbidClick: true,
-                    loadingType: 'spinner',
-                });
-
-                setTimeout(function() {
-                    const reader = new FileReader();
-                    reader.readAsText(file.raw);
-                    reader.onload = function () {
-                        let xmlStr = this.result;
-                        that.createNewDiagram(xmlStr);
-                    };
-
-                    that.$toast.success({
-                        message: '渲染完成',
-                        duration: 888
-                    });
-                }, 1288);
-            },
-            playCurrentDesign: function() {
-                let that = this;
-
-                that.simulationStatus = !that.simulationStatus;
-                that.modeler.get("toggleMode").toggleMode();
-            },
-
-
-            /**
-             * 根据所需类型进行转码并返回下载地址
-             * @param type
-             * @param filename
-             * @param data
-             * @returns {{filename: string, data: *, href: string}}
-             */
-            setEncoded(type, filename = "diagram", data) {
-                const encodedData = encodeURIComponent(data);
-                return {
-                    filename: `${filename}.${type}`,
-                    href: `data:application/${type === "svg" ? "text/xml" : "bpmn20-xml"};charset=UTF-8,${encodedData}`,
-                    data: data
-                };
-            },
-            /**
-             * 创建新的流程图
-             * @param xml
-             * @returns {Promise<void>}
-             */
-            async createNewDiagram(xml) {
-                // 将字符串转换成图显示出来
-                let newId = this.processId || `Process_${new Date().getTime()}`;
-                let newName = this.processName || `业务流程_${new Date().getTime()}`;
-                let xmlString = xml || DefaultEmptyXML(newId, newName, this.prefix);
-                try {
-                    let {warnings} = await this.modeler.importXML(xmlString);
-                    if (warnings && warnings.length) {
-                        warnings.forEach(warn => console.warn(warn));
-                    }
-                } catch (e) {
-                    console.error(`[Process Designer Warn]: ${e.message || e}`);
-                }
-            },
         }
     }
 
@@ -264,51 +204,12 @@
 <style lang="scss" scoped>
 
     ._root_page {
-        /*padding: 8px 15px;*/
+        /*padding: 15px;*/
 
-        .page-default-pd {padding: 10px 20px 0 20px;}
-        .page-default-h-has-breadcrumb {min-height: calc(100vh - 280px);}
-
-        .test-btns {
-            button {width: max-content; margin-right: 3px;}
-        }
-
-        ::v-deep {
-            .my-process-designer {
-                .my-process-designer__header {
-                    display: flex;
-                    flex-wrap: wrap;
-                    .el-button-group {
-                        margin: 0 4px 4px 0;
-                        display: flex;
-                    }
-                }
-                .my-process-designer__container {
-                    .my-process-designer__canvas {
-                        height: calc(100vh - 260px);
-                    }
-                }
+        .process {
+            ::v-deep {
+                .btn, .el-button {width: max-content;}
             }
-            .process-panel__container {
-                background-color: white;
-                width: 600px !important;
-                max-height: calc(100vh - 240px);
-                padding: 0 0 0 8px;
-                @include scroll-bar;
-
-                .panel-tab__content {
-                    .el-table {
-                        tbody .cell:last-child {
-                            display: flex;
-                            align-items: center;
-                        }
-                    }
-                    .panel-tab__content--title .el-button,
-                    .element-drawer__button .el-button {width: max-content;}
-                }
-            }
-            .djs-palette {top: calc(calc(100vh - 588px) / 2); left: 0px;}
-            .bjs-powered-by {display: none !important;}
         }
     }
 
