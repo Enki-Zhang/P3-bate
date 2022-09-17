@@ -6,7 +6,7 @@ import ajax from "@plugins/ajax";
  * @returns {void|*}
  */
 export function formStructInfo(formKey) {
-    return ajax.get(`userServer/customForm/findByKey/${formKey}`,null);
+  return ajax.get(`userServer/customForm/findByKey/${formKey}`, null);
 }
 
 /**
@@ -15,7 +15,7 @@ export function formStructInfo(formKey) {
  * @returns {void|*}
  */
 export function formInfoList(params) {
-    return ajax.get('userServer/customFormInfo/list',params);
+  return ajax.get("userServer/customFormInfo/list", params);
 }
 
 /**
@@ -24,7 +24,7 @@ export function formInfoList(params) {
  * @returns {void|*}
  */
 export function formPrevList(params) {
-    return ajax.get('userServer/customFormFrontTable/list',params);
+  return ajax.get("userServer/customFormFrontTable/list", params);
 }
 
 /**
@@ -33,7 +33,7 @@ export function formPrevList(params) {
  * @returns {void|*}
  */
 export function formPrevAdd(params) {
-    return ajax.post(`userServer/customFormFrontTable/save`,params);
+  return ajax.post(`userServer/customFormFrontTable/save`, params);
 }
 
 /**
@@ -42,7 +42,7 @@ export function formPrevAdd(params) {
  * @returns {void|*}
  */
 export function formPrevDel(id) {
-    return ajax.post(`userServer/customFormFrontTable/del/${id}`,null);
+  return ajax.post(`userServer/customFormFrontTable/del/${id}`, null);
 }
 
 /**
@@ -51,7 +51,7 @@ export function formPrevDel(id) {
  * @returns {void|*}
  */
 export function formHistoryList(params) {
-    return ajax.get('userServer/customFormHistory/list',params);
+  return ajax.get("userServer/customFormHistory/list", params);
 }
 
 /**
@@ -60,7 +60,7 @@ export function formHistoryList(params) {
  * @returns {void|*}
  */
 export function formHistoryMain(id) {
-    return ajax.post(`userServer/customFormHistory/resetVersion/${id}`,null);
+  return ajax.post(`userServer/customFormHistory/resetVersion/${id}`, null);
 }
 
 /**
@@ -69,7 +69,7 @@ export function formHistoryMain(id) {
  * @returns {void|*}
  */
 export function formHistoryDel(id) {
-    return ajax.post(`userServer/customFormHistory/del/${id}`,null);
+  return ajax.post(`userServer/customFormHistory/del/${id}`, null);
 }
 
 /**
@@ -78,7 +78,7 @@ export function formHistoryDel(id) {
  * @returns {void|*}
  */
 export function formList(params) {
-    return ajax.get('userServer/customForm/list',params);
+  return ajax.get("userServer/customForm/list", params);
 }
 
 /**
@@ -87,12 +87,12 @@ export function formList(params) {
  * @returns {void|*}
  */
 export function formInfo(id) {
-    return ajax.get(`userServer/customForm/find/${id}`,null);
+  return ajax.get(`userServer/customForm/find/${id}`, null);
 }
 
 // 删除
 export function customFormDeleteAllVersion(data) {
-    return ajax.post(`userServer/customForm/deleteAllVersion/${data}`);
+  return ajax.post(`userServer/customForm/deleteAllVersion/${data}`);
 }
 
 /**
@@ -101,7 +101,7 @@ export function customFormDeleteAllVersion(data) {
  * @returns {*}
  */
 export function formAdd(data) {
-    return ajax.post('userServer/customForm/save', data);
+  return ajax.post("userServer/customForm/save", data);
 }
 
 /**
@@ -110,7 +110,7 @@ export function formAdd(data) {
  * @returns {*}
  */
 export function formEdit(data) {
-    return ajax.post('userServer/customForm/edit', data);
+  return ajax.post("userServer/customForm/edit", data);
 }
 
 /**
@@ -119,7 +119,7 @@ export function formEdit(data) {
  * @returns {*}
  */
 export function formSourceList() {
-    return ajax.get('userServer/customForm/dynamicSelect/select', null);
+  return ajax.get("userServer/customForm/dynamicSelect/select", null);
 }
 
 /**
@@ -128,28 +128,29 @@ export function formSourceList() {
  * @returns {*}
  */
 export function formSourceSelectList(id) {
-    return ajax.get(`userServer/customForm/dynamicSelect/findById/${id}`, null);
+  return ajax.get(`userServer/customForm/dynamicSelect/findById/${id}`, null);
 }
 
 // 上传base64图片
 export function formUploadBase64(data) {
-    return ajax.upload('backServer/file/base64/uploadFile', data);
+  return ajax.upload("backServer/file/base64/uploadFile", data);
 }
 
 // 流程图
 
 export function camundaFindByProcessDefinitionById(params) {
-    return ajax.get(`backServer/camunda/findByProcessDefinitionById/${params}`);
+  return ajax.get(`backServer/camunda/findByProcessDefinitionById/${params}`);
 }
 export function camundaDeploy(data) {
-    return ajax.post('backServer/camunda/deploy', data);
+  return ajax.post("backServer/camunda/deploy", data);
 }
 export function workflowDesigner(params) {
-    return ajax.get(`backServer/workflow/designer/${params}`);
+  // return ajax.get(`backServer/workflow/designer/${params}`);
+  return ajax.get(`backServer/workflow/designer/${params}`);
 }
 export function sysUserInfoTree(params) {
-    return ajax.get(`userServer/sys/user/info/tree`, params);
+  return ajax.get(`userServer/sys/user/info/tree`, params);
 }
 export function workflowDesignerCreateOrUpdate(data) {
-    return ajax.post('backServer/workflow/designer/createOrUpdate', data);
+  return ajax.post("backServer/workflow/designer/createOrUpdate", data);
 }
