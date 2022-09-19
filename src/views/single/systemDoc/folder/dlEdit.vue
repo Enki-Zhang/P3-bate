@@ -195,24 +195,27 @@ export default {
       }
       that.choosedIcon = that.form.icon;
       that.initSeloptsDir();
+      // console.log(`open`);
     },
+    // ？ 点击保存文件消失
     save: function() {
       let that = this;
       that.form.icon = this.choosedIcon;
       // console.log(that.form); return;
 
       that.$refs.fm.validate((valid) => {
+        // console.log(`存在id进行更新...`);
         if (valid) {
           that.btnLoadingSave = true;
-
+          //文件存在根据Id更新
           if (that.params.detail.id) {
+            console.log(`params.detail`, that.params.detail);
             api
               .systemDocumentTypeUpdate({
                 ...that.form,
                 parentId:
-                  that.form.parentId === -1
-                    ? 0
-                    : that.form.parentId[that.form.parentId.length - 1],
+                  that.form.parentId === -1 ? 0 : that.params.detail.parentId, //取出对应的parentId
+                // : that.form.parentId[that.form.parentId.length - 1],
               })
               .then((res) => {
                 // console.log(res);
@@ -225,6 +228,7 @@ export default {
                 }
               });
           } else {
+            // 新建文件类型
             api
               .systemDocumentTypeSave({
                 ...that.form,
@@ -234,7 +238,9 @@ export default {
                     : that.form.parentId[that.form.parentId.length - 1],
               })
               .then((res) => {
-                // console.log(res);
+                console.log(`params.detail.id`, that.params.detail.id);
+                console.log(`res`, res);
+
                 that.btnLoadingSave = false;
 
                 if (res.data.status === 200) {
@@ -275,18 +281,21 @@ export default {
           });
       }
     },
-
+    // 编辑框的下拉多级选择
     initSeloptsDir: function() {
       let that = this;
-
+      console.log(`初始化initseloptsDir.....`);
       api.systemDocumentTypeFindChildById().then((res) => {
+        console.log(`initSeloptsDir的res`, res);
         if (res.data.status === 200) {
+          // 根目录设置为-1
           that.seloptsDir = [
             {
               label: "-- 自身为根目录 --",
               value: -1,
             },
           ];
+          // 遍历每个数据存入seloptsDir
           res.data.data.map((v) => {
             that.seloptsDir.push({
               value: v.id,
@@ -294,6 +303,7 @@ export default {
               // leaf: level >= 2
             });
           });
+          console.log(`seloptsDir`, this.seloptsDir);
         }
       });
     },
