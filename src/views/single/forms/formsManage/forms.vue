@@ -114,7 +114,7 @@
                           :move="onMove">
                             <template v-for="item,index in formBox" >
                               <!-- 会报错 -->
-                                    <span>{{item}}</span>
+                                    <!-- <span>{{item}}</span> -->
                               <div 
                                 v-if = "item.type == 'childForm'" 
                                 :key="item.id" 
@@ -125,6 +125,7 @@
                                 <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <div class = "label">{{item.attr_name}}</div>
+                                <!-- 子表单 -->
                                 <div class = "area">
                                   <draggable 
                                     class="childAreaBox"
@@ -193,7 +194,7 @@
                                             v-model = "formBox[index]['arr'][index2].attr_value"/></textarea>
                                         </div>
                                       </div>
-                                      <!-- 下拉选项 -->
+                                   <!-- 子表单中添加下拉选项 -->
                                       <div 
                                         :key="item2.id" 
                                         v-else-if = "item2.type == 'select'"
@@ -408,7 +409,7 @@
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                               </div>
-                              <!-- 下拉框 -->
+                            <!-- 单行输入框 -->
                               <div 
                                 v-else-if = "item.type == 'input'" 
                                 :key="item.id"
@@ -425,6 +426,7 @@
                                   type = "text" 
                                   v-model = "formBox[index].attr_value"/>
                               </div>
+
                               <div 
                                 v-else-if = "item.type == 'inputNumber'" 
                                 :key="item.id"
@@ -459,7 +461,7 @@
                                   rows="4" 
                                   v-model = "formBox[index].attr_value"/></textarea>
                               </div>
-
+<!-- 下拉选项框 -->
                               <div 
                                 v-else-if = "item.type == 'select'" 
                                 :key="item.id"
@@ -479,13 +481,13 @@
                                     :placeholder="formBox[index].attr_placeholder" />
                                 </span>
                                 <!-- 其他选择 -->
-                                <span>{{item.attr_other_input.attr_name}}</span>
-                                <span>
+                                <span class="otherTax" >{{item.attr_other_input.attr_name}}</span>
+
+                                <span class="otherBox">
                                   <input 
-                                   :value = "formBox[index].attr_other_input.attr_value" 
+                                   :value = "formBox[index].attr_other_input.attr_other_value" 
                                     readonly 
                                     type = "text" 
-                      
                                     :placeholder="formBox[index].attr_other_input.attr_placeholder"/>
                                 </span>
                               </div>
@@ -712,6 +714,10 @@
                                   <option value = "bind">绑定</option>
                                 </select>
                               </div>
+                              <!-- 下拉选项框添加其他 -->
+                              <div v-else-if="k == 'attr_other_input'">
+                                <input v-model="v.attr_other_value" type="text"/>
+                              </div>
                               <div v-else-if = "k == 'attr_data_list'">
                                 <table class = "selectList">
                                   <tr>
@@ -731,6 +737,8 @@
                                   <a v-if = "attrObj.hasOwnProperty('otherValue')" @click = "selectOtherAdd" style = "margin-left:6px;" class = "btn2" href = "javascript:void(0);">添加其他</a>
                                 </div>
                               </div>
+
+
                               <div v-else-if = "k == 'attr_data_bind'">
                                 <select v-model = "attrObj[k]" placeholder = "请选择数据源">
                                   <option 
@@ -1411,7 +1419,8 @@
                   //console.log(this.formBox);
               },
               onAddChild(e){
-                //console.log(e);
+// 添加表单进入子表单
+                console.log(`onAddChild`,e);
                 const newIndex = e.newIndex;
                 const parentIndex = parseInt(e.target.dataset.index);
                 // console.log(newIndex);
@@ -1872,6 +1881,25 @@
       right:0px;
     }
   }
+  .otherTax{
+      position:relative;
+       padding:10px;
+
+  }
+  .otherBox{
+    width: 190px;
+      height:36px;
+      position:relative;
+        input{
+      width:100%;
+      height:36px;
+      text-align:center;
+      padding-right:10px;
+      outline:none;
+      border:none;
+      border:1px solid @borderColor;
+    }
+  }
   .selectBox{
     width:190px;
     height:36px;
@@ -1886,6 +1914,7 @@
       border:none;
       border:1px solid @borderColor;
     }
+ 
     &::after{
       content:'';
       display:block;

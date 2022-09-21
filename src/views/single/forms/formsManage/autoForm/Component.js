@@ -3,6 +3,7 @@ let componentAttrName = {
   attr_value: "默认值",
   attr_boolean_value: "默认值",
   attr_time_value: "默认值",
+  attr_other_value: "默认值",
   attr_date_value: "默认值",
   attr_data_source: "数据来源",
   attr_data_bind: "数据绑定",
@@ -68,16 +69,23 @@ let componentInput = [
 
 let componentSelect = [
   {
+    attr_name: "其他",
+    attr_value: "",
+    attr_placeholder: "请输入",
+    type: "input",
+  },
+  {
     attr_name: "下拉选择",
     attr_input_width: 150,
     attr_data_source: "default",
     attr_data_list: [
       { id: 1, name: "选项1" },
       { id: 2, name: "选项2" },
+      // { id: 3, name: "其他选项" },
     ],
     attr_other_input: {
       attr_name: "其他",
-      attr_value: "",
+      attr_other_value: "",
       attr_placeholder: "请输入",
       type: "input",
     },
