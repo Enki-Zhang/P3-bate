@@ -102,6 +102,7 @@
                       </div>
 
                       <div class="centerBox">
+                  
                         <draggable 
                           ghostClass="dr-placeholder"
                           class = "areaBox"
@@ -112,6 +113,8 @@
                           handle=".dragBtn"
                           :move="onMove">
                             <template v-for="item,index in formBox" >
+                              <!-- 会报错 -->
+                                    <span>{{item}}</span>
                               <div 
                                 v-if = "item.type == 'childForm'" 
                                 :key="item.id" 
@@ -190,6 +193,7 @@
                                             v-model = "formBox[index]['arr'][index2].attr_value"/></textarea>
                                         </div>
                                       </div>
+                                      <!-- 下拉选项 -->
                                       <div 
                                         :key="item2.id" 
                                         v-else-if = "item2.type == 'select'"
@@ -200,6 +204,7 @@
                                         <i class = "copyBtn" @click = "copyCompent"></i>
                                         <i class = "delBtn" @click = "delCompent"></i>
                                         <p>{{item2.attr_name}}</p>
+
                                         <div class = "selectBox">
                                           <input 
                                             :value = "formBox[index]['arr'][index2].data_value" 
@@ -208,7 +213,10 @@
                                             class = "select" 
                                             :placeholder="formBox[index]['arr'][index2].attr_placeholder" />
                                         </div>
+
+
                                       </div>
+
                                       <div 
                                         :key="item2.id" 
                                         v-else-if = "item2.type == 'linkSelect'"
@@ -400,6 +408,7 @@
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
                               </div>
+                              <!-- 下拉框 -->
                               <div 
                                 v-else-if = "item.type == 'input'" 
                                 :key="item.id"
@@ -450,6 +459,7 @@
                                   rows="4" 
                                   v-model = "formBox[index].attr_value"/></textarea>
                               </div>
+
                               <div 
                                 v-else-if = "item.type == 'select'" 
                                 :key="item.id"
@@ -460,15 +470,27 @@
                                 <i class = "copyBtn" @click = "copyCompent"></i>
                                 <i class = "delBtn" @click = "delCompent"></i>
                                 <span>{{item.attr_name}}</span>
+                             
                                 <span class = "selectBox">
                                   <input 
                                     :value = "formBox[index].data_value" 
                                     readonly 
                                     type = "text" 
-                                    class = "select" 
                                     :placeholder="formBox[index].attr_placeholder" />
                                 </span>
+                                <!-- 其他选择 -->
+                                <span>{{item.attr_other_input.attr_name}}</span>
+                                <span>
+                                  <input 
+                                   :value = "formBox[index].attr_other_input.attr_value" 
+                                    readonly 
+                                    type = "text" 
+                      
+                                    :placeholder="formBox[index].attr_other_input.attr_placeholder"/>
+                                </span>
                               </div>
+
+
                               <div 
                                 v-else-if = "item.type == 'radio'" 
                                 :key="item.id"
