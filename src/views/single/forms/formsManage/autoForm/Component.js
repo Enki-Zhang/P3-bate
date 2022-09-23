@@ -69,12 +69,6 @@ let componentInput = [
 
 let componentSelect = [
   {
-    attr_name: "其他",
-    attr_value: "",
-    attr_placeholder: "请输入",
-    type: "input",
-  },
-  {
     attr_name: "下拉选择",
     attr_input_width: 150,
     attr_data_source: "default",
