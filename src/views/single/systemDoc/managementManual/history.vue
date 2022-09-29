@@ -1,4 +1,5 @@
 <template>
+  <!-- 历史 -->
   <el-row class="_root_page">
     <el-row class="page-default-pd page-default-h-has-breadcrumb">
       <el-row class="page-default-pd-bgc-white">
@@ -24,9 +25,9 @@
             <el-table-column label="名称" show-overflow-tooltip min-width="160">
               <template slot-scope="scope">{{ scope.row.formName }}</template>
             </el-table-column>
-            <el-table-column label="版本" show-overflow-tooltip min-width="90">
+            <!--    <el-table-column label="版本" show-overflow-tooltip min-width="90">
               <template slot-scope="scope">{{ scope.row.versions }}</template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
               label="创建日期"
               show-overflow-tooltip
@@ -36,6 +37,17 @@
                 (scope.row.updateTime == null
                   ? scope.row.createTime
                   : scope.row.updateTime) | dateStr
+              }}</template>
+            </el-table-column>
+            <el-table-column
+              label="修改日期"
+              show-overflow-tooltip
+              min-width="250"
+            >
+              <template slot-scope="scope">{{
+                (scope.row.updateTime == null
+                  ? scope.row.updateTime
+                  : scope.row.createTime) | dateStr
               }}</template>
             </el-table-column>
             <!--<el-table-column label="使用状态" show-overflow-tooltip min-width="80">
@@ -52,7 +64,7 @@
                     :underline="false"
                     @click="versionManager(scope.row)"
                     class="fs-12"
-                    >设为主版本</el-link
+                    >查看</el-link
                   >
                   <el-row class="fg">|</el-row>
                   <el-link

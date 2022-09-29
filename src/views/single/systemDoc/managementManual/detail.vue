@@ -398,8 +398,20 @@ export default {
 
       that.$refs.formPreview.showFn(row.keyInfo);
     },
+    //历史表格
     showHistory(row) {
+      let that = this;
+
+      that.$router.push({
+        path: `/system-doc/management-manual/history`,
+        query: { id: row.id },
+      });
+      /*    that.$router.push({
+        path: `/forms/version-manage`,
+        query: { id: row.id },
+      }); */
       console.log(`历史`);
+      console.log(`路由信息`, that.$router);
     },
     applyForm: function(formInfo) {
       let that = this;

@@ -871,6 +871,16 @@
                       >
                       提交
                   </el-button>
+
+                   <el-button 
+                      type="primary" 
+                      size="small" 
+                      style = "width:90px;"
+                      :loading="btnLoadingFilter" 
+                      @click = "saveForm"
+                      >
+                      保存
+                  </el-button>
                 </el-row>
             </el-row>
         </el-row>
@@ -1003,6 +1013,7 @@
                });
 
             },
+            // 表单提交
             submitForm(){
               this.$refs.dataForm.validate((valid) => {
                 if (valid) {
@@ -1040,6 +1051,11 @@
                   return false;
                 }
               });
+            },
+            // 表单保存
+            saveForm(){
+              
+              console.log(`保存`);
             },
             linkSelectDel(){
                 if(this.selectingIndex.length == 1){
