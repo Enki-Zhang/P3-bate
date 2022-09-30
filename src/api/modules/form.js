@@ -57,9 +57,9 @@ export function formHistoryList(params) {
  * 获取历史表单数据
  *
  */
-/* export function formHistoryManagement(params) {
-  return ajax.get("userServer/customFormInfo/list", params);
-} */
+export function formHistoryManagement(params) {
+  return ajax.get("userServer/customFormInfo/history", params);
+}
 /**
  * 设置表单主版本
  * @param id

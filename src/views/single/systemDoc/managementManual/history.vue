@@ -14,14 +14,14 @@
             highlight-current-row
             border
           >
-            <el-table-column
+            <!--     <el-table-column
               label="编号"
               fixed="left"
               show-overflow-tooltip
               width="120"
             >
               <template slot-scope="scope">{{ scope.row.formId }}</template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="名称" show-overflow-tooltip min-width="160">
               <template slot-scope="scope">{{ scope.row.formName }}</template>
             </el-table-column>
@@ -144,19 +144,21 @@ export default {
         pageSize,
       };
 
-      api.formHistoryList(params).then((res) => {
+      api.formHistoryManagement(params).then((res) => {
         if (res.data.status === 200) {
           this.tbData.content = res.data.data.records;
           this.tbData.current = res.data.data.current;
           this.tbData.size = res.data.data.size;
           this.tbData.total = res.data.data.total;
         }
+        // console.log(this.tbData.content);
+        console.log(`res`, res);
       });
     },
     handlePaginationChange: function(page) {
       this.getTableData(page);
     },
-    remove: function(row) {
+    /*     remove: function(row) {
       // if(!this.man.fast.inArray('sys:user:del', this.userInfo.permissions)) {
       //     this.$message.warning('您无权限进行此操作');
       //     return;
@@ -176,7 +178,7 @@ export default {
           });
         })
         .catch();
-    },
+    }, */
     showVersion: function(row) {
       /*   api.formHistoryMain(row.id).then((res) => {
         if (res.data.status === 200) {
@@ -185,7 +187,7 @@ export default {
       }); */
       this.$router.push({
         path: "/forms/forms-forms-edit",
-        query: { id: parseInt(row.id) },
+        query: { id: parseInt(row.formId) },
       });
       console.log(row);
     },

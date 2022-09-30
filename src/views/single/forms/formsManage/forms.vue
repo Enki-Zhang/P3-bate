@@ -1065,7 +1065,10 @@
                       ...this.dataForm
                   };
 
+                  // let fnName = 'formAdd';
                   let fnName = 'formAdd';
+
+
                   if(this.$route.query.hasOwnProperty('id')){
                     params['id'] = this.$route.query.id;
                     fnName = 'formEdit';
@@ -1073,6 +1076,7 @@
 
                   // console.log(JSON.parse(params.keyInfo));
                   // return;
+                  api.customFormInfoSave(params).then()
 
                   api[fnName](params).then((res) => {
                       this.btnLoadingFilter = false;
