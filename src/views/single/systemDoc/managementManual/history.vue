@@ -185,11 +185,13 @@ export default {
           this.$message.success("设置成功");
         }
       }); */
+      // 查询历史表单
+
       this.$router.push({
         path: "/forms/forms-forms-edit",
-        query: { id: parseInt(row.formId) },
+        query: { id: parseInt(row.id), history: true },
       });
-      console.log(row);
+      console.log(`row`, row.id);
     },
   },
 };

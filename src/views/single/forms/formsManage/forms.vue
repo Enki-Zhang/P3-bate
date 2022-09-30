@@ -1004,14 +1004,32 @@
                });
             },
             getInfo(){
-              if(!this.$route.query.hasOwnProperty('id'))return;
+          /*     if(!this.$route.query.hasOwnProperty('id'))return;
               api.formInfo(this.$route.query.id).then((res) => {
                   if(res.data.status === 200) {
                     this.dataForm = {...res.data.data};
                     this.formBox = JSON.parse(res.data.data.keyInfo);
                   }
-               });
+               }); */
+                // const isHistory = this.$route.query.history;
+              //  console.log(`history`,this.$route.query.history);
 
+              if(!this.$route.query.hasOwnProperty('id'))return;
+              if(this.$route.query.hasOwnProperty('history')){
+                api.formHistoryInfo(this.$route.query.id).then((res) => {
+                  if(res.data.status === 200) {
+                    this.dataForm = {...res.data.data};
+                    this.formBox = JSON.parse(res.data.data.keyInfo);
+                  }
+               });
+              }else{ 
+                api.formInfo(this.$route.query.id).then((res) => {
+                  if(res.data.status === 200) {
+                    this.dataForm = {...res.data.data};
+                    this.formBox = JSON.parse(res.data.data.keyInfo);
+                  }
+               });
+               }
             },
             // 表单提交
             submitForm(){

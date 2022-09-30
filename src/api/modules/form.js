@@ -95,7 +95,14 @@ export function formList(params) {
 export function formInfo(id) {
   return ajax.get(`userServer/customForm/find/${id}`, null);
 }
-
+/**
+ * 查询历史表单
+ * @param {*} id
+ * @returns
+ */
+export function formHistoryInfo(id) {
+  return ajax.get(`userServer/customFormInfo/find/${id}`, null);
+}
 // 删除
 export function customFormDeleteAllVersion(data) {
   return ajax.post(`userServer/customForm/deleteAllVersion/${data}`);
