@@ -1023,6 +1023,46 @@
 
                   let params = {
                       ...this.dataForm
+                  };     
+
+                  let fnName = 'formAdd';
+                  //判断是否有Id属性 视为修改 有发送修改请求 没有为添加
+                  if(this.$route.query.hasOwnProperty('id')){
+                    params['id'] = this.$route.query.id;
+                    fnName = 'formEdit';
+                  }
+
+                  // console.log(JSON.parse(params.keyInfo));
+                  // return;
+
+                  api[fnName](params).then((res) => {
+                      this.btnLoadingFilter = false;
+                      if(res.data.status === 200) {
+                          this.$message({
+                            message: this.$route.query.hasOwnProperty('id') ? '编辑成功' : '添加成功',
+                            type: 'success'
+                          });
+                          this.$router.push({path: `/forms/forms-manage`});
+                      }
+                  });
+
+                } 
+                else {
+                  console.log('error submit!!');
+                  return false;
+                }
+              });
+            },
+            // 表单保存 向数据库中添加历史版本
+            saveForm(){
+               this.$refs.dataForm.validate((valid) => {
+                if (valid) {
+                  
+                  this.dataForm.keyInfo = JSON.stringify(this.formBox);
+                  this.btnLoadingFilter = true;
+
+                  let params = {
+                      ...this.dataForm
                   };
 
                   let fnName = 'formAdd';
@@ -1051,9 +1091,6 @@
                   return false;
                 }
               });
-            },
-            // 表单保存
-            saveForm(){
               
               console.log(`保存`);
             },

@@ -53,7 +53,13 @@ export function formPrevDel(id) {
 export function formHistoryList(params) {
   return ajax.get("userServer/customFormHistory/list", params);
 }
-
+/***
+ * 获取历史表单数据
+ *
+ */
+/* export function formHistoryManagement(params) {
+  return ajax.get("userServer/customFormInfo/list", params);
+} */
 /**
  * 设置表单主版本
  * @param id

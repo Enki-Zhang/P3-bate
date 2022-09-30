@@ -45,9 +45,7 @@
               min-width="250"
             >
               <template slot-scope="scope">{{
-                (scope.row.updateTime == null
-                  ? scope.row.updateTime
-                  : scope.row.createTime) | dateStr
+                scope.row.updateTime | dateStr
               }}</template>
             </el-table-column>
             <!--<el-table-column label="使用状态" show-overflow-tooltip min-width="80">
@@ -62,18 +60,18 @@
                   <el-link
                     type="primary"
                     :underline="false"
-                    @click="versionManager(scope.row)"
+                    @click="showVersion(scope.row)"
                     class="fs-12"
                     >查看</el-link
                   >
-                  <el-row class="fg">|</el-row>
-                  <el-link
+                  <!-- <el-row class="fg">|</el-row> -->
+                  <!--   <el-link
                     type="danger"
                     :underline="false"
                     @click="remove(scope.row)"
                     class="fs-12"
                     >删除</el-link
-                  >
+                  > -->
                 </el-row>
               </template>
             </el-table-column>
@@ -179,12 +177,17 @@ export default {
         })
         .catch();
     },
-    versionManager: function(row) {
-      api.formHistoryMain(row.id).then((res) => {
+    showVersion: function(row) {
+      /*   api.formHistoryMain(row.id).then((res) => {
         if (res.data.status === 200) {
           this.$message.success("设置成功");
         }
+      }); */
+      this.$router.push({
+        path: "/forms/forms-forms-edit",
+        query: { id: parseInt(row.id) },
       });
+      console.log(row);
     },
   },
 };
