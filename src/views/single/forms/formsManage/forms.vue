@@ -999,7 +999,6 @@
                   if(res.data.status === 200) {
                     //console.log(res.data.data);
                     this.dataSourceList = res.data.data;
-
                   }
                });
             },
@@ -1019,9 +1018,11 @@
                 api.formHistoryInfo(this.$route.query.id).then((res) => {
                   if(res.data.status === 200) {
                     this.dataForm = {...res.data.data};
-                    this.formBox = JSON.parse(res.data.data.keyInfo);
+                    this.formBox = JSON.parse(res.data.data.formInfo);
+                       console.log(`历史编辑`,res);
                   }
                });
+            
               }else{ 
                 api.formInfo(this.$route.query.id).then((res) => {
                   if(res.data.status === 200) {

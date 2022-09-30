@@ -152,7 +152,7 @@ export default {
           this.tbData.total = res.data.data.total;
         }
         // console.log(this.tbData.content);
-        console.log(`res`, res);
+        // console.log(`res`, res);
       });
     },
     handlePaginationChange: function(page) {
@@ -191,7 +191,7 @@ export default {
         path: "/forms/forms-forms-edit",
         query: { id: parseInt(row.id), history: true },
       });
-      console.log(`row`, row.id);
+      // console.log(`row`, row.id);
     },
   },
 };
