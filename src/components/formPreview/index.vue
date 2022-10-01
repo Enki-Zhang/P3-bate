@@ -1,16 +1,20 @@
 <template>
-  <div class = "popBox" :class = "{popBoxNormal:!fixed}" v-show = "sh">
-    <div class = "p_box">
-      <div class = "header" v-show = "submitBtn">
+  <div class="popBox" :class="{ popBoxNormal: !fixed }" v-show="sh">
+    <div class="p_box">
+      <div class="header" v-show="submitBtn">
         <p>申请</p>
-        <span @click = "closeFn">关闭</span>
-      </div>
-      
-      <div class = "body" id = "preview_dialog">
+        <span @click="closeFn">关闭</span>
       </div>
 
-      <div class = "footer" v-show = "submitBtn">
-        <el-button @click = "submitFn" style = "width:100px;" type="primary">提交表单</el-button>
+      <div class="body" id="preview_dialog"></div>
+
+      <div class="footer" v-show="submitBtn">
+        <el-button @click="submitFn" style="width:100px;" type="primary"
+          >提交表单</el-button
+        >
+        <el-button @click="saveFn" style="width:100px;" type="primary"
+          >保存表单</el-button
+        >
       </div>
     </div>
   </div>
@@ -18,10 +22,25 @@
 
 <script>
 import Vue from "vue";
-import 'element-ui/lib/theme-chalk/index.css';
+import "element-ui/lib/theme-chalk/index.css";
 import api from "@api";
-import handWriteComp from '@/components/formPreview/handWrite';
-import { Button,Input,InputNumber,Select,Option,Radio,Switch,Checkbox,CheckboxGroup,TimePicker,DatePicker,TimeSelect,Cascader,Upload } from 'element-ui';
+import handWriteComp from "@/components/formPreview/handWrite";
+import {
+  Button,
+  Input,
+  InputNumber,
+  Select,
+  Option,
+  Radio,
+  Switch,
+  Checkbox,
+  CheckboxGroup,
+  TimePicker,
+  DatePicker,
+  TimeSelect,
+  Cascader,
+  Upload,
+} from "element-ui";
 Vue.use(Button);
 Vue.use(Input);
 Vue.use(InputNumber);
@@ -39,137 +58,163 @@ Vue.use(Upload);
 
 export default {
   name: "Preview",
-  props:{
-      submitBtn: {
-          type: Boolean,
-          default: true
-      },
-      fixed:{
-          type:Boolean,
-          default:true
-      }
+  props: {
+    submitBtn: {
+      type: Boolean,
+      default: true,
+    },
+    fixed: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
-      sh:false,
-      preview:null,
-      data:[],
-      formId:''
+      sh: false,
+      preview: null,
+      data: [], //formInfo
+      formId: "",
     };
   },
-  methods:{
-
-    submitFn(){
+  methods: {
+    submitFn() {
       let keyInfo = JSON.stringify(this.preview.getFormInfo());
-      let keyInfoStr = this.filterFn(keyInfo);//处理一些参数合并
+      let keyInfoStr = this.filterFn(keyInfo); //处理一些参数合并
       // console.log(keyInfoStr);
       // return;
-      if(this.$listeners['success']){
-          this.$emit('success',keyInfoStr);
+      if (this.$listeners["success"]) {
+        this.$emit("success", keyInfoStr);
       }
-      if(this.$listeners['getFormInfo']){
-          this.$emit('getFormInfo',{formId:this.formId});
+      if (this.$listeners["getFormInfo"]) {
+        this.$emit("getFormInfo", { formId: this.formId });
       }
       this.closeFn();
     },
-    filterFn(str){
+    saveFn() {
+      let keyInfo = JSON.stringify(this.preview.getFormInfo());
+      let keyInfoStr = this.filterFn(keyInfo); //处理一些参数合并
+      // console.log(keyInfoStr);
+      // return;
+      if (this.$listeners["success"]) {
+        this.$emit("success", keyInfoStr);
+      }
+      if (this.$listeners["getFormInfo"]) {
+        this.$emit("getFormInfo", { formId: this.formId });
+      }
+      // console.log(`data`, this.data);
+      this.closeFn();
+    },
+    filterFn(str) {
       let arr = JSON.parse(str);
-      arr.forEach((e,index) => {
-          // console.log(e);
-          // console.log(index);
+      arr.forEach((e, index) => {
+        // console.log(e);
+        // console.log(index);
 
-          if(e.type == 'radio'){//单选组件选中“其他”时，将“其他”的非空input值拼接到“其他”后面
-              let selectObj = e.attr_data_list.find(obj=>obj.name == e.data_value);
-              if(typeof selectObj != 'undefined'){
-                  if(selectObj.id == 999 && e.otherValue != ''){
-                      e.data_value += '-' + e.otherValue; 
-                  }
+        if (e.type == "radio") {
+          //单选组件选中“其他”时，将“其他”的非空input值拼接到“其他”后面
+          let selectObj = e.attr_data_list.find(
+            (obj) => obj.name == e.data_value
+          );
+          if (typeof selectObj != "undefined") {
+            if (selectObj.id == 999 && e.otherValue != "") {
+              e.data_value += "-" + e.otherValue;
+            }
+          }
+        }
+
+        if (e.type == "check") {
+          //多选组件勾选“其他”时，将“其他”的非空input值拼接到“其他”后面
+          for (let i = 0; i < e.data_value.length; i++) {
+            let selectObj = e.attr_data_check_list.find(
+              (obj) => obj.name == e.data_value[i]
+            );
+            if (typeof selectObj != "undefined") {
+              if (selectObj.id == 999 && e.otherValue != "") {
+                e.data_value[i] += "-" + e.otherValue;
+                break;
               }
+            }
           }
+        }
 
-          if(e.type == 'check'){//多选组件勾选“其他”时，将“其他”的非空input值拼接到“其他”后面
-              for(let i = 0;i < e.data_value.length;i++){
-                  let selectObj = e.attr_data_check_list.find(obj=>obj.name == e.data_value[i]);
-                  if(typeof selectObj != 'undefined'){
-                      if(selectObj.id == 999 && e.otherValue != ''){
-                          e.data_value[i] += '-' + e.otherValue;
-                          break; 
-                      }
+        if (e.type == "linkSelect") {
+          //级联下拉组件将value替换为label再提交
+          let arr = e.attr_data_link_list;
+          let value = JSON.parse(JSON.stringify(e.attr_data_link_value));
+          e.attr_data_link_value = this.getLinkSelectName(arr, value);
+        }
+
+        if (e.type == "childForm") {
+          //子表单
+          let optionList = e.arr;
+          let dataList = e.dataList;
+          dataList.forEach((eRow) => {
+            eRow.forEach((eCol, eIndex) => {
+              if (optionList[eIndex].type == "radio") {
+                //单选组件选中“其他”时，将“其他”的非空input值拼接到“其他”后面
+                let selectObj = optionList[eIndex].attr_data_list.find(
+                  (obj) => obj.name == eCol.value
+                );
+                if (typeof selectObj != "undefined") {
+                  if (selectObj.id == 999 && eCol.otherValue != "") {
+                    eCol.value += "-" + eCol.otherValue;
                   }
+                }
               }
-          }
-
-          if(e.type == 'linkSelect'){//级联下拉组件将value替换为label再提交
-              let arr = e.attr_data_link_list;
-              let value = JSON.parse(JSON.stringify(e.attr_data_link_value));
-              e.attr_data_link_value = this.getLinkSelectName(arr,value);
-          }
-
-          if(e.type == 'childForm'){//子表单
-              let optionList = e.arr;
-              let dataList = e.dataList;
-              dataList.forEach(eRow => {
-                  eRow.forEach((eCol,eIndex) => {
-                      if(optionList[eIndex].type == 'radio'){//单选组件选中“其他”时，将“其他”的非空input值拼接到“其他”后面
-                          let selectObj = optionList[eIndex].attr_data_list.find(obj => obj.name == eCol.value);
-                          if(typeof selectObj != 'undefined'){
-                              if(selectObj.id == 999 && eCol.otherValue != ''){
-                                  eCol.value += '-' + eCol.otherValue;
-                              }
-                          }
-                      }
-                      if(optionList[eIndex].type == 'check'){//多选组件勾选“其他”时，将“其他”的非空input值拼接到“其他”后面
-                          for(let i = 0;i < eCol.value.length;i++){
-                              let selectObj = optionList[eIndex].attr_data_check_list.find(obj => obj.name == eCol.value[i]);
-                              if(typeof selectObj != 'undefined'){
-                                  if(selectObj.id == 999 && eCol.otherValue != ''){
-                                      eCol.value[i] += '-' + eCol.otherValue;
-                                      break;
-                                  }
-                              }
-                          }
-                      }
-                      if(optionList[eIndex].type == 'linkSelect'){//级联下拉组件将value替换为label再提交
-                          let arr = optionList[eIndex].attr_data_link_list;
-                          let value = JSON.parse(JSON.stringify(eCol.value));
-                          eCol.value = this.getLinkSelectName(arr,value);
-                      }
-                  })
-              });
-          }
+              if (optionList[eIndex].type == "check") {
+                //多选组件勾选“其他”时，将“其他”的非空input值拼接到“其他”后面
+                for (let i = 0; i < eCol.value.length; i++) {
+                  let selectObj = optionList[eIndex].attr_data_check_list.find(
+                    (obj) => obj.name == eCol.value[i]
+                  );
+                  if (typeof selectObj != "undefined") {
+                    if (selectObj.id == 999 && eCol.otherValue != "") {
+                      eCol.value[i] += "-" + eCol.otherValue;
+                      break;
+                    }
+                  }
+                }
+              }
+              if (optionList[eIndex].type == "linkSelect") {
+                //级联下拉组件将value替换为label再提交
+                let arr = optionList[eIndex].attr_data_link_list;
+                let value = JSON.parse(JSON.stringify(eCol.value));
+                eCol.value = this.getLinkSelectName(arr, value);
+              }
+            });
+          });
+        }
       });
       return JSON.stringify(arr);
     },
-    getLinkSelectName(arr,value){
-        // console.log(arr);
-        // console.log(value);
+    getLinkSelectName(arr, value) {
+      // console.log(arr);
+      // console.log(value);
 
-        value.forEach(valueObj => {
-            if(valueObj.length == 1){
-                let findObj = arr.find(e => e.value == valueObj[0]);
-                valueObj[0] = findObj.label;
-            }
-            else if(valueObj.length == 2){
-                let findObj = arr.find(e => e.value == valueObj[0]);
-                let findObj2 = findObj.children.find(e => e.value == valueObj[1]);
-                valueObj[0] = findObj.label;
-                valueObj[1] = findObj2.label;
-            }
-            else if(valueObj.length == 3){
-                let findObj = arr.find(e => e.value == valueObj[0]);
-                let findObj2 = findObj.children.find(e => e.value == valueObj[1]);
-                let findObj3 = findObj2.children.find(e => e.value == valueObj[2]);
-                valueObj[0] = findObj.label;
-                valueObj[1] = findObj2.label;
-                valueObj[2] = findObj3.label;
-            }
-        });
-        return value;
+      value.forEach((valueObj) => {
+        if (valueObj.length == 1) {
+          let findObj = arr.find((e) => e.value == valueObj[0]);
+          valueObj[0] = findObj.label;
+        } else if (valueObj.length == 2) {
+          let findObj = arr.find((e) => e.value == valueObj[0]);
+          let findObj2 = findObj.children.find((e) => e.value == valueObj[1]);
+          valueObj[0] = findObj.label;
+          valueObj[1] = findObj2.label;
+        } else if (valueObj.length == 3) {
+          let findObj = arr.find((e) => e.value == valueObj[0]);
+          let findObj2 = findObj.children.find((e) => e.value == valueObj[1]);
+          let findObj3 = findObj2.children.find((e) => e.value == valueObj[2]);
+          valueObj[0] = findObj.label;
+          valueObj[1] = findObj2.label;
+          valueObj[2] = findObj3.label;
+        }
+      });
+      return value;
     },
-    getText(i){
+    getText(i) {
       return `<div :style = "{fontWeight:data[${i}].attr_label_weight,textAlign:data[${i}].attr_label_align,fontSize:data[${i}].attr_size + 'px'}" class = "previewRow textBox">{{data[${i}].attr_name}}</div>`;
     },
-    getInput(i){
+    getInput(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input 
@@ -180,7 +225,7 @@ export default {
                   </el-input>
               </div>`;
     },
-    getTime(i){
+    getTime(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-time-picker
@@ -195,7 +240,7 @@ export default {
                   </el-time-picker>
               </div>`;
     },
-    getTimeRange(i){
+    getTimeRange(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
         
@@ -211,7 +256,7 @@ export default {
                   </el-time-picker>
               </div>`;
     },
-    getDateRange(i){
+    getDateRange(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-date-picker
@@ -225,7 +270,7 @@ export default {
                   </el-date-picker>
               </div>`;
     },
-    getDate(i){
+    getDate(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-date-picker
@@ -238,7 +283,7 @@ export default {
                   </el-date-picker>
               </div>`;
     },
-    getInputNumber(i){
+    getInputNumber(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input-number 
@@ -253,7 +298,7 @@ export default {
                   </el-input-number>
               </div>`;
     },
-    getSelect(i){
+    getSelect(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
@@ -272,7 +317,7 @@ export default {
                   </el-select>
               </div>`;
     },
-    getLinkSelect(i){
+    getLinkSelect(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
@@ -288,7 +333,7 @@ export default {
                   </el-cascader>
               </div>`;
     },
-    getRadio(i){
+    getRadio(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <span>
@@ -304,7 +349,7 @@ export default {
                   </span>
               </div>`;
     },
-    getCheck(i){
+    getCheck(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
@@ -321,7 +366,7 @@ export default {
                   </el-checkbox-group>
               </div>`;
     },
-    getSwitch(i){
+    getSwitch(i) {
       return `<div class = "previewRow inputBox">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
 
@@ -331,7 +376,7 @@ export default {
                   </el-switch>
               </div>`;
     },
-    getTextarea(i){
+    getTextarea(i) {
       return `<div class = "previewRow inputBox">
                   <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <el-input 
@@ -345,7 +390,7 @@ export default {
                   </el-input>
               </div>`;
     },
-    getHandWrite(i){
+    getHandWrite(i) {
       return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
                   <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <span style = "flex-grow:1;width:0;">
@@ -353,7 +398,7 @@ export default {
                   </span>
               </div>`;
     },
-    getUpload(i){
+    getUpload(i) {
       return `<div class = "previewRow inputBox" @click = "setCompIndex(${i},-1,-1)">
                   <span :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
                   <span>{{data[${i}].data_url}}</span>
@@ -369,10 +414,10 @@ export default {
                   </el-upload>
               </div>`;
     },
-    getBtn(i){
+    getBtn(i) {
       return `<div class = "previewRow btnBox"><span>{{data['${i}'].attr_name}}</span></div>`;
     },
-    getBox(i){
+    getBox(i) {
       return `<div class = "previewRow formBox">
                 <div class = "formBoxList">
                   <span class = "labelTextarea" :style = "{textAlign:'right',width:calWidth(data[${i}].label_width)}">{{data[${i}].attr_name}}</span>
@@ -545,351 +590,340 @@ export default {
                 </div>
               </div>`;
     },
-    buildHtml(){
+    buildHtml() {
       var str = '<div class = "previewBox">';
-      for(var i = 0;i < this.data.length;i++){
-        if(this.data[i].type == 'text'){
+      for (var i = 0; i < this.data.length; i++) {
+        if (this.data[i].type == "text") {
           str += this.getText(i);
-        }
-        else if(this.data[i].type == 'button'){
+        } else if (this.data[i].type == "button") {
           str += this.getBtn(i);
-        }
-        else if(this.data[i].type == 'input'){
+        } else if (this.data[i].type == "input") {
           str += this.getInput(i);
-        }
-        else if(this.data[i].type == 'inputNumber'){
+        } else if (this.data[i].type == "inputNumber") {
           str += this.getInputNumber(i);
-        }
-        else if(this.data[i].type == 'textarea'){
+        } else if (this.data[i].type == "textarea") {
           str += this.getTextarea(i);
-        }
-        else if(this.data[i].type == 'select'){
+        } else if (this.data[i].type == "select") {
           str += this.getSelect(i);
-        }
-        else if(this.data[i].type == 'linkSelect'){
+        } else if (this.data[i].type == "linkSelect") {
           str += this.getLinkSelect(i);
-        }
-        else if(this.data[i].type == 'radio'){
+        } else if (this.data[i].type == "radio") {
           str += this.getRadio(i);
-        }
-        else if(this.data[i].type == 'check'){
+        } else if (this.data[i].type == "check") {
           str += this.getCheck(i);
-        }
-        else if(this.data[i].type == 'switch'){
+        } else if (this.data[i].type == "switch") {
           str += this.getSwitch(i);
-        }
-        else if(this.data[i].type == 'time'){
+        } else if (this.data[i].type == "time") {
           str += this.getTime(i);
-        }
-        else if(this.data[i].type == 'date'){
+        } else if (this.data[i].type == "date") {
           str += this.getDate(i);
-        }
-        else if(this.data[i].type == 'timeRange'){
+        } else if (this.data[i].type == "timeRange") {
           str += this.getTimeRange(i);
-        }
-        else if(this.data[i].type == 'dateRange'){
+        } else if (this.data[i].type == "dateRange") {
           str += this.getDateRange(i);
-        }
-        else if(this.data[i].type == 'upload'){
+        } else if (this.data[i].type == "upload") {
           str += this.getUpload(i);
-        }
-        else if(this.data[i].type == 'handWrite'){
+        } else if (this.data[i].type == "handWrite") {
           str += this.getHandWrite(i);
-        }
-        else if(this.data[i].type == 'childForm'){
+        } else if (this.data[i].type == "childForm") {
           str += this.getBox(i);
-        }
-        else{
-
+        } else {
         }
       }
-      str += '</div>';
+      str += "</div>";
       return str;
     },
-    showFn(dataArr,formId){
+    showFn(dataArr, formId) {
       this.sh = true;
       this.formId = formId;
       const self = this;
-      if(typeof dataArr == "string"){
-        if(dataArr == ''){
+      if (typeof dataArr == "string") {
+        if (dataArr == "") {
           dataArr = [];
-        }
-        else{
+        } else {
           dataArr = JSON.parse(dataArr);
         }
       }
-      
-      let rqSelectArr = [];//将绑定数据的下拉组件筛选出来，记录下标
-      let childIndexSet = {};//记录子表单绑定数据的下拉组件下标
-      for(let i = 0;i < dataArr.length;i++){
-          if(dataArr[i].hasOwnProperty('attr_data_source') && dataArr[i].attr_data_source == 'bind' && dataArr[i].attr_data_bind != ''){
+
+      let rqSelectArr = []; //将绑定数据的下拉组件筛选出来，记录下标
+      let childIndexSet = {}; //记录子表单绑定数据的下拉组件下标
+      for (let i = 0; i < dataArr.length; i++) {
+        if (
+          dataArr[i].hasOwnProperty("attr_data_source") &&
+          dataArr[i].attr_data_source == "bind" &&
+          dataArr[i].attr_data_bind != ""
+        ) {
+          rqSelectArr.push(i);
+        }
+        if (dataArr[i].type == "childForm") {
+          let childList = dataArr[i].arr;
+          for (let j = 0; j < childList.length; j++) {
+            if (
+              childList[j].hasOwnProperty("attr_data_source") &&
+              childList[j].attr_data_source == "bind" &&
+              childList[j].attr_data_bind != ""
+            ) {
               rqSelectArr.push(i);
+              childIndexSet[i] = j;
+              break;
+            }
           }
-          if(dataArr[i].type == 'childForm'){
-              let childList = dataArr[i].arr;
-              for(let j = 0;j < childList.length;j++){
-                  if(childList[j].hasOwnProperty('attr_data_source') && childList[j].attr_data_source == 'bind' && childList[j].attr_data_bind != ''){
-                      rqSelectArr.push(i);
-                      childIndexSet[i] = j;
-                      break;
-                  }
-              }
-          } 
+        }
       }
 
       let rqCount = 0;
-      if(rqSelectArr.length == 0){//未发现绑定数据的下拉组件，直接初始化
-          self.initPreview(dataArr);
-          return;
+      if (rqSelectArr.length == 0) {
+        //未发现绑定数据的下拉组件，直接初始化
+        self.initPreview(dataArr);
+        return;
       }
-      rqSelectArr.forEach(e => {//存在绑定数据的下拉组件，先遍历请求数据完再初始化
-          let ifChildForm = dataArr[e].type == "childForm";
-          let bindId = ifChildForm ? dataArr[e].arr[childIndexSet[e]].attr_data_bind : dataArr[e].attr_data_bind;
-          api.formSourceSelectList(bindId).then((res) => {
-              if(res.data.status === 200) {
-                  let reArr = res.data.data;
-                  let arr = [];
-                  for(let i = 0;i < reArr.length;i++){
-                      arr.push({id:i + 1,name:reArr[i]});
-                  }
-                  if(ifChildForm)
-                      dataArr[e].arr[childIndexSet[e]].bind_list = arr;
-                  else
-                      dataArr[e].bind_list = arr;
-                  rqCount++;
-                  if(rqCount == rqSelectArr.length){
-                      self.initPreview(dataArr);
-                  }
-              }
-          });
+      rqSelectArr.forEach((e) => {
+        //存在绑定数据的下拉组件，先遍历请求数据完再初始化
+        let ifChildForm = dataArr[e].type == "childForm";
+        let bindId = ifChildForm
+          ? dataArr[e].arr[childIndexSet[e]].attr_data_bind
+          : dataArr[e].attr_data_bind;
+        api.formSourceSelectList(bindId).then((res) => {
+          if (res.data.status === 200) {
+            let reArr = res.data.data;
+            let arr = [];
+            for (let i = 0; i < reArr.length; i++) {
+              arr.push({ id: i + 1, name: reArr[i] });
+            }
+            if (ifChildForm) dataArr[e].arr[childIndexSet[e]].bind_list = arr;
+            else dataArr[e].bind_list = arr;
+            rqCount++;
+            if (rqCount == rqSelectArr.length) {
+              self.initPreview(dataArr);
+            }
+          }
+        });
       });
     },
-    initPreview(dataArr){
+    initPreview(dataArr) {
       const self = this;
-      Vue.nextTick(function () {
+      Vue.nextTick(function() {
         // DOM 更新了
-        const element = self.$el.querySelector('#preview_dialog')
+        const element = self.$el.querySelector("#preview_dialog");
         element.innerHTML = '<div id="preview"></div>';
-        
+
         // const _Vue_ = Vue.extend(self.modeler.build(self.list))
         // self.preview = new _Vue_().$mount('#preview')
         //console.log(dataArr);
         self.data = JSON.parse(JSON.stringify(dataArr));
-        let session = JSON.parse(localStorage.getItem('stu-p3lab'));
+        let session = JSON.parse(localStorage.getItem("stu-p3lab"));
         let token = session.session.userInfo.token;
 
         // console.log(self.submitBtn);
 
         var vueHtml = Vue.extend({
-            template:self.buildHtml(),
-            data: function () {
-                return{
-                    data:self.data,
-                    token:token,
-                    canEdit:self.submitBtn,
-                    compIndex:-1,
-                    compIndex2:-1,
-                    compIndex3:-1
-                }
+          template: self.buildHtml(),
+          data: function() {
+            return {
+              data: self.data,
+              token: token,
+              canEdit: self.submitBtn,
+              compIndex: -1,
+              compIndex2: -1,
+              compIndex3: -1,
+            };
+          },
+          components: {
+            handWriteComp,
+          },
+          methods: {
+            test(e) {
+              console.log(e);
             },
-            components: {
-                handWriteComp
+            setCompIndex(index, index2, index3) {
+              //console.log(index);
+              self.preview.compIndex = index;
+              self.preview.compIndex2 = index2;
+              self.preview.compIndex3 = index3;
             },
-            methods:{
-              test(e){
-                console.log(e);
-              },
-              setCompIndex(index,index2,index3){
-                  //console.log(index);
-                  self.preview.compIndex = index;
-                  self.preview.compIndex2 = index2;
-                  self.preview.compIndex3 = index3;
-              },
-              handleHandWriteSuccess(res){
-                  if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
-                      self.preview.data[self.preview.compIndex].data_url = res.data;
-                  else
-                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
-              },
-              handleAvatarSuccess(res, file) {
-                  // console.log(res);
-                  // console.log(file);
-                  //console.log(self.preview.compIndex);
-                  //console.log(self.preview.compIndex2);
-                  //console.log(self.preview.compIndex3);
-                  if(self.preview.compIndex2 == -1 && self.preview.compIndex3 == -1)
-                      self.preview.data[self.preview.compIndex].data_url = res.data;
-                  else
-                      self.preview.data[self.preview.compIndex].dataList[self.preview.compIndex2][self.preview.compIndex3].value = res.data;
-                  //console.log(self.preview.data);
-                  self.preview.$forceUpdate();
-                  self.$message.success('上传成功');
-              },
-              getFormInfo(){
-                return this.data;
-              },
-              calWidth(v){
-                v += '';
-                if(v == '')
-                  return 'auto';
-                if(v.indexOf('%') > -1)
-                  return v;
-                if(!isNaN(v))
-                return v + 'px';
-              },
-              addChildFormRow(index){
-                var obj = JSON.parse(JSON.stringify(this.data[index]));
-                // console.log(obj);
-                let tempArr = [];
-                for(var i = 0;i < obj.arr.length;i++){
-                  if(obj.arr[i].type == 'select'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].data_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'radio' || obj.arr[i].type == 'check'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].data_value,
-                          otherValue:''
-                      });
-                  }
-                  else if(obj.arr[i].type == 'linkSelect'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_data_link_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'switch'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_boolean_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'time'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_time_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'timeRange'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_time_range_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'date'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_date_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'dateRange'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_date_range_value
-                      });
-                  }
-                  else if(obj.arr[i].type == 'upload'){
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].data_url
-                      });
-                  }
-                  else if(obj.arr[i].type == 'handWrite'){
-                          tempArr.push({
-                              use:true,
-                              type:obj.arr[i].type,
-                              label:obj.arr[i].attr_name,
-                              value:obj.arr[i].data_url
-                          });
-                      }
-                  else{
-                      tempArr.push({
-                          type:obj.arr[i].type,
-                          label:obj.arr[i].attr_name,
-                          value:obj.arr[i].attr_value
-                      });
-                  }
+            handleHandWriteSuccess(res) {
+              if (
+                self.preview.compIndex2 == -1 &&
+                self.preview.compIndex3 == -1
+              )
+                self.preview.data[self.preview.compIndex].data_url = res.data;
+              else
+                self.preview.data[self.preview.compIndex].dataList[
+                  self.preview.compIndex2
+                ][self.preview.compIndex3].value = res.data;
+            },
+            handleAvatarSuccess(res, file) {
+              // console.log(res);
+              // console.log(file);
+              //console.log(self.preview.compIndex);
+              //console.log(self.preview.compIndex2);
+              //console.log(self.preview.compIndex3);
+              if (
+                self.preview.compIndex2 == -1 &&
+                self.preview.compIndex3 == -1
+              )
+                self.preview.data[self.preview.compIndex].data_url = res.data;
+              else
+                self.preview.data[self.preview.compIndex].dataList[
+                  self.preview.compIndex2
+                ][self.preview.compIndex3].value = res.data;
+              //console.log(self.preview.data);
+              self.preview.$forceUpdate();
+              self.$message.success("上传成功");
+            },
+            getFormInfo() {
+              return this.data;
+            },
+            calWidth(v) {
+              v += "";
+              if (v == "") return "auto";
+              if (v.indexOf("%") > -1) return v;
+              if (!isNaN(v)) return v + "px";
+            },
+            addChildFormRow(index) {
+              var obj = JSON.parse(JSON.stringify(this.data[index]));
+              // console.log(obj);
+              let tempArr = [];
+              for (var i = 0; i < obj.arr.length; i++) {
+                if (obj.arr[i].type == "select") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].data_value,
+                  });
+                } else if (
+                  obj.arr[i].type == "radio" ||
+                  obj.arr[i].type == "check"
+                ) {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].data_value,
+                    otherValue: "",
+                  });
+                } else if (obj.arr[i].type == "linkSelect") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_data_link_value,
+                  });
+                } else if (obj.arr[i].type == "switch") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_boolean_value,
+                  });
+                } else if (obj.arr[i].type == "time") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_time_value,
+                  });
+                } else if (obj.arr[i].type == "timeRange") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_time_range_value,
+                  });
+                } else if (obj.arr[i].type == "date") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_date_value,
+                  });
+                } else if (obj.arr[i].type == "dateRange") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_date_range_value,
+                  });
+                } else if (obj.arr[i].type == "upload") {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].data_url,
+                  });
+                } else if (obj.arr[i].type == "handWrite") {
+                  tempArr.push({
+                    use: true,
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].data_url,
+                  });
+                } else {
+                  tempArr.push({
+                    type: obj.arr[i].type,
+                    label: obj.arr[i].attr_name,
+                    value: obj.arr[i].attr_value,
+                  });
                 }
-                obj.dataList.push(tempArr);
-                this.$set(this.data,index,obj);
-              },
-              delRow(index,index2){
-                var obj = JSON.parse(JSON.stringify(this.data[index]));
-                obj.dataList[index2].forEach(e => {
-                    if(e.type == 'handWrite'){
-                        e.use = false;
-                    }
-                });
-                this.$set(this.data,index,obj);
-
-                let _this = this;
-                setTimeout(function(){
-                    obj.dataList.splice(index2,1);
-                    _this.$set(_this.data,index,obj);
-                },100);
               }
-            }
- 
+              obj.dataList.push(tempArr);
+              this.$set(this.data, index, obj);
+            },
+            delRow(index, index2) {
+              var obj = JSON.parse(JSON.stringify(this.data[index]));
+              obj.dataList[index2].forEach((e) => {
+                if (e.type == "handWrite") {
+                  e.use = false;
+                }
+              });
+              this.$set(this.data, index, obj);
+
+              let _this = this;
+              setTimeout(function() {
+                obj.dataList.splice(index2, 1);
+                _this.$set(_this.data, index, obj);
+              }, 100);
+            },
+          },
         });
-        self.preview = new vueHtml().$mount('#preview');
-      })
+        self.preview = new vueHtml().$mount("#preview");
+      });
     },
-    closeFn(){
+    closeFn() {
       this.sh = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
-
 <style scoped lang="less">
-@deep: ~'>>>';
+@deep: ~">>>";
 @defaultPadding: 10px;
-@borderColor:#ddd;
-@inputHeight:40px;
-@fontSize:14px;
-@labelColor:#333;
-@valueColor:#666;
-@blueColor:#409eff;
+@borderColor: #ddd;
+@inputHeight: 40px;
+@fontSize: 14px;
+@labelColor: #333;
+@valueColor: #666;
+@blueColor: #409eff;
 
-.popBox{
+.popBox {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   z-index: 1000;
-  background:rgba(0,0,0,0.5);
-  .p_box{
+  background: rgba(0, 0, 0, 0.5);
+  .p_box {
     background: #fff;
-    height:100%;
-    width:100%;
-    margin:0 auto;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    .header{
+    .header {
       background: #e6eff5;
       height: 44px;
       position: relative;
-      p{
+      p {
         line-height: 44px;
         height: 44px;
         text-align: center;
-        margin:0;
+        margin: 0;
       }
-      span{
+      span {
         position: absolute;
         right: 0;
         top: 0;
@@ -898,172 +932,173 @@ export default {
         line-height: 44px;
         font-size: 14px;
         cursor: pointer;
-        color:@blueColor;
+        color: @blueColor;
       }
     }
-    .footer{
+    .footer {
       height: 60px;
-      text-align:center;
+      text-align: center;
     }
-    .body{
-      margin:20px;
+    .body {
+      margin: 20px;
       box-shadow: 0px 0px 10px #ddd;
       flex-grow: 1;
       height: 0;
     }
-  }   
+  }
 }
-.popBoxNormal{
-  position:relative;
-  .p_box{
-    .body{
-      height:auto;
+.popBoxNormal {
+  position: relative;
+  .p_box {
+    .body {
+      height: auto;
     }
   }
 }
 
-#preview_dialog{
-  overflow:auto;
-  @{deep} .previewBox{
+#preview_dialog {
+  overflow: auto;
+  @{deep} .previewBox {
     padding: 20px;
-    .previewRow{
+    .previewRow {
       /*border:1px solid @borderColor;*/
       /*padding:0 @defaultPadding;*/
-      padding-bottom:16px;
+      padding-bottom: 16px;
     }
-    .inputBox{
-      display:flex;
-      align-items:center;
-      &>span{
-        padding:10px;
+    .inputBox {
+      display: flex;
+      align-items: center;
+      & > span {
+        padding: 10px;
         /*border-right:1px solid @borderColor;*/
-        font-size:@fontSize;
-        color:@labelColor;
+        font-size: @fontSize;
+        color: @labelColor;
       }
-      .labelTextarea{
-        height:80px;
+      .labelTextarea {
+        height: 80px;
       }
       .el-input,
-      .el-textarea{
-        flex-grow:1;
-        width:0;
+      .el-textarea {
+        flex-grow: 1;
+        width: 0;
       }
       .el-input-number,
       .el-cascader,
-      .el-select{
-        .el-input{
-          width:100%;
+      .el-select {
+        .el-input {
+          width: 100%;
         }
       }
     }
-    .textBox{
-      padding:@defaultPadding;
+    .textBox {
+      padding: @defaultPadding;
     }
-    .btnBox{
+    .btnBox {
       /*text-align: left;*/
-      span{
+      span {
         display: inline-block;
         vertical-align: top;
         width: 90px;
         height: 30px;
         line-height: 30px;
         text-align: center;
-        border:1px solid #ccc;
+        border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 12px;
         background: #fff;
         cursor: pointer;
       }
     }
-    .formBox{
-      .formBoxList{
-        display:flex;
-        .labelTextarea{
+    .formBox {
+      .formBoxList {
+        display: flex;
+        .labelTextarea {
           padding: 10px;
           font-size: 14px;
           color: #333;
         }
-        table{
-          border-top:1px solid @borderColor;
-          border-left:1px solid @borderColor;
-          border-right:1px solid @borderColor;
-          width:0;
-          flex-grow:1;
+        table {
+          border-top: 1px solid @borderColor;
+          border-left: 1px solid @borderColor;
+          border-right: 1px solid @borderColor;
+          width: 0;
+          flex-grow: 1;
           border-collapse: collapse;
-          tr{
-            height:50px;
-            border-bottom:1px solid @borderColor;
-            td{
-              padding:0 10px;
-              border-right:1px solid @borderColor;
-              .formInput{
-                width:98%;
-                height:@inputHeight;
-                border:none;
-                outline:none;
-                font-size:@fontSize;
-                color:@valueColor;
+          tr {
+            height: 50px;
+            border-bottom: 1px solid @borderColor;
+            td {
+              padding: 0 10px;
+              border-right: 1px solid @borderColor;
+              .formInput {
+                width: 98%;
+                height: @inputHeight;
+                border: none;
+                outline: none;
+                font-size: @fontSize;
+                color: @valueColor;
               }
-              .formTextarea{
-                padding:@defaultPadding 0;
-                width:98%;
-                border:none;
-                outline:none;
-                font-size:@fontSize;
-                color:@valueColor;
-                resize:none;
+              .formTextarea {
+                padding: @defaultPadding 0;
+                width: 98%;
+                border: none;
+                outline: none;
+                font-size: @fontSize;
+                color: @valueColor;
+                resize: none;
               }
             }
-            td:last-child{
-              border-right:none;
+            td:last-child {
+              border-right: none;
             }
-            .col0{
-              width:30px;
-              cursor:pointer;
-              position:relative;
-              &:after{
-                position:absolute;
-                width:100%;
-                height:100%;
-                line-height:@inputHeight;
-                content:'';
-                background:#fff url('../../assets/image/form/icon_del2.png') no-repeat center center;
-                background-size:18px;
-                top:0;
-                left:0;
-                color:@blueColor;
-                display:none;
-                cursor:pointer;
+            .col0 {
+              width: 30px;
+              cursor: pointer;
+              position: relative;
+              &:after {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                line-height: @inputHeight;
+                content: "";
+                background: #fff url("../../assets/image/form/icon_del2.png")
+                  no-repeat center center;
+                background-size: 18px;
+                top: 0;
+                left: 0;
+                color: @blueColor;
+                display: none;
+                cursor: pointer;
               }
-              &:hover:after{
-                display:block;
+              &:hover:after {
+                display: block;
               }
             }
           }
-          tr.header{
-            background:#f5f7fa;
-            .col0{
-              cursor:auto;
-              &:hover:after{
-                display:none;
+          tr.header {
+            background: #f5f7fa;
+            .col0 {
+              cursor: auto;
+              &:hover:after {
+                display: none;
               }
             }
           }
         }
       }
 
-      .formBoxBtn{
-        height:40px;
-        span{
-          line-height:40px;
-          cursor:pointer;
-          color:@blueColor;
+      .formBoxBtn {
+        height: 40px;
+        span {
+          line-height: 40px;
+          cursor: pointer;
+          color: @blueColor;
         }
       }
     }
 
-    .avatar-uploader{
-      padding:10px 0;
+    .avatar-uploader {
+      padding: 10px 0;
     }
     .avatar-uploader .el-upload {
       border: 1px dashed #d9d9d9;
@@ -1073,7 +1108,7 @@ export default {
       overflow: hidden;
     }
     .avatar-uploader .el-upload:hover {
-      border-color: #409EFF;
+      border-color: #409eff;
     }
     .avatar-uploader-icon {
       font-size: 28px;
@@ -1092,38 +1127,36 @@ export default {
 }
 
 .fontFn (@px, @attr: font-size) {
-    @rem: (@px / 37.5);
-    @{attr}: ~"@{rem}rem";
+  @rem: (@px / 37.5);
+  @{attr}: ~"@{rem}rem";
 }
 
 @media screen and (max-width: 750px) {
-  .popBox{
-    .p_box{
-      .header{
-        height:60px;
-        p{
-          font-size:28px;
-          height:60px;
-          line-height:60px;
+  .popBox {
+    .p_box {
+      .header {
+        height: 60px;
+        p {
+          font-size: 28px;
+          height: 60px;
+          line-height: 60px;
         }
-        span{
-          height:60px;
-          line-height:60px;
-          font-size:24px;
+        span {
+          height: 60px;
+          line-height: 60px;
+          font-size: 24px;
         }
       }
-      .footer{
-        height:80px;
-        @{deep} button{
-          font-size:28px;
-          width:200px !important;
+      .footer {
+        height: 80px;
+        @{deep} button {
+          font-size: 28px;
+          width: 200px !important;
         }
       }
     }
   }
-  #preview_dialog{
-
+  #preview_dialog {
   }
 }
-
 </style>

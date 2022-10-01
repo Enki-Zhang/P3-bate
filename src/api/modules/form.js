@@ -116,7 +116,14 @@ export function customFormDeleteAllVersion(data) {
 export function formAdd(data) {
   return ajax.post("userServer/customForm/save", data);
 }
-
+/**
+ * 保存历史表单
+ * @param {*} data
+ * @returns
+ */
+export function historyFormAdd(data) {
+  return ajax.post("userServer/customFormInfo/save", data);
+}
 /**
  * 修改
  * @param data
@@ -125,7 +132,14 @@ export function formAdd(data) {
 export function formEdit(data) {
   return ajax.post("userServer/customForm/edit", data);
 }
-
+/**
+ * 修改历史表单
+ * @param {*} data
+ * @returns
+ */
+export function historyFormEdit(data) {
+  return ajax.post("userServer/customFormInfo/edit", data);
+}
 /**
  * 获取绑定数据源列表
  * @param data

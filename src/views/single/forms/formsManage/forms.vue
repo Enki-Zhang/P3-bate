@@ -872,15 +872,7 @@
                       提交
                   </el-button>
 
-                   <el-button 
-                      type="primary" 
-                      size="small" 
-                      style = "width:90px;"
-                      :loading="btnLoadingFilter" 
-                      @click = "saveForm"
-                      >
-                      保存
-                  </el-button>
+                  
                 </el-row>
             </el-row>
         </el-row>
@@ -1018,8 +1010,8 @@
                 api.formHistoryInfo(this.$route.query.id).then((res) => {
                   if(res.data.status === 200) {
                     this.dataForm = {...res.data.data};
-                    this.formBox = JSON.parse(res.data.data.formInfo);
-                       console.log(`历史编辑`,res);
+                    this.formBox = JSON.parse(res.data.data.keyInfo);
+                      //  console.log(`历史编辑`,res);
                   }
                });
             
@@ -1035,8 +1027,7 @@
             // 表单提交
             submitForm(){
               this.$refs.dataForm.validate((valid) => {
-                if (valid) {
-                  
+                if (valid) {                        
                   this.dataForm.keyInfo = JSON.stringify(this.formBox);
                   this.btnLoadingFilter = true;
 
@@ -1064,58 +1055,12 @@
                           this.$router.push({path: `/forms/forms-manage`});
                       }
                   });
-
                 } 
                 else {
                   console.log('error submit!!');
                   return false;
                 }
               });
-            },
-            // 表单保存 向数据库中添加历史版本
-            saveForm(){
-               this.$refs.dataForm.validate((valid) => {
-                if (valid) {
-                  
-                  this.dataForm.keyInfo = JSON.stringify(this.formBox);
-                  this.btnLoadingFilter = true;
-
-                  let params = {
-                      ...this.dataForm
-                  };
-
-                  // let fnName = 'formAdd';
-                  let fnName = 'formAdd';
-
-
-                  if(this.$route.query.hasOwnProperty('id')){
-                    params['id'] = this.$route.query.id;
-                    fnName = 'formEdit';
-                  }
-
-                  // console.log(JSON.parse(params.keyInfo));
-                  // return;
-                  api.customFormInfoSave(params).then()
-
-                  api[fnName](params).then((res) => {
-                      this.btnLoadingFilter = false;
-                      if(res.data.status === 200) {
-                          this.$message({
-                            message: this.$route.query.hasOwnProperty('id') ? '编辑成功' : '添加成功',
-                            type: 'success'
-                          });
-                          this.$router.push({path: `/forms/forms-manage`});
-                      }
-                  });
-
-                } 
-                else {
-                  console.log('error submit!!');
-                  return false;
-                }
-              });
-              
-              console.log(`保存`);
             },
             linkSelectDel(){
                 if(this.selectingIndex.length == 1){

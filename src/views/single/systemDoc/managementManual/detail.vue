@@ -406,16 +406,11 @@ export default {
         path: `/system-doc/management-manual/history`,
         query: { id: row.id },
       });
-      /*    that.$router.push({
-        path: `/forms/version-manage`,
-        query: { id: row.id },
-      }); */
-      console.log(`历史`);
-      console.log(`路由信息`, that.$router);
     },
     applyForm: function(formInfo) {
       let that = this;
       // console.log(formInfo);
+      console.log(`填写`, that);
 
       api
         .customFormInfoSave({

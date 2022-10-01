@@ -92,13 +92,18 @@
         </el-row>
       </el-row>
     </el-row>
+    <!-- <detail ref="formDeatil" @success="applyForm"></detail> -->
+    <!-- 组件：自定义表单填写 -->
+    <form-preview ref="formPreview" @success="applyForm"></form-preview>
   </el-row>
 </template>
 
 <script>
 const listRouteName = "forms";
 import api from "@api";
-
+// import detail from "components/detail";
+// import Detail from '@views/personnel/graduate/detail.vue';
+import formPreview from "@components/formPreview";
 export default {
   name: "index",
   data() {
@@ -113,7 +118,11 @@ export default {
         formName: "",
         formNumber: "",
       },
+      applyFormItem: {},
     };
+  },
+  components: {
+    formPreview,
   },
   mounted() {
     this.getTableData();
@@ -158,40 +167,35 @@ export default {
     handlePaginationChange: function(page) {
       this.getTableData(page);
     },
-    /*     remove: function(row) {
-      // if(!this.man.fast.inArray('sys:user:del', this.userInfo.permissions)) {
-      //     this.$message.warning('您无权限进行此操作');
-      //     return;
-      // }
-
-      this.$confirm("确认要删除所选数据吗？", "确认信息", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "删除",
-        cancelButtonText: "取消",
-      })
-        .then(() => {
-          api.formHistoryDel(row.id).then((res) => {
-            if (res.data.status === 200) {
-              this.$message.success("删除成功");
-              this.getTableData(this.tbData.current);
-            }
-          });
-        })
-        .catch();
-    }, */
     showVersion: function(row) {
-      /*   api.formHistoryMain(row.id).then((res) => {
+      let that = this;
+      api.formHistoryInfo(row.id).then((res) => {
         if (res.data.status === 200) {
-          this.$message.success("设置成功");
+          that.applyFormItem = { ...row };
+          that.$refs.formPreview.showFn(res.data.data.formInfo);
+          console.log(row.id);
         }
-      }); */
-      // 查询历史表单
-
-      this.$router.push({
-        path: "/forms/forms-forms-edit",
-        query: { id: parseInt(row.id), history: true },
       });
-      // console.log(`row`, row.id);
+    },
+    applyForm: function(formInfo) {
+      let that = this;
+      // console.log(formInfo);
+      console.log(`历史保存`);
+      console.log(that);
+
+      api
+        .customFormInfoSave({
+          // documentId: that.applyFormItem.id,
+          formId: this.$route.query.id,
+          formInfo: formInfo,
+          // uuid: that.man.fast.getUUID(),
+        })
+        .then((res) => {
+          if (res.data.status === 200) {
+            console.log(`历史res`, res);
+            that.$message.success("保存成功");
+          }
+        });
     },
   },
 };
